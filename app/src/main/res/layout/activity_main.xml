@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/black">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:textColor="@color/white"
+            android:text="睿翼"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="哈哈哈"
+            android:layout_marginLeft="150dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:id="@+id/tv_lang"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/white_circle_bg"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:gravity="center"
+            android:text="解绑"
+            android:textColor="@color/white"
+            android:layout_toLeftOf="@+id/tv_lang"
+            android:id="@+id/iv_setting"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_toLeftOf="@+id/iv_setting"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="2019-04-16 19:30"
+            android:layout_marginRight="80dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
+        <View
+            android:layout_marginRight="39dp"
+            android:id="@+id/view_line"
+            android:background="@color/green"
+            android:layout_marginLeft="40dp"
+            android:layout_centerVertical="true"
+            android:layout_width="10dp"
+            android:layout_height="300dp"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_toRightOf="@+id/view_line"
+            android:text="空闲"
+            android:textColor="@color/white"
+            android:textSize="50sp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_time"
+            android:textColor="@color/white"
+            android:layout_toRightOf="@+id/view_line"
+            android:layout_below="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_creator"
+            android:visibility="gone"
+            android:layout_marginLeft="30dp"
+            android:textColor="@color/white"
+            android:layout_toRightOf="@+id/tv_time"
+            android:layout_below="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_next"
+            android:layout_marginBottom="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/view_line"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.huanhong.appointment.RangeBar
+            android:id="@+id/range"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+        </com.huanhong.appointment.RangeBar>
+    </RelativeLayout>
+
+</LinearLayout>
