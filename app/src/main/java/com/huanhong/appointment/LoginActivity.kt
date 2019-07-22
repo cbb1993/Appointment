@@ -10,9 +10,9 @@ import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.Fault
 import com.huanhong.appointment.net.httploader.BindStateLoader
 import com.huanhong.appointment.net.httploader.LoginLoader
-import com.huanhong.appointment.net.httploader.RoomMeetsLoader
+import com.huanhong.appointment.net.httploader.MeetRoomsLoader
 import com.huanhong.appointment.utils.SharedPreferencesUtils
-import io.reactivex.functions.Consumer
+
 import kotlinx.android.synthetic.main.activity_login.*
 
 /**
@@ -37,7 +37,6 @@ class LoginActivity: AppCompatActivity(){
                 map["terminal"] = "会议室Pad"
                 map["os"] = "android"
                 map["version"] = "1.0.0"
-
                 LoginLoader().getLoginInFo(map).subscribe({
                         if(it!=null){
                             LoginReponseBean.setToken(it.token)
@@ -54,7 +53,7 @@ class LoginActivity: AppCompatActivity(){
         val map = HashMap<String,String>()
         map["device"] = ANDROID_ID
         BindStateLoader().getBindState(map).subscribe({
-            startActivity(Intent(this@LoginActivity,MainActivity::class.java))
+           getList()
         },{
                 var f =   it as Fault
                 if(f.status == 1005){
@@ -73,5 +72,20 @@ class LoginActivity: AppCompatActivity(){
             return false
         }
         return true
+    }
+
+    @SuppressLint("CheckResult")
+    private fun getList(){
+        MeetRoomsLoader().rooms.subscribe({
+            if(it!=null){
+                it.forEach { info ->
+                    if(info.deviceMac ==  Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)){
+                        SharedPreferencesUtils.addData("roomName",info.fullName)
+                        startActivity(Intent(this@LoginActivity,MainActivity::class.java))
+                    }
+                }
+            }
+        },{
+        })
     }
 }

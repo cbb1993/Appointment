@@ -17,6 +17,7 @@ import com.huanhong.appointment.net.Fault
 import com.huanhong.appointment.net.httploader.BindMeetRoomsLoader
 import com.huanhong.appointment.net.httploader.MeetRoomsLoader
 import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
+import com.huanhong.appointment.utils.SharedPreferencesUtils
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_meet_room.*
 
@@ -75,10 +76,11 @@ class MeetRoomActivity:AppCompatActivity(){
         var map = HashMap<String,String>()
         map["roomId"] = room.id
         map["deviceMac"] = deviceId
-        map["deviceName"] = room.fullName + " " +deviceId
+        map["deviceName"] = room.fullName + " 会议室门显设备"
         homeDevice["homeDevice"] = map
         BindMeetRoomsLoader().bind(homeDevice).subscribe( {
             DialogUtils.ToastShow(this@MeetRoomActivity,"绑定成功")
+            SharedPreferencesUtils.addData("roomName",room.fullName)
             startActivity(Intent(this@MeetRoomActivity,MainActivity::class.java))
             finish()
         },{
@@ -87,9 +89,8 @@ class MeetRoomActivity:AppCompatActivity(){
     }
 
     private fun unbind(room : Room){
-        val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
         var map = java.util.HashMap<String, Any>()
-        map["device"] = deviceId
+        map["device"] = room.deviceMac
         UnbindMeetRoomsLoader().unbind(map).subscribe( {
             bind(room)
         },{

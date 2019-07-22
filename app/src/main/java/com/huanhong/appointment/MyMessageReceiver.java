@@ -15,12 +15,15 @@ public class MyMessageReceiver extends MessageReceiver {
     public static final String REC_TAG = "receiver";
     @Override
     public void onNotification(Context context, String title, String summary, Map<String, String> extraMap) {
-        EventBus.getDefault().post("");
         Log.e("MyMessageReceiver", "Receive notification, title: " + title + ", summary: " + summary + ", extraMap: " + extraMap);
     }
     @Override
     public void onMessage(Context context, CPushMessage cPushMessage) {
-        EventBus.getDefault().post("");
+        if(cPushMessage!=null && cPushMessage.getTitle()!=null){
+            EventBus.getDefault().post(cPushMessage.getTitle());
+
+        }
+
         Log.e("MyMessageReceiver", "onMessage, messageId: " + cPushMessage.getMessageId() + ", title: " + cPushMessage.getTitle() + ", content:" + cPushMessage.getContent());
     }
     @Override

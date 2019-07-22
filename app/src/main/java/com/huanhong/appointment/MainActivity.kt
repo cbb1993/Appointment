@@ -15,6 +15,7 @@ import com.huanhong.appointment.bean.Meet
 import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.httploader.RoomMeetsLoader
 import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
+import com.huanhong.appointment.utils.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -56,6 +57,8 @@ class MainActivity: AppCompatActivity(){
             }.show()
         }
         bindPush()
+
+        room_name.text = SharedPreferencesUtils.readData("roomName")
     }
 
     private fun init(){
@@ -277,7 +280,14 @@ class MainActivity: AppCompatActivity(){
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun notifyChange(str:String){
-        getMeets()
+        if(str == "100"){
+            getMeets()
+        }else if(str == "200"){
+            AlertDialog(this@MainActivity,"本机账号已经在别处登陆"){
+                startActivity(Intent(this@MainActivity,LoginActivity::class.java))
+            }.show()
+        }
+
     }
 
 
