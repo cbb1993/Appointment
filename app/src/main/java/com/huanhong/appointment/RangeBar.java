@@ -41,7 +41,7 @@ public class RangeBar extends RelativeLayout {
 
     private View getBgView() {
         View view = new View(context);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(1200, 50);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(960, 50);
         view.setLayoutParams(lp);
         view.setBackgroundResource(R.drawable.range_bar_bg);
         return view;
@@ -49,7 +49,7 @@ public class RangeBar extends RelativeLayout {
 
     private View getTimeText() {
         View view = inflater.inflate(R.layout.ll_time, null);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(1200, LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(960, LayoutParams.MATCH_PARENT);
         view.setLayoutParams(lp);
         left_line= view.findViewById(R.id.left_line);
         return view;
@@ -73,7 +73,7 @@ public class RangeBar extends RelativeLayout {
     private View line ;
     private void initLine(){
         line = new View(context);
-        LayoutParams lp = new LayoutParams(2, 50);
+        LayoutParams lp = new LayoutParams(1, 50);
         line.setLayoutParams(lp);
         line.setBackgroundResource(R.color.yellow);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -94,13 +94,12 @@ public class RangeBar extends RelativeLayout {
             int startLeft = shw + smw;
             RelativeLayout.LayoutParams lp = (LayoutParams) line.getLayoutParams();
             lp.leftMargin = startLeft;
-            line.setLayoutParams(lp);
+//            line.setLayoutParams(lp);
         }
     }
-    int itemWidth = 100 ;
+    int itemWidth = 80 ;
     public void setTimeRange( TimeBean bean) {
         if (bean.start.contains(":") && bean.end.contains(":")) {
-//            int itemWidth = left_line.getLeft() - getLeft() ;
             String[] starts = bean.start.split(":");
             int startH = Integer.parseInt(starts[0]);
             int startM = Integer.parseInt(starts[1]);

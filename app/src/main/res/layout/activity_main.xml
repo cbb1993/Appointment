@@ -67,7 +67,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="400dp">
+        android:layout_height="300dp">
         <View
             android:layout_marginRight="39dp"
             android:id="@+id/view_line"
@@ -75,7 +75,7 @@
             android:layout_marginLeft="40dp"
             android:layout_centerVertical="true"
             android:layout_width="10dp"
-            android:layout_height="300dp"/>
+            android:layout_height="200dp"/>
 
         <TextView
             android:id="@+id/tv_title"
