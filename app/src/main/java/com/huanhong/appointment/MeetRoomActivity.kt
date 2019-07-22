@@ -16,6 +16,7 @@ import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.Fault
 import com.huanhong.appointment.net.httploader.BindMeetRoomsLoader
 import com.huanhong.appointment.net.httploader.MeetRoomsLoader
+import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_meet_room.*
 
@@ -50,7 +51,7 @@ class MeetRoomActivity:AppCompatActivity(){
                         }.show()
                     }else{
                         ConfirmDialog(this@MeetRoomActivity,"当前会议室已有绑定门显设备，是否继续绑定") {
-                            bind(t[holder.realPosition])
+                            unbind(t[holder.realPosition])
                         }.show()
                     }
 
@@ -82,6 +83,16 @@ class MeetRoomActivity:AppCompatActivity(){
             finish()
         },{
             DialogUtils.ToastShow(this@MeetRoomActivity,"绑定失败")
+        })
+    }
+
+    private fun unbind(room : Room){
+        val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
+        var map = java.util.HashMap<String, Any>()
+        map["device"] = deviceId
+        UnbindMeetRoomsLoader().unbind(map).subscribe( {
+            bind(room)
+        },{
         })
     }
 }
