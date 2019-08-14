@@ -80,6 +80,7 @@ class LoginActivity: AppCompatActivity(){
             if(it!=null){
                 it.forEach { info ->
                     if(info.deviceMac ==  Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)){
+                        SharedPreferencesUtils.addData("roomId",info.id)
                         SharedPreferencesUtils.addData("roomName",info.fullName)
                         startActivity(Intent(this@LoginActivity,MainActivity::class.java))
                     }

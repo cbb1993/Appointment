@@ -23,17 +23,17 @@ import retrofit2.http.QueryMap;
  * describe:
  */
 public class BindStateLoader extends ObjectLoader {
-    private LoginService mScanService;
+    private RequestService mScanService;
 
     public BindStateLoader() {
-        mScanService = RetrofitServiceManager.getInstance().create(LoginService.class);
+        mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
     public Observable<Object> getBindState(Map<String,String> map) {
         return observe(mScanService.getBindState(LoginReponseBean.getToken(),map)).map(new PayLoad<Object>());
     }
 
-    public interface LoginService {
+    public interface RequestService {
         @POST(Constant.BIND_STATE)
         Observable<BaseResponse<Object>> getBindState(@Header("Authorization") String token, @QueryMap Map<String,String> map);
     }

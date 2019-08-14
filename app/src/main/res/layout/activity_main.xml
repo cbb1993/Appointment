@@ -96,16 +96,25 @@
             android:layout_below="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv_creator"
-            android:visibility="gone"
-            android:layout_marginLeft="30dp"
-            android:textColor="@color/white"
-            android:layout_toRightOf="@+id/tv_time"
+        <LinearLayout
+            android:id="@+id/ll_creator"
             android:layout_below="@+id/tv_title"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/tv_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_creator"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_creator_name"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tv_next"
             android:layout_marginBottom="80dp"
@@ -114,7 +123,20 @@
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_order"
+            android:layout_marginTop="50dp"
+            android:textSize="20sp"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:text="预定"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
+
+
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -25,17 +25,17 @@ import retrofit2.http.QueryMap;
  * describe:
  */
 public class RoomMeetsLoader extends ObjectLoader {
-    private LoginService mScanService;
+    private RequestService mScanService;
 
     public RoomMeetsLoader() {
-        mScanService = RetrofitServiceManager.getInstance().create(LoginService.class);
+        mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
     public Observable<List<Meet>> getRoomMeets(HashMap<String,String> map) {
         return observe(mScanService.getRoomMeets(LoginReponseBean.getToken(),map)).map(new PayLoad<List<Meet>>());
     }
 
-    public interface LoginService {
+    public interface RequestService {
         @POST(Constant.ROOM_INFO)
         Observable<BaseResponse<List<Meet>>> getRoomMeets(@Header("Authorization") String token, @QueryMap HashMap<String,String> map);
     }

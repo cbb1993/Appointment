@@ -16,6 +16,7 @@ import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.httploader.RoomMeetsLoader
 import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
 import com.huanhong.appointment.utils.SharedPreferencesUtils
+import com.smbd.peripheral.SmbdLed
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -38,18 +39,25 @@ class MainActivity: AppCompatActivity(){
 
     lateinit var timeHandler :Handler
     lateinit var calendar: Calendar
+    lateinit var mSmbdLed : SmbdLed
+
+    private var start = 0
+    private var end = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         EventBus.getDefault().register(this)
-        init()
+        mSmbdLed = SmbdLed()
+        mSmbdLed.onAll(false)
+        setMeetData()
         initTimer()
         tv_lang.setOnClickListener {
             StringConstant.isChinses = !StringConstant.isChinses
-            init()
+            setMeetData()
         }
-        getMeets()
+
 
         iv_setting.setOnClickListener {
             ConfirmDialog(this@MainActivity,"是否确认解绑此会议室") {
@@ -58,22 +66,22 @@ class MainActivity: AppCompatActivity(){
         }
         bindPush()
 
-        room_name.text = SharedPreferencesUtils.readData("roomName")
-    }
+        room_name.text = SharedPreferencesUtils.readData("roomName")!!
 
-    private fun init(){
-        if(StringConstant.isChinses){
-            tv_lang.text = StringConstant.language_cn
-            if(list.size==0){
-                tv_next.text = "${StringConstant.next_conference_cn}${StringConstant.none_cn}"
-            }
-        }else{
-            tv_lang.text = StringConstant.language_en
-            if(list.size==0){
-                tv_next.text = "${StringConstant.next_conference_en}${StringConstant.none_en}"
-            }
+
+        tv_order.setOnClickListener {
+            startActivity(Intent(this@MainActivity,OrderLoginActivity::class.java))
         }
     }
+
+    private fun validateTime(){
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getMeets()
+    }
+
     private fun initTimer(){
         calendar = Calendar.getInstance()
         calendar.time = Date()
@@ -86,6 +94,8 @@ class MainActivity: AppCompatActivity(){
         if(minute.length==1 ){
             minute = "0$minute"
         }
+
+
         range.setCurrentTime("$hour:$minute")
 
         timeHandler = @SuppressLint("HandlerLeak")
@@ -144,14 +154,20 @@ class MainActivity: AppCompatActivity(){
     private var load = false
 
     private fun setMeetData(){
+        if(StringConstant.isChinses){
+            tv_lang.text = StringConstant.language_cn
+        }else{
+            tv_lang.text = StringConstant.language_en
+        }
         if(list.size>0){
             var meet = list[0]
             if(dateFormatToL(System.currentTimeMillis()) < dateFormatToL(meet.gmtStart)){
                 use = false
                // 空闲
                 view_line.setBackgroundColor(resources.getColor(R.color.green))
+                mSmbdLed.onGreen(true)
                 tv_time.visibility=View.GONE
-                tv_creator.visibility=View.GONE
+                ll_creator.visibility=View.GONE
                 tv_title.text = "空闲"
                 if(StringConstant.isChinses){
                     tv_next.text = StringConstant.next_conference_cn + meet.name
@@ -159,16 +175,17 @@ class MainActivity: AppCompatActivity(){
                     tv_next.text = StringConstant.next_conference_en + meet.name
                 }
             }else if(dateFormatToL(System.currentTimeMillis()) < dateFormatToL(meet.gmtEnd)){
+                mSmbdLed.onRed(true)
                 use = true
                 view_line.setBackgroundColor(resources.getColor(R.color.red))
                 tv_time.visibility=View.VISIBLE
-                tv_creator.visibility=View.VISIBLE
+                ll_creator.visibility=View.VISIBLE
                 tv_time.text = dateFormat(meet.gmtStart) +"-" +dateFormat(meet.gmtEnd)
-                tv_creator.text = "kkkk"
+                tv_creator_name.text = meet.creatorName
                 if(StringConstant.isChinses){
-                    tv_next.text = StringConstant.creator_cn + meet.creatorName
+                    tv_creator.text = StringConstant.creator_cn
                 }else{
-                    tv_next.text = StringConstant.creator_en + meet.creatorName
+                    tv_creator.text = StringConstant.creator_en
                 }
                 tv_title.text = meet.name
                 if(list.size > 1){
@@ -189,8 +206,9 @@ class MainActivity: AppCompatActivity(){
             use = false
             // 空闲
             view_line.setBackgroundColor(resources.getColor(R.color.green))
+            mSmbdLed.onGreen(true)
             tv_time.visibility=View.GONE
-            tv_creator.visibility=View.GONE
+            ll_creator.visibility=View.GONE
             tv_title.text = "空闲"
             if(StringConstant.isChinses){
                 tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
@@ -283,7 +301,7 @@ class MainActivity: AppCompatActivity(){
         if(str == "100"){
             getMeets()
         }else if(str == "200"){
-            AlertDialog(this@MainActivity,"本机账号已经在别处登陆"){
+            AlertDialog(this@MainActivity,"会议室已和本机解绑"){
                 startActivity(Intent(this@MainActivity,LoginActivity::class.java))
             }.show()
         }

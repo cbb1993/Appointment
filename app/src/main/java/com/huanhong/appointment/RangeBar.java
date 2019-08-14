@@ -94,7 +94,7 @@ public class RangeBar extends RelativeLayout {
             int startLeft = shw + smw;
             RelativeLayout.LayoutParams lp = (LayoutParams) line.getLayoutParams();
             lp.leftMargin = startLeft;
-//            line.setLayoutParams(lp);
+            line.setLayoutParams(lp);
         }
     }
     int itemWidth = 80 ;

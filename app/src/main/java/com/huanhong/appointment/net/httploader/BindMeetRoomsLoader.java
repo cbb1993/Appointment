@@ -25,17 +25,17 @@ import retrofit2.http.QueryMap;
  * describe:
  */
 public class BindMeetRoomsLoader extends ObjectLoader {
-    private LoginService mScanService;
+    private RequestService mScanService;
 
     public BindMeetRoomsLoader() {
-        mScanService = RetrofitServiceManager.getInstance().create(LoginService.class);
+        mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
     public Observable<Object> bind(Map<String,Object> map) {
         return observe(mScanService.bind(LoginReponseBean.getToken(),map)).map(new PayLoad<Object>());
     }
 
-    public interface LoginService {
+    public interface RequestService {
         @POST(Constant.BIND)
         Observable<BaseResponse<Object>> bind(@Header("Authorization") String token, @Body Map<String,Object> map);
     }
