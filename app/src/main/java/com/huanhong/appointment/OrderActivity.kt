@@ -50,6 +50,7 @@ class OrderActivity:AppCompatActivity(){
                 startStr  = "$h:$m"
                 if(validateStart()){
                     tv_start.text = startStr
+                    setTime()
                 }else{
                     startStr  =""
                 }
@@ -68,16 +69,27 @@ class OrderActivity:AppCompatActivity(){
                 endStr  = "$h:$m"
                 if(validateEnd()){
                     tv_end.text = endStr
+                    setTime()
                 }else{
                     endStr =""
                 }
             }
         }
 
+        rg_select_sign.check(R.id.rb_sign_1)
+        rg_select_notify.check(R.id.rb_notify_1)
+
         btn_complete.setOnClickListener {
             add()
         }
 
+    }
+
+
+    private fun setTime(){
+        if(startStr!=""&&endStr!=""){
+            range.setTimeRange(RangeBar.TimeBean(startStr,endStr),1)
+        }
     }
 
     private fun getCurrentDate():String{
@@ -117,6 +129,27 @@ class OrderActivity:AppCompatActivity(){
         },{
             DialogUtils.ToastShow(this@OrderActivity,"请求出错")
         })
+    }
+
+    private var signInType = 0
+    private var notificationType = 1
+    private fun getSelect(){
+        when(rg_select_sign.checkedRadioButtonId){
+            R.id.rb_sign_1 -> signInType = 0
+            R.id.rb_sign_2 -> signInType = 1
+            R.id.rb_sign_3 -> signInType = 2
+            R.id.rb_sign_4 -> signInType = 3
+        }
+        when(rg_select_notify.checkedRadioButtonId){
+            R.id.rb_notify_1 -> notificationType = 1
+            R.id.rb_notify_2 -> notificationType = 2
+            R.id.rb_notify_3 -> notificationType = 3
+            R.id.rb_notify_4 -> notificationType = 4
+            R.id.rb_notify_5 -> notificationType = 5
+            R.id.rb_notify_6 -> notificationType = 6
+            R.id.rb_notify_7 -> notificationType = 7
+
+        }
     }
 
     private fun validateStart():Boolean{
@@ -164,6 +197,8 @@ class OrderActivity:AppCompatActivity(){
 
     @SuppressLint("CheckResult")
     private fun add(){
+        getSelect()
+
         if(et_name.length()==0){
             DialogUtils.ToastShow(this@OrderActivity,"请填写会议名称")
             return
@@ -182,6 +217,8 @@ class OrderActivity:AppCompatActivity(){
         map["gmtEnd"] =  getCurrentDate() +" "+tv_end.text.toString() + ":00"
         map["roomId"] = SharedPreferencesUtils.readData("roomId")
         map["roomName"] = SharedPreferencesUtils.readData("roomName")
+        map["signInType"] =signInType
+        map["notificationType"] = notificationType
         map["meetingUsers"] = joinUsers
         MeetAddLoader().request(token,map).subscribe({
             DialogUtils.ToastShow(this@OrderActivity,"添加成功")
@@ -245,14 +282,12 @@ class OrderActivity:AppCompatActivity(){
         todayEnd.set(Calendar.MILLISECOND, 999)
         return todayEnd.timeInMillis
     }
-    var format : SimpleDateFormat?=null
+
 
 
     private fun dateFormatToL(time:String):Long{
         val t = getCurrentDate() +" "+time + ":00"
-        if(format==null){
-            format =  SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        }
+        val format =  SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val date =format!!.parse(t)
         return date.time
     }
@@ -262,9 +297,7 @@ class OrderActivity:AppCompatActivity(){
         return dateFormat(timeL)
     }
     private fun dateFormat(time:Long):String{
-        if(format==null){
-            format =  SimpleDateFormat("HH:mm")
-        }
+        val format =  SimpleDateFormat("HH:mm")
         return format!!.format(Date(time))
     }
 }

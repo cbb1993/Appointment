@@ -56,6 +56,7 @@ public class RangeBar extends RelativeLayout {
     }
 
     private List<View> rangViews = new ArrayList<>();
+    private View curr = null;
 
     public void setTimeRangeList(List<TimeBean> beans){
         if(rangViews.size()>0){
@@ -66,10 +67,11 @@ public class RangeBar extends RelativeLayout {
         rangViews.clear();
         if(beans!=null&&beans.size()>0){
             for (TimeBean bean : beans) {
-                setTimeRange(bean);
+                setTimeRange(bean,0);
             }
         }
     }
+
     private View line ;
     private void initLine(){
         line = new View(context);
@@ -98,7 +100,7 @@ public class RangeBar extends RelativeLayout {
         }
     }
     int itemWidth = 80 ;
-    public void setTimeRange( TimeBean bean) {
+    public void setTimeRange( TimeBean bean ,int flag) {
         if (bean.start.contains(":") && bean.end.contains(":")) {
             String[] starts = bean.start.split(":");
             int startH = Integer.parseInt(starts[0]);
@@ -120,8 +122,17 @@ public class RangeBar extends RelativeLayout {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, 50);
             lp.leftMargin = startLeft;
             rangView.setLayoutParams(lp);
-            rangView.setBackgroundResource(R.color.red);
-            rangViews.add(rangView);
+            if(flag==0){
+                rangView.setBackgroundResource(R.color.red);
+                rangViews.add(rangView);
+            }else if(flag==1)  {
+                if(curr!=null){
+                    removeView(curr);
+                    curr= null;
+                }
+                rangView.setBackgroundResource(R.color.green);
+                curr = rangView;
+            }
             addView(rangView);
         }
     }

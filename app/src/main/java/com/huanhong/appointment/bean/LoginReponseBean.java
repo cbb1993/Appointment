@@ -24,9 +24,22 @@ public class LoginReponseBean {
        return SharedPreferencesUtils.readData("token");
     }
 
-    //    private String admin;
+    private Admin user;
+
+    public Admin getUser() {
+        return user;
+    }
 
     public static class Admin{
+        private String id,name;
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
         /*
         * "mchId":8,
     			"roleId":9,

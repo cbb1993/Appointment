@@ -14,5 +14,6 @@ public class Meet {
             "id":3,
             "name":"周会"
         },*/
-   public String id,gmtEnd,gmtStart,name,creatorName;
+   public long gmtStart,gmtEnd;
+   public String id,name,creatorName,peopleNum;
 }

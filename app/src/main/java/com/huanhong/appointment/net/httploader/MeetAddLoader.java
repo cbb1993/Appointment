@@ -27,13 +27,13 @@ public class MeetAddLoader extends ObjectLoader {
         mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
-    public Observable<LoginReponseBean> request(String token,HashMap<String,Object> map) {
-        return observe(mScanService.request("Bearer_"+token,map)).map(new PayLoad<LoginReponseBean>());
+    public Observable<Object> request(String token,HashMap<String,Object> map) {
+        return observe(mScanService.request("Bearer_"+token,map)).map(new PayLoad<Object>());
     }
 
     public interface RequestService {
         @POST(Constant.MEET_ADD)
-        Observable<BaseResponse<LoginReponseBean>> request(@Header("Authorization") String token, @Body HashMap<String, Object> map);
+        Observable<BaseResponse<Object>> request(@Header("Authorization") String token, @Body HashMap<String, Object> map);
     }
     /*
     * {

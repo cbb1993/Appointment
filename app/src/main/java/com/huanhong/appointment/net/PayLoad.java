@@ -1,6 +1,8 @@
 package com.huanhong.appointment.net;
 
 
+import android.util.Log;
+
 import io.reactivex.functions.Function;
 
 /**
@@ -13,11 +15,14 @@ public class PayLoad<T> implements Function<BaseResponse<T>, T> {
     @Override
     public T apply(BaseResponse<T> tBaseResponse) throws Exception {
         if (!tBaseResponse.isSuccess()) {
+            Log.e("-111------","-----");
             throw new Fault(tBaseResponse.status, tBaseResponse.message);
         }
+        Log.e("-2222222222------","-----");
         if(tBaseResponse.data == null ){
-            return (T)new Object();
+            tBaseResponse.data = (T) "";
         }
+        Log.e("-33333------","-----");
         return tBaseResponse.data;
     }
 }

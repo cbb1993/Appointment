@@ -39,7 +39,7 @@ class MainActivity: AppCompatActivity(){
 
     lateinit var timeHandler :Handler
     lateinit var calendar: Calendar
-    lateinit var mSmbdLed : SmbdLed
+//    lateinit var mSmbdLed : SmbdLed
 
     private var start = 0
     private var end = 0
@@ -49,8 +49,8 @@ class MainActivity: AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         EventBus.getDefault().register(this)
-        mSmbdLed = SmbdLed()
-        mSmbdLed.onAll(false)
+//        mSmbdLed = SmbdLed()
+//        mSmbdLed.onAll(false)
         setMeetData()
         initTimer()
         tv_lang.setOnClickListener {
@@ -131,11 +131,23 @@ class MainActivity: AppCompatActivity(){
         if(second.length ==1 ){
             second = "0$second"
         }
+
+        val date = "${calendar.get(Calendar.YEAR)}-$month-$day $hour:$minute:$second"
+        tv_date.text = date
+
         if(calendar.get(Calendar.SECOND) == 0){
             range.setCurrentTime("$hour:$minute")
         }
         if(list.size>0){
-            if(dateFormatToL(System.currentTimeMillis()) > dateFormatToL(list[0].gmtStart) && dateFormatToL(System.currentTimeMillis()) < dateFormatToL(list[0].gmtEnd)){
+            var meet = list[0]
+            if(meet.gmtEnd<System.currentTimeMillis()){
+                if(list.size>1){
+                    meet = list[1]
+                }else{
+                    return
+                }
+            }
+            if(System.currentTimeMillis() >=meet.gmtStart && System.currentTimeMillis() <= meet.gmtEnd){
                 if(!use && !load ){
                     getMeets()
                 }
@@ -146,8 +158,6 @@ class MainActivity: AppCompatActivity(){
             }
         }
 
-        val date = "${calendar.get(Calendar.YEAR)}-$month-$day $hour:$minute:$second"
-        tv_date.text = date
     }
 
     private var use = false
@@ -161,27 +171,50 @@ class MainActivity: AppCompatActivity(){
         }
         if(list.size>0){
             var meet = list[0]
-            if(dateFormatToL(System.currentTimeMillis()) < dateFormatToL(meet.gmtStart)){
+            if(meet.gmtEnd<System.currentTimeMillis()){
+                if(list.size > 1){
+                     meet = list[1]
+                }else{
+                    use = false
+                    // 空闲
+                    view_line.setBackgroundColor(resources.getColor(R.color.green))
+//                  mSmbdLed.onGreen(true)
+                    tv_time.visibility=View.GONE
+                    ll_creator.visibility=View.GONE
+                    ll_count.visibility=View.GONE
+                    tv_title.text = "空闲"
+                    if(StringConstant.isChinses){
+                        tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
+                    }else{
+                        tv_next.text = StringConstant.next_conference_en + StringConstant.none_en
+                    }
+                    return
+                }
+            }
+            if(System.currentTimeMillis() < meet.gmtStart){
                 use = false
                // 空闲
                 view_line.setBackgroundColor(resources.getColor(R.color.green))
-                mSmbdLed.onGreen(true)
+//                mSmbdLed.onGreen(true)
                 tv_time.visibility=View.GONE
                 ll_creator.visibility=View.GONE
+                ll_count.visibility=View.GONE
                 tv_title.text = "空闲"
                 if(StringConstant.isChinses){
                     tv_next.text = StringConstant.next_conference_cn + meet.name
                 }else{
                     tv_next.text = StringConstant.next_conference_en + meet.name
                 }
-            }else if(dateFormatToL(System.currentTimeMillis()) < dateFormatToL(meet.gmtEnd)){
-                mSmbdLed.onRed(true)
+            }else if(System.currentTimeMillis() < meet.gmtEnd){
+//                mSmbdLed.onRed(true)
                 use = true
                 view_line.setBackgroundColor(resources.getColor(R.color.red))
                 tv_time.visibility=View.VISIBLE
                 ll_creator.visibility=View.VISIBLE
+                ll_count.visibility=View.VISIBLE
                 tv_time.text = dateFormat(meet.gmtStart) +"-" +dateFormat(meet.gmtEnd)
                 tv_creator_name.text = meet.creatorName
+                tv_count_num.text = meet.peopleNum
                 if(StringConstant.isChinses){
                     tv_creator.text = StringConstant.creator_cn
                 }else{
@@ -206,9 +239,10 @@ class MainActivity: AppCompatActivity(){
             use = false
             // 空闲
             view_line.setBackgroundColor(resources.getColor(R.color.green))
-            mSmbdLed.onGreen(true)
+//            mSmbdLed.onGreen(true)
             tv_time.visibility=View.GONE
             ll_creator.visibility=View.GONE
+            ll_count.visibility=View.GONE
             tv_title.text = "空闲"
             if(StringConstant.isChinses){
                 tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
@@ -230,7 +264,7 @@ class MainActivity: AppCompatActivity(){
             list.clear()
             if(it.size > 0){
                 it.forEach { info ->
-                    if(info.gmtEnd.toLong() < getEndTime() ){
+                    if(info.gmtEnd < getEndTime() ){
                         list.add(info)
                     }
                 }
@@ -273,18 +307,18 @@ class MainActivity: AppCompatActivity(){
         return format!!.format(Date(time))
     }
 
-    private fun dateFormatToL(time:String):Long{
-        var timeL = time.toLong()
-        return dateFormatToL(timeL)
-    }
-    private fun dateFormatToL(time:Long):Long{
-        var timeStr = dateFormat(time)
-        if(format==null){
-            format =  SimpleDateFormat("HH:mm")
-        }
-        val date =format!!.parse(timeStr)
-        return date.time
-    }
+//    private fun dateFormatToL(time:String):Long{
+//        var timeL = time.toLong()
+//        return dateFormatToL(timeL)
+//    }
+//    private fun dateFormatToL(time:Long):Long{
+//        var timeStr = dateFormat(time)
+//        if(format==null){
+//            format =  SimpleDateFormat("HH:mm")
+//        }
+//        val date =format!!.parse(timeStr)
+//        return date.time
+//    }
 
 
     private fun getEndTime() :Long{
