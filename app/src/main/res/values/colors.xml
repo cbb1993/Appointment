@@ -9,4 +9,6 @@
     <color name="red">#f00</color>
     <color name="green">#0f0</color>
     <color name="yellow">#FFEB3B</color>
+    <color name="blue_normal">#54ADE9</color>
+    <color name="blue_select">#2E6BD6</color>
 </resources>

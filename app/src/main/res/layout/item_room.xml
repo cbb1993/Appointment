@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:id="@+id/root">
+    android:layout_width="203dp"
+    android:layout_height="134dp"
+    android:id="@+id/root"
+    android:background="#54ADE9">
     <TextView
+        android:layout_centerInParent="true"
         android:id="@+id/tv_name"
         android:textColor="@color/white"
         android:layout_marginLeft="20dp"

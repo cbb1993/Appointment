@@ -16,15 +16,11 @@ import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.httploader.RoomMeetsLoader
 import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
 import com.huanhong.appointment.utils.SharedPreferencesUtils
-import com.smbd.peripheral.SmbdLed
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -34,15 +30,14 @@ import kotlin.collections.ArrayList
  * Time: 13:29
  * describe:
  */
-class MainActivity: AppCompatActivity(){
+class MainActivity : AppCompatActivity() {
 
 
-    lateinit var timeHandler :Handler
+    lateinit var timeHandler: Handler
     lateinit var calendar: Calendar
 //    lateinit var mSmbdLed : SmbdLed
 
-    private var start = 0
-    private var end = 0
+    private var roomName = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,28 +48,18 @@ class MainActivity: AppCompatActivity(){
 //        mSmbdLed.onAll(false)
         setMeetData()
         initTimer()
-        tv_lang.setOnClickListener {
-            StringConstant.isChinses = !StringConstant.isChinses
-            setMeetData()
-        }
-
 
         iv_setting.setOnClickListener {
-            ConfirmDialog(this@MainActivity,"是否确认解绑此会议室") {
+            ConfirmDialog(this@MainActivity, "是否确认解绑此会议室") {
                 unbind()
             }.show()
         }
         bindPush()
-
-        room_name.text = SharedPreferencesUtils.readData("roomName")!!
-
+        roomName = SharedPreferencesUtils.readData("roomName")!!
 
         tv_order.setOnClickListener {
-            startActivity(Intent(this@MainActivity,OrderLoginActivity::class.java))
+            startActivity(Intent(this@MainActivity, OrderLoginActivity::class.java))
         }
-    }
-
-    private fun validateTime(){
     }
 
     override fun onResume() {
@@ -82,247 +67,190 @@ class MainActivity: AppCompatActivity(){
         getMeets()
     }
 
-    private fun initTimer(){
+    private fun initTimer() {
         calendar = Calendar.getInstance()
         calendar.time = Date()
 
         var hour = calendar.get(Calendar.HOUR_OF_DAY).toString()
-        if(hour.length==1 ){
+        if (hour.length == 1) {
             hour = "0$hour"
         }
         var minute = calendar.get(Calendar.MINUTE).toString()
-        if(minute.length==1 ){
+        if (minute.length == 1) {
             minute = "0$minute"
         }
-
-
         range.setCurrentTime("$hour:$minute")
 
         timeHandler = @SuppressLint("HandlerLeak")
-        object :Handler(){
+        object : Handler() {
             override fun handleMessage(msg: Message?) {
                 super.handleMessage(msg)
                 setTimer()
-                sendEmptyMessageDelayed(1,1000)
+                sendEmptyMessageDelayed(1, 1000)
             }
         }
         timeHandler.sendEmptyMessage(1)
     }
-    private fun setTimer(){
+
+    private fun setTimer() {
         calendar.time = Date()
-        var month = (calendar.get(Calendar.MONTH) +1).toString()
-        if(month.length==1 ){
+        var month = (calendar.get(Calendar.MONTH) + 1).toString()
+        if (month.length == 1) {
             month = "0$month"
         }
         var day = calendar.get(Calendar.DAY_OF_MONTH).toString()
-        if(day.length==1 ){
+        if (day.length == 1) {
             day = "0$day"
         }
         var hour = calendar.get(Calendar.HOUR_OF_DAY).toString()
-        if(hour.length==1 ){
+        if (hour.length == 1) {
             hour = "0$hour"
         }
         var minute = calendar.get(Calendar.MINUTE).toString()
-        if(minute.length==1 ){
+        if (minute.length == 1) {
             minute = "0$minute"
         }
 
-        var second = calendar.get(Calendar.SECOND).toString()
-        if(second.length ==1 ){
-            second = "0$second"
-        }
-
-        val date = "${calendar.get(Calendar.YEAR)}-$month-$day $hour:$minute:$second"
+        val date = "$hour:$minute"
         tv_date.text = date
+        tv_date_week.text = "${calendar.get(Calendar.YEAR)}-$month-$day ${arr[calendar.get(Calendar.DAY_OF_WEEK) - 1]}"
 
-        if(calendar.get(Calendar.SECOND) == 0){
+        if (calendar.get(Calendar.SECOND) == 0) {
             range.setCurrentTime("$hour:$minute")
+            setMeetData()
         }
-        if(list.size>0){
-            var meet = list[0]
-            if(meet.gmtEnd<System.currentTimeMillis()){
-                if(list.size>1){
-                    meet = list[1]
-                }else{
-                    return
-                }
-            }
-            if(System.currentTimeMillis() >=meet.gmtStart && System.currentTimeMillis() <= meet.gmtEnd){
-                if(!use && !load ){
-                    getMeets()
-                }
-            }else {
-                if(use && !load){
-                    getMeets()
-                }
-            }
-        }
-
     }
 
+    var arr = arrayOf("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
     private var use = false
-    private var load = false
 
-    private fun setMeetData(){
-        if(StringConstant.isChinses){
-            tv_lang.text = StringConstant.language_cn
-        }else{
-            tv_lang.text = StringConstant.language_en
-        }
-        if(list.size>0){
-            var meet = list[0]
-            if(meet.gmtEnd<System.currentTimeMillis()){
-                if(list.size > 1){
-                     meet = list[1]
-                }else{
-                    use = false
-                    // 空闲
-                    view_line.setBackgroundColor(resources.getColor(R.color.green))
-//                  mSmbdLed.onGreen(true)
-                    tv_time.visibility=View.GONE
-                    ll_creator.visibility=View.GONE
-                    ll_count.visibility=View.GONE
-                    tv_title.text = "空闲"
-                    if(StringConstant.isChinses){
-                        tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
-                    }else{
-                        tv_next.text = StringConstant.next_conference_en + StringConstant.none_en
-                    }
-                    return
-                }
-            }
-            if(System.currentTimeMillis() < meet.gmtStart){
-                use = false
-               // 空闲
-                view_line.setBackgroundColor(resources.getColor(R.color.green))
-//                mSmbdLed.onGreen(true)
-                tv_time.visibility=View.GONE
-                ll_creator.visibility=View.GONE
-                ll_count.visibility=View.GONE
-                tv_title.text = "空闲"
-                if(StringConstant.isChinses){
-                    tv_next.text = StringConstant.next_conference_cn + meet.name
-                }else{
-                    tv_next.text = StringConstant.next_conference_en + meet.name
-                }
-            }else if(System.currentTimeMillis() < meet.gmtEnd){
-//                mSmbdLed.onRed(true)
-                use = true
-                view_line.setBackgroundColor(resources.getColor(R.color.red))
-                tv_time.visibility=View.VISIBLE
-                ll_creator.visibility=View.VISIBLE
-                ll_count.visibility=View.VISIBLE
-                tv_time.text = dateFormat(meet.gmtStart) +"-" +dateFormat(meet.gmtEnd)
-                tv_creator_name.text = meet.creatorName
-                tv_count_num.text = meet.peopleNum
-                if(StringConstant.isChinses){
-                    tv_creator.text = StringConstant.creator_cn
-                }else{
-                    tv_creator.text = StringConstant.creator_en
-                }
-                tv_title.text = meet.name
-                if(list.size > 1){
-                    if(StringConstant.isChinses){
-                        tv_next.text = StringConstant.next_conference_cn + list[1].name
-                    }else{
-                        tv_next.text = StringConstant.next_conference_en + list[1].name
-                    }
-                }else{
-                    if(StringConstant.isChinses){
-                        tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
-                    }else{
-                        tv_next.text = StringConstant.next_conference_en + StringConstant.none_en
-                    }
-                }
-            }
-        }else{
-            use = false
-            // 空闲
-            view_line.setBackgroundColor(resources.getColor(R.color.green))
-//            mSmbdLed.onGreen(true)
-            tv_time.visibility=View.GONE
-            ll_creator.visibility=View.GONE
-            ll_count.visibility=View.GONE
-            tv_title.text = "空闲"
-            if(StringConstant.isChinses){
-                tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
+    private fun setMeetData() {
+        // 过滤过期的会议
+        currentList.clear()
+        var remove = false
+        for (meet in httpList) {
+            if (System.currentTimeMillis() < meet.gmtEnd) {
+                currentList.add(meet)
             }else{
-                tv_next.text = StringConstant.next_conference_en + StringConstant.none_en
+                remove = true
             }
         }
-    }
-
-
-    private val list = ArrayList<Meet>()
-    @SuppressLint("CheckResult")
-    private fun getMeets(){
-        load = true
-        val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
-        var map = HashMap<String,String>()
-        map["device"] = deviceId
-        RoomMeetsLoader().getRoomMeets(map).subscribe( { it ->
-            list.clear()
-            if(it.size > 0){
-                it.forEach { info ->
-                    if(info.gmtEnd < getEndTime() ){
-                        list.add(info)
-                    }
-                }
-            }
-            val timeList = ArrayList< RangeBar.TimeBean>()
-            list.forEach {
-                timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart),dateFormat(it.gmtEnd)))
+        if(remove){
+            httpList.clear()
+            httpList.addAll(currentList)
+            val timeList = ArrayList<RangeBar.TimeBean>()
+            currentList.forEach {
+                timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd)))
             }
             range.setTimeRangeList(timeList)
-            load = false
-            setMeetData()
-        },{
-            load = false
-            DialogUtils.ToastShow(this@MainActivity,"请求出错")
-        })
+        }
+        if (currentList.size > 0) {
+            var meet = currentList[0]
+            if (System.currentTimeMillis() < meet.gmtStart) {
+                free(meet)
+            } else if (System.currentTimeMillis() < meet.gmtEnd) {
+                ing(meet)
+            }
+        } else {
+            free(null)
+        }
+        if (use) {
+            room_name.text = "${roomName}:占用"
+        } else {
+            room_name.text = "${roomName}:空闲"
+        }
     }
 
-    private fun unbind(){
+    private fun free(meet: Meet?) {
+        use = false
+        // 空闲
+//      mSmbdLed.onGreen(true)
+        tv_time.visibility = View.GONE
+        tv_creator_name.visibility = View.GONE
+        tv_count_num.visibility = View.GONE
+        tv_title.text = "空闲"
+        if (meet == null) {
+            tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
+        } else {
+            tv_next.text = StringConstant.next_conference_cn + meet.name
+        }
+    }
+
+    private fun ing(meet: Meet) {
+        use = true
+        tv_time.visibility = View.VISIBLE
+        tv_creator_name.visibility = View.VISIBLE
+        tv_count_num.visibility = View.VISIBLE
+        tv_time.text = "会议时间: " + dateFormat(meet.gmtStart) + "-" + dateFormat(meet.gmtEnd)
+        tv_creator_name.text = "创建人: " + meet.creatorName
+        tv_count_num.text = "人数 " + meet.peopleNum
+        tv_title.text = meet.name
+        if (currentList.size > 1) {
+            tv_next.text = StringConstant.next_conference_cn + currentList[1].name
+        } else {
+            tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
+        }
+    }
+
+    private val httpList = ArrayList<Meet>()
+    private val currentList = ArrayList<Meet>()
+    @SuppressLint("CheckResult")
+    private fun getMeets() {
         val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
-        var map = HashMap<String,Any>()
+        var map = HashMap<String, String>()
         map["device"] = deviceId
-        UnbindMeetRoomsLoader().unbind(map).subscribe( {
-            DialogUtils.ToastShow(this@MainActivity,"解绑成功")
-            unbindPush()
-            startActivity(Intent(this@MainActivity,LoginActivity::class.java))
-        },{
-            DialogUtils.ToastShow(this@MainActivity,"解绑失败")
+        RoomMeetsLoader().getRoomMeets(map).subscribe({ it ->
+            httpList.clear()
+            if (it.size > 0) {
+                it.forEach { info ->
+                    // 是否在今天以及之前
+                    if (info.gmtEnd < getEndTime()) {
+                        // 会议结束时间是否在当前世界之后
+                        if (System.currentTimeMillis() < info.gmtEnd) {
+                            httpList.add(info)
+                        }
+                    }
+                }
+            }
+            val timeList = ArrayList<RangeBar.TimeBean>()
+            httpList.forEach {
+                timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd)))
+            }
+            range.setTimeRangeList(timeList)
+            setMeetData()
+        }, {
+            DialogUtils.ToastShow(this@MainActivity, "请求出错")
         })
     }
 
-    var format :SimpleDateFormat?=null
-    private fun dateFormat(time:String):String{
+    private fun unbind() {
+        val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
+        var map = HashMap<String, Any>()
+        map["device"] = deviceId
+        UnbindMeetRoomsLoader().unbind(map).subscribe({
+            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
+            unbindPush()
+            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        }, {
+            DialogUtils.ToastShow(this@MainActivity, "解绑失败")
+        })
+    }
+
+    var format: SimpleDateFormat? = null
+    private fun dateFormat(time: String): String {
         var timeL = time.toLong()
         return dateFormat(timeL)
     }
-    private fun dateFormat(time:Long):String{
-        if(format==null){
-            format =  SimpleDateFormat("HH:mm")
+
+    private fun dateFormat(time: Long): String {
+        if (format == null) {
+            format = SimpleDateFormat("HH:mm")
         }
         return format!!.format(Date(time))
     }
 
-//    private fun dateFormatToL(time:String):Long{
-//        var timeL = time.toLong()
-//        return dateFormatToL(timeL)
-//    }
-//    private fun dateFormatToL(time:Long):Long{
-//        var timeStr = dateFormat(time)
-//        if(format==null){
-//            format =  SimpleDateFormat("HH:mm")
-//        }
-//        val date =format!!.parse(timeStr)
-//        return date.time
-//    }
-
-
-    private fun getEndTime() :Long{
-        val todayEnd = Calendar.getInstance ()
+    private fun getEndTime(): Long {
+        val todayEnd = Calendar.getInstance()
         todayEnd.set(Calendar.HOUR_OF_DAY, 23)
         todayEnd.set(Calendar.MINUTE, 59)
         todayEnd.set(Calendar.SECOND, 59)
@@ -331,26 +259,26 @@ class MainActivity: AppCompatActivity(){
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun notifyChange(str:String){
-        if(str == "100"){
+    fun notifyChange(str: String) {
+        if (str == "100") {
             getMeets()
-        }else if(str == "200"){
-            AlertDialog(this@MainActivity,"会议室已和本机解绑"){
-                startActivity(Intent(this@MainActivity,LoginActivity::class.java))
+        } else if (str == "200") {
+            AlertDialog(this@MainActivity, "会议室已和本机解绑") {
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }.show()
         }
 
     }
 
-
-    private fun bindPush(){
+    private fun bindPush() {
         PushServiceFactory.getCloudPushService().bindAccount(Settings.System.getString(contentResolver, Settings.System.ANDROID_ID), object : CommonCallback {
             override fun onSuccess(p0: String?) {
                 Log.e("---push------", "success")
             }
+
             override fun onFailed(p0: String?, p1: String?) {
-                Log.e("---push------", "---"+p0)
-                Log.e("---push------", "---"+p1)
+                Log.e("---push------", "---" + p0)
+                Log.e("---push------", "---" + p1)
             }
         })
     }
@@ -361,10 +289,11 @@ class MainActivity: AppCompatActivity(){
         EventBus.getDefault().unregister(this)
     }
 
-    private fun unbindPush(){
+    private fun unbindPush() {
         PushServiceFactory.getCloudPushService().unbindAccount(object : CommonCallback {
             override fun onSuccess(p0: String?) {
             }
+
             override fun onFailed(p0: String?, p1: String?) {
             }
         })

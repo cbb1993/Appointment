@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="500dp"
+        android:layout_height="400dp"
+        android:background="@mipmap/dialog">
+
+        <TextView
+            android:textSize="24dp"
+            android:drawablePadding="15dp"
+            android:gravity="center_horizontal"
+            android:drawableTop="@mipmap/success"
+            android:text="预定成功"
+            android:id="@+id/tv_content"
+            android:layout_marginTop="20dp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/blue_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+                <TextView
+                    android:id="@+id/tv_confirm"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:text="确认"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+        </LinearLayout>
+</RelativeLayout>

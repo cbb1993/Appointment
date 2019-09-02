@@ -37,7 +37,7 @@ class OrderActivity:AppCompatActivity(){
         getMeets()
         getPersons()
 
-        tv_start.setOnClickListener {
+        tv_start_click.setOnClickListener {
             TimePopwindow(this@OrderActivity,tv_start){hour,minute ->
                 var h = hour.toString()
                 var m = minute.toString()
@@ -56,7 +56,7 @@ class OrderActivity:AppCompatActivity(){
                 }
             }
         }
-        tv_end.setOnClickListener {
+        tv_end_click.setOnClickListener {
             TimePopwindow(this@OrderActivity,tv_end){hour,minute ->
                 var h = hour.toString()
                 var m = minute.toString()
@@ -116,8 +116,11 @@ class OrderActivity:AppCompatActivity(){
             list.clear()
             if(it.size > 0){
                 it.forEach { info ->
-                    if(info.gmtEnd.toLong() < getEndTime() ){
-                        list.add(info)
+                    if(info.gmtEnd < getEndTime() ){
+                        // 会议结束时间是否在当前世界之后
+                        if (System.currentTimeMillis() < info.gmtEnd) {
+                            list.add(info)
+                        }
                     }
                 }
             }
@@ -176,7 +179,7 @@ class OrderActivity:AppCompatActivity(){
     private fun validateEnd():Boolean{
         var time = dateFormatToL(endStr)
         list.forEach {
-            if(it.gmtStart.toLong()<= time && it.gmtEnd.toLong() >= time){
+            if(it.gmtStart<= time && it.gmtEnd>= time){
                 DialogUtils.ToastShow(this@OrderActivity,"当前时间内有会议")
                 return false
             }
@@ -221,8 +224,10 @@ class OrderActivity:AppCompatActivity(){
         map["notificationType"] = notificationType
         map["meetingUsers"] = joinUsers
         MeetAddLoader().request(token,map).subscribe({
-            DialogUtils.ToastShow(this@OrderActivity,"添加成功")
-            startActivity(Intent(this@OrderActivity,MainActivity::class.java))
+//            DialogUtils.ToastShow(this@OrderActivity,"添加成功")
+            SuccessDialog(this@OrderActivity){
+                startActivity(Intent(this@OrderActivity,MainActivity::class.java))
+            }.show()
         },{})
     }
     data class JoinUser(var attendeeId:String,var attendeeName:String)
@@ -254,7 +259,7 @@ class OrderActivity:AppCompatActivity(){
         })
 
 
-        tv_user.setOnClickListener {
+        tv_user_click.setOnClickListener {
             UsersPopwindow(this@OrderActivity,tv_user,userList, UsersPopwindow.ConfirmCallback { it ->
                 joinUsers.clear()
                 val buffer = StringBuffer()

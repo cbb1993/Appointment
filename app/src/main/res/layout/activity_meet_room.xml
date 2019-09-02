@@ -2,16 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/black">
-    <TextView
-        android:text="绑订会议室"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    android:orientation="vertical">
+    <RelativeLayout
+        android:background="#2E6BD6"
+        android:layout_width="match_parent"
+        android:layout_height="149dp">
+        <TextView
+            android:text="绑订会议室"
+            android:textColor="#C5C9CC"
+            android:textSize="24dp"
+            android:layout_marginLeft="53dp"
+            android:layout_marginTop="69dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_room"
         android:layout_margin="20dp"

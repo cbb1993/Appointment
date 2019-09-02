@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.TextView
@@ -33,19 +34,20 @@ class MeetRoomActivity:AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState )
         setContentView(R.layout.activity_meet_room)
-        recycler_room.layoutManager = LinearLayoutManager(this)
+        recycler_room.layoutManager = GridLayoutManager(this,4)
         recycler_room.adapter = object  : CommonAdapter<Room>(this, list,R.layout.item_room){
             override fun convert(holder: ViewHolder, t: MutableList<Room>) {
                 val tv_name = holder.getView<TextView>(R.id.tv_name)
                 val bind = holder.getView<TextView>(R.id.bind)
+                val root = holder.getView<View>(R.id.root)
                 tv_name.text = t[holder.realPosition].fullName
                 if(t[holder.realPosition].deviceMac==null){
-                    bind.visibility = View.GONE
+                    root.setBackgroundColor(resources.getColor(R.color.blue_normal))
                 }else{
-                    bind.visibility = View.VISIBLE
+                    root.setBackgroundColor(resources.getColor(R.color.blue_select))
                 }
 
-                holder.getView<View>(R.id.root).setOnClickListener {
+                root.setOnClickListener {
                     if(t[holder.realPosition].deviceMac==null){
                         ConfirmDialog(this@MeetRoomActivity,"是否确认绑定此会议室") {
                             bind(t[holder.realPosition])

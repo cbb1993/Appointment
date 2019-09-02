@@ -1,50 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/black">
+    android:background="@mipmap/main_bg">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
         <TextView
+            android:id="@+id/room_name"
             android:textColor="@color/white"
-            android:text="睿翼"
+            android:textSize="18sp"
             android:layout_marginLeft="20dp"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-
         <TextView
-            android:id="@+id/room_name"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:layout_marginLeft="150dp"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:id="@+id/tv_lang"
-            android:layout_marginRight="20dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/white_circle_bg"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
-
-        <TextView
             android:gravity="center"
             android:text="解绑"
             android:textColor="@color/white"
-            android:layout_toLeftOf="@+id/tv_lang"
             android:id="@+id/iv_setting"
             android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
@@ -52,126 +29,106 @@
             android:layout_height="30dp" />
 
         <TextView
-            android:id="@+id/tv_date"
+            android:paddingLeft="20dp"
+            android:gravity="center"
             android:layout_toLeftOf="@+id/iv_setting"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="2019-04-16 19:30"
-            android:layout_marginRight="80dp"
             android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="300dp">
-        <View
-            android:layout_marginRight="39dp"
-            android:id="@+id/view_line"
-            android:background="@color/green"
-            android:layout_marginLeft="40dp"
-            android:layout_centerVertical="true"
-            android:layout_width="10dp"
-            android:layout_height="200dp"/>
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginBottom="10dp"
-            android:layout_toRightOf="@+id/view_line"
-            android:text="空闲"
-            android:textColor="@color/white"
-            android:textSize="50sp" />
-
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/tv_time"
-            android:textColor="@color/white"
-            android:layout_toRightOf="@+id/view_line"
-            android:layout_below="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <LinearLayout
-            android:id="@+id/ll_creator"
-            android:layout_below="@+id/tv_title"
-            android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tv_creator"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/tv_creator_name"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-
-            android:visibility="gone"
-            android:id="@+id/ll_count"
-            android:layout_below="@+id/tv_title"
-            android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@+id/ll_creator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:text="人数："
-                android:id="@+id/tv_count"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/tv_count_num"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_next"
-            android:layout_marginBottom="80dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/view_line"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
             android:id="@+id/tv_order"
-            android:layout_marginTop="50dp"
-            android:textSize="20sp"
-            android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
             android:text="预定"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/tv_date"
+        android:textColor="#C5C9CC"
+        android:textSize="102dp"
+        android:layout_marginTop="243dp"
+        android:layout_marginLeft="117dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_below="@+id/tv_date"
+        android:id="@+id/tv_date_week"
+        android:textColor="#C5C9CC"
+        android:textSize="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="120dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_marginLeft="437dp"
+        android:layout_marginTop="135dp"
+        android:background="#FFFFFF"
+        android:layout_width="1dp"
+        android:layout_height="339dp"/>
+
+    <TextView
+        android:layout_marginLeft="522dp"
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="140dp"
+        android:text="空闲"
+        android:textColor="@color/white"
+        android:textSize="44dp"/>
+
+    <TextView
+        android:layout_marginLeft="522dp"
+        android:layout_marginTop="217dp"
+        android:visibility="gone"
+        android:id="@+id/tv_time"
+        android:textSize="21dp"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:visibility="gone"
+        android:layout_marginTop="266dp"
+        android:layout_marginLeft="522dp"
+        android:id="@+id/tv_creator_name"
+        android:textColor="@color/white"
+        android:textSize="21dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:visibility="gone"
+        android:layout_marginTop="315dp"
+        android:layout_marginLeft="522dp"
+        android:id="@+id/tv_count_num"
+        android:textColor="@color/white"
+        android:textSize="21dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginLeft="522dp"
+        android:layout_marginTop="420dp"
+        android:textSize="21dp"
+        android:background="#0E0E0E"
+        android:gravity="center"
+        android:id="@+id/tv_next"
+        android:textColor="@color/white"
+        android:layout_width="301dp"
+        android:layout_height="49dp" />
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <com.huanhong.appointment.RangeBar
-            android:id="@+id/range"
-            android:layout_marginRight="40dp"
-            android:layout_marginLeft="40dp"
-            android:layout_width="match_parent"
-            android:layout_height="100dp">
+    <com.huanhong.appointment.RangeBar
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/range"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp">
 
-        </com.huanhong.appointment.RangeBar>
-    </RelativeLayout>
+    </com.huanhong.appointment.RangeBar>
 
-</LinearLayout>
+
+</RelativeLayout>
