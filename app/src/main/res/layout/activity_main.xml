@@ -39,26 +39,85 @@
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/tv_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_1"
+                android:paddingTop="6dp"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/iv_2"
+                android:paddingTop="6dp"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/iv_3"
+                android:paddingTop="6dp"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/iv_4"
+                android:paddingTop="6dp"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/iv_5"
+                android:paddingTop="6dp"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/iv_6"
+                android:paddingTop="6dp"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_date"
-        android:textColor="#C5C9CC"
-        android:textSize="102dp"
+    <LinearLayout
+        android:gravity="center"
         android:layout_marginTop="243dp"
         android:layout_marginLeft="117dp"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_date"
+            android:textColor="#C5C9CC"
+            android:textSize="102dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv_date_week"
+            android:textColor="#C5C9CC"
+            android:textSize="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
-    <TextView
-        android:layout_below="@+id/tv_date"
-        android:id="@+id/tv_date_week"
-        android:textColor="#C5C9CC"
-        android:textSize="24dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="120dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
+
 
     <View
         android:layout_marginLeft="437dp"
@@ -97,6 +156,72 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:id="@+id/ll_meet_set"
+        android:layout_marginTop="315dp"
+        android:layout_marginLeft="522dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_end"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:drawableTop="@mipmap/icon_end"
+            android:textSize="15dp"
+            android:textColor="#BECBCC"
+            android:text="结束"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_delay"
+            android:layout_marginLeft="20dp"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:drawableTop="@mipmap/icon_delay"
+            android:textSize="15dp"
+            android:textColor="#BECBCC"
+            android:text="延时"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+       <LinearLayout
+           android:visibility="gone"
+           android:paddingBottom="25dp"
+           android:id="@+id/ll_delay"
+           android:layout_marginLeft="20dp"
+           android:layout_gravity="center_vertical"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content">
+           <TextView
+               android:id="@+id/tv_delay_15"
+               android:layout_gravity="center_vertical"
+               android:textSize="21dp"
+               android:textColor="#8A8888"
+               android:text="15min"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content" />
+           <TextView
+               android:id="@+id/tv_delay_30"
+               android:layout_marginLeft="20dp"
+               android:textSize="21dp"
+               android:textColor="#8A8888"
+               android:text="30min"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content" />
+           <TextView
+               android:id="@+id/tv_delay_60"
+               android:layout_marginLeft="20dp"
+               android:layout_gravity="center_vertical"
+               android:textSize="21dp"
+               android:textColor="#8A8888"
+               android:text="60min"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content" />
+       </LinearLayout>
+    </LinearLayout>
+
     <TextView
         android:visibility="gone"
         android:layout_marginTop="315dp"
@@ -131,4 +256,11 @@
     </com.huanhong.appointment.RangeBar>
 
 
+    <View
+        android:layout_centerHorizontal="true"
+        android:id="@+id/pop_line"
+        android:layout_marginBottom="140dp"
+        android:layout_above="@+id/range"
+        android:layout_width="1dp"
+        android:layout_height="1dp"/>
 </RelativeLayout>

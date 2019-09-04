@@ -3,12 +3,13 @@
     android:layout_width="203dp"
     android:layout_height="134dp"
     android:id="@+id/root"
-    android:background="#54ADE9">
+    android:background="@mipmap/bind_bg_normal">
     <TextView
+        android:drawablePadding="5dp"
+        android:drawableTop="@mipmap/room"
         android:layout_centerInParent="true"
         android:id="@+id/tv_name"
         android:textColor="@color/white"
-        android:layout_marginLeft="20dp"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -20,6 +21,14 @@
         android:layout_alignParentRight="true"
         android:textColor="@color/white"
         android:text="已绑定"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/iv_select"
+        android:layout_alignParentRight="true"
+        android:src="@mipmap/bind_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <View

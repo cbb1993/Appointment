@@ -80,16 +80,17 @@
               android:layout_height="40dp" />
 
               <TextView
+                  android:layout_centerVertical="true"
                   android:layout_marginLeft="600dp"
                   android:id="@+id/tv_user_click"
                   android:gravity="center"
                   android:paddingRight="10dp"
                   android:paddingLeft="10dp"
-                  android:background="@color/blue_select"
+                  android:background="#82bae8"
                   android:textColor="@color/white"
                   android:text="点击选取"
                   android:layout_width="wrap_content"
-                  android:layout_height="40dp" />
+                  android:layout_height="30dp" />
           </RelativeLayout>
 
           <View
@@ -128,16 +129,17 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="200dp"
                     android:id="@+id/tv_start_click"
                     android:gravity="center"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
-                    android:background="@color/blue_select"
+                    android:background="#82bae8"
                     android:textColor="@color/white"
                     android:text="点击选取"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp" />
+                    android:layout_height="30dp" />
                 <View
                     android:layout_alignParentBottom="true"
                     android:background="@color/white"
@@ -160,16 +162,17 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="200dp"
                     android:id="@+id/tv_end_click"
                     android:gravity="center"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
-                    android:background="@color/blue_select"
+                    android:background="#82bae8"
                     android:textColor="@color/white"
                     android:text="点击选取"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp" />
+                    android:layout_height="30dp" />
                 <View
                     android:layout_alignParentBottom="true"
                     android:background="@color/white"
@@ -303,25 +306,15 @@
       </LinearLayout>
   </LinearLayout>
 
-    <com.huanhong.appointment.RangeBar
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/ll_input"
-        android:id="@+id/range"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp">
 
-    </com.huanhong.appointment.RangeBar>
 
     <Button
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true"
         android:textColor="@color/white"
         android:gravity="center"
         android:background="@mipmap/login_btn"
         android:id="@+id/btn_complete"
-        android:layout_below="@+id/range"
-        android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
         android:text="提交"
         android:layout_width="wrap_content"

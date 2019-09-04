@@ -13,6 +13,8 @@ import com.alibaba.sdk.android.push.CommonCallback
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
 import com.huanhong.appointment.bean.Meet
 import com.huanhong.appointment.net.DialogUtils
+import com.huanhong.appointment.net.httploader.DelayMeetMeetRoomsLoader
+import com.huanhong.appointment.net.httploader.EndMeetMeetRoomsLoader
 import com.huanhong.appointment.net.httploader.RoomMeetsLoader
 import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
 import com.huanhong.appointment.utils.SharedPreferencesUtils
@@ -23,6 +25,7 @@ import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * Created by 坎坎.
@@ -35,17 +38,15 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var timeHandler: Handler
     lateinit var calendar: Calendar
-//    lateinit var mSmbdLed : SmbdLed
 
     private var roomName = ""
+    private var currentMeet : Meet? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         EventBus.getDefault().register(this)
-//        mSmbdLed = SmbdLed()
-//        mSmbdLed.onAll(false)
         setMeetData()
         initTimer()
 
@@ -60,6 +61,57 @@ class MainActivity : AppCompatActivity() {
         tv_order.setOnClickListener {
             startActivity(Intent(this@MainActivity, OrderLoginActivity::class.java))
         }
+
+        tv_end.setOnClickListener {
+            if(currentMeet !=null){
+                val  map = HashMap<String,Any?>()
+                map["id"] = currentMeet?.id
+                EndMeetMeetRoomsLoader().requset(map).subscribe({
+                    DialogUtils.ToastShow(this@MainActivity, "会议已经结束")
+                    getMeets()
+                }, {
+                    DialogUtils.ToastShow(this@MainActivity, "结束失败")
+                })
+            }
+        }
+
+        tv_delay.setOnClickListener {
+            if(ll_delay.isShown){
+                ll_delay.visibility=View.GONE
+            }else{
+                ll_delay.visibility=View.VISIBLE
+            }
+        }
+
+        tv_delay_15.setOnClickListener {
+            delay("15")
+        }
+        tv_delay_30.setOnClickListener {
+            delay("30")
+        }
+        tv_delay_60.setOnClickListener {
+            delay("60")
+        }
+
+        range.setMeetClickListner {it ->
+            if(it<httpList.size){
+                MeetPop(this@MainActivity,httpList[it]).show(pop_line)
+            }
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun delay(time:String){
+        val  map = HashMap<String,Any?>()
+        map["id"] = currentMeet?.id
+        map["delayTimeStr"] = time
+        DelayMeetMeetRoomsLoader().requset(map).subscribe({
+            DialogUtils.ToastShow(this@MainActivity, "延时成功")
+            ll_delay.visibility=View.GONE
+            getMeets()
+        }, {
+            DialogUtils.ToastShow(this@MainActivity, "延时失败")
+        })
     }
 
     override fun onResume() {
@@ -131,16 +183,19 @@ class MainActivity : AppCompatActivity() {
         for (meet in httpList) {
             if (System.currentTimeMillis() < meet.gmtEnd) {
                 currentList.add(meet)
-            }else{
+            } else {
                 remove = true
             }
         }
-        if(remove){
-            httpList.clear()
-            httpList.addAll(currentList)
+        if (remove) {
             val timeList = ArrayList<RangeBar.TimeBean>()
-            currentList.forEach {
-                timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd)))
+            httpList.forEach {
+                // 会议结束时间是否在当前时间之前  会议是结束了
+                if (System.currentTimeMillis() >= it.gmtEnd) {
+                    timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 2))
+                } else {
+                    timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
+                }
             }
             range.setTimeRangeList(timeList)
         }
@@ -162,12 +217,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun free(meet: Meet?) {
+        currentMeet=null
         use = false
-        // 空闲
-//      mSmbdLed.onGreen(true)
         tv_time.visibility = View.GONE
         tv_creator_name.visibility = View.GONE
         tv_count_num.visibility = View.GONE
+        ll_meet_set.visibility =View.GONE
+        ll_delay.visibility =View.GONE
         tv_title.text = "空闲"
         if (meet == null) {
             tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
@@ -177,10 +233,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun ing(meet: Meet) {
+        currentMeet=meet
         use = true
         tv_time.visibility = View.VISIBLE
         tv_creator_name.visibility = View.VISIBLE
-        tv_count_num.visibility = View.VISIBLE
+        ll_meet_set.visibility = View.VISIBLE
+//        tv_count_num.visibility = View.VISIBLE
         tv_time.text = "会议时间: " + dateFormat(meet.gmtStart) + "-" + dateFormat(meet.gmtEnd)
         tv_creator_name.text = "创建人: " + meet.creatorName
         tv_count_num.text = "人数 " + meet.peopleNum
@@ -205,16 +263,18 @@ class MainActivity : AppCompatActivity() {
                 it.forEach { info ->
                     // 是否在今天以及之前
                     if (info.gmtEnd < getEndTime()) {
-                        // 会议结束时间是否在当前世界之后
-                        if (System.currentTimeMillis() < info.gmtEnd) {
-                            httpList.add(info)
-                        }
+                        httpList.add(info)
                     }
                 }
             }
             val timeList = ArrayList<RangeBar.TimeBean>()
             httpList.forEach {
-                timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd)))
+                // 会议结束时间是否在当前时间之前  会议是结束了
+                if (System.currentTimeMillis() >= it.gmtEnd) {
+                    timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 2))
+                } else {
+                    timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
+                }
             }
             range.setTimeRangeList(timeList)
             setMeetData()

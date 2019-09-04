@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.activity_meet_room.*
  */
 class MeetRoomActivity:AppCompatActivity(){
     private val list = ArrayList<Room>()
+    private var p = -1
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState )
@@ -38,26 +39,27 @@ class MeetRoomActivity:AppCompatActivity(){
         recycler_room.adapter = object  : CommonAdapter<Room>(this, list,R.layout.item_room){
             override fun convert(holder: ViewHolder, t: MutableList<Room>) {
                 val tv_name = holder.getView<TextView>(R.id.tv_name)
-                val bind = holder.getView<TextView>(R.id.bind)
+                val iv_select = holder.getView<View>(R.id.iv_select)
                 val root = holder.getView<View>(R.id.root)
                 tv_name.text = t[holder.realPosition].fullName
                 if(t[holder.realPosition].deviceMac==null){
-                    root.setBackgroundColor(resources.getColor(R.color.blue_normal))
+                    root.setBackgroundResource(R.mipmap.bind_bg_normal)
                 }else{
-                    root.setBackgroundColor(resources.getColor(R.color.blue_select))
+                    root.setBackgroundResource(R.mipmap.bind_bg_select)
+                }
+                if(holder.realPosition==p){
+                    iv_select.visibility= View.VISIBLE
+                }else{
+                    iv_select.visibility= View.GONE
                 }
 
                 root.setOnClickListener {
-                    if(t[holder.realPosition].deviceMac==null){
-                        ConfirmDialog(this@MeetRoomActivity,"是否确认绑定此会议室") {
-                            bind(t[holder.realPosition])
-                        }.show()
-                    }else{
-                        ConfirmDialog(this@MeetRoomActivity,"当前会议室已有绑定门显设备，是否继续绑定") {
-                            unbind(t[holder.realPosition])
-                        }.show()
+                    val temp = p
+                     p  = holder.realPosition
+                    if(temp>-1){
+                        notifyItemChanged(temp)
                     }
-
+                    notifyItemChanged(p)
                 }
             }
         }
@@ -69,6 +71,31 @@ class MeetRoomActivity:AppCompatActivity(){
             }
         },{
         })
+
+        iv_confirm.setOnClickListener {
+            confirm()
+        }
+        iv_back.setOnClickListener {
+            onBackPressed()
+        }
+
+    }
+
+    private fun confirm(){
+        if(p>-1){
+            if(list[p].deviceMac==null){
+                ConfirmDialog(this@MeetRoomActivity,"是否确认绑定此会议室") {
+                    bind(list[p])
+                }.show()
+            }else{
+                ConfirmDialog(this@MeetRoomActivity,"当前会议室已有绑定门显设备，是否继续绑定") {
+                    unbind(list[p])
+                }.show()
+            }
+        }else{
+            DialogUtils.ToastShow(this@MeetRoomActivity,"请选择会议室")
+        }
+
     }
 
     @SuppressLint("CheckResult")

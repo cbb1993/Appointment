@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,7 +25,6 @@ public class RangeBar extends RelativeLayout {
     private String[] times = {"02:00", "04:00", "06:00", "08:00", "10:00", "12:00",
             "14:00", "16:00", "18:00", "20:00", "22:00"};
     private LayoutInflater inflater;
-    private View left_line;
     private Context context;
 
     public RangeBar(Context context, @Nullable AttributeSet attrs) {
@@ -41,7 +41,7 @@ public class RangeBar extends RelativeLayout {
 
     private View getBgView() {
         View view = new View(context);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(960, 50);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(itemWidth*12, 50);
         view.setLayoutParams(lp);
         view.setBackgroundResource(R.drawable.range_bar_bg);
         return view;
@@ -49,9 +49,8 @@ public class RangeBar extends RelativeLayout {
 
     private View getTimeText() {
         View view = inflater.inflate(R.layout.ll_time, null);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(960, LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(itemWidth*12, LayoutParams.MATCH_PARENT);
         view.setLayoutParams(lp);
-        left_line= view.findViewById(R.id.left_line);
         return view;
     }
 
@@ -66,18 +65,20 @@ public class RangeBar extends RelativeLayout {
         }
         rangViews.clear();
         if(beans!=null&&beans.size()>0){
+            int i = 1;
             for (TimeBean bean : beans) {
-                setTimeRange(bean,0);
+                setTimeRange(bean,i++,0);
             }
         }
     }
 
-    private View line ;
+    private ImageView line ;
     private void initLine(){
-        line = new View(context);
-        LayoutParams lp = new LayoutParams(1, 50);
+        line = new ImageView(context);
+        LayoutParams lp = new LayoutParams(16, 16);
+        lp.topMargin =42;
         line.setLayoutParams(lp);
-        line.setBackgroundResource(R.color.yellow);
+        line.setImageResource(R.mipmap.icon_current);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             line.setTranslationZ(100f);
         }
@@ -95,12 +96,12 @@ public class RangeBar extends RelativeLayout {
             int smw = (int) (((startM + (startH%2) * 60  )/120f)*itemWidth);
             int startLeft = shw + smw;
             RelativeLayout.LayoutParams lp = (LayoutParams) line.getLayoutParams();
-            lp.leftMargin = startLeft;
+            lp.leftMargin = startLeft-8;
             line.setLayoutParams(lp);
         }
     }
-    int itemWidth = 80 ;
-    public void setTimeRange( TimeBean bean ,int flag) {
+    int itemWidth = 100 ;
+    public void setTimeRange( TimeBean bean ,int tag,int flag) {
         if (bean.start.contains(":") && bean.end.contains(":")) {
             String[] starts = bean.start.split(":");
             int startH = Integer.parseInt(starts[0]);
@@ -118,12 +119,16 @@ public class RangeBar extends RelativeLayout {
 
             int width  =  endLeft  - startLeft;
 
-            View rangView = new View(context);
+            final View rangView = new View(context);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, 50);
             lp.leftMargin = startLeft;
             rangView.setLayoutParams(lp);
             if(flag==0){
-                rangView.setBackgroundResource(R.color.red);
+                if(bean.state==1){
+                    rangView.setBackgroundResource(R.color.meet_blue);
+                }else {
+                    rangView.setBackgroundResource(R.color.meet_grey);
+                }
                 rangViews.add(rangView);
             }else if(flag==1)  {
                 if(curr!=null){
@@ -133,15 +138,32 @@ public class RangeBar extends RelativeLayout {
                 rangView.setBackgroundResource(R.color.green);
                 curr = rangView;
             }
+            rangView.setTag(tag);
+
+            rangView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listner!=null){
+                        Object tag  =  rangView.getTag();
+                        if(tag!=null){
+                            int p = Integer.parseInt(tag.toString()) - 1;
+                            listner.click(p);
+                        }
+                    }
+                }
+            });
+
             addView(rangView);
         }
     }
 
     public static class TimeBean{
         private String start, end;
-        public TimeBean(String start, String end) {
+        private int state; //  1 正常  2 已结束
+        public TimeBean(String start, String end ,int state) {
             this.start = start;
             this.end = end;
+            this.state = state;
         }
         public String getStart() {
             return start;
@@ -155,5 +177,18 @@ public class RangeBar extends RelativeLayout {
         public void setEnd(String end) {
             this.end = end;
         }
+        public int getState() {
+            return state;
+        }
+    }
+
+    private MeetClickListner listner ;
+
+    public void setMeetClickListner(MeetClickListner listner) {
+        this.listner = listner;
+    }
+
+    public interface MeetClickListner{
+        void click(int p);
     }
 }

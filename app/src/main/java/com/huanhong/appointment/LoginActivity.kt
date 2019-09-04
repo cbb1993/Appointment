@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import com.huanhong.appointment.bean.LoginReponseBean
 import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.Fault
@@ -22,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_login.*
  * describe:
  */
 class LoginActivity: AppCompatActivity(){
+    var show = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -44,6 +47,15 @@ class LoginActivity: AppCompatActivity(){
                         }
                 },{})
             }
+        }
+
+        iv_show.setOnClickListener {
+            if(show){
+                et_password.transformationMethod = PasswordTransformationMethod.getInstance()
+            }else{
+                et_password.transformationMethod = HideReturnsTransformationMethod.getInstance()
+            }
+            show = !show
         }
     }
 

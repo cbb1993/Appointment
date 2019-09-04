@@ -50,7 +50,7 @@ class OrderActivity:AppCompatActivity(){
                 startStr  = "$h:$m"
                 if(validateStart()){
                     tv_start.text = startStr
-                    setTime()
+//                    setTime()
                 }else{
                     startStr  =""
                 }
@@ -69,7 +69,7 @@ class OrderActivity:AppCompatActivity(){
                 endStr  = "$h:$m"
                 if(validateEnd()){
                     tv_end.text = endStr
-                    setTime()
+//                    setTime()
                 }else{
                     endStr =""
                 }
@@ -85,12 +85,11 @@ class OrderActivity:AppCompatActivity(){
 
     }
 
-
-    private fun setTime(){
-        if(startStr!=""&&endStr!=""){
-            range.setTimeRange(RangeBar.TimeBean(startStr,endStr),1)
-        }
-    }
+//    private fun setTime(){
+//        if(startStr!=""&&endStr!=""){
+//            range.setTimeRange(RangeBar.TimeBean(startStr,endStr),1)
+//        }
+//    }
 
     private fun getCurrentDate():String{
        val  calendar =Calendar.getInstance()
@@ -124,11 +123,11 @@ class OrderActivity:AppCompatActivity(){
                     }
                 }
             }
-            val timeList = ArrayList< RangeBar.TimeBean>()
-            list.forEach {
-                timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart),dateFormat(it.gmtEnd)))
-            }
-            range.setTimeRangeList(timeList)
+//            val timeList = ArrayList< RangeBar.TimeBean>()
+//            list.forEach {
+//                timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart),dateFormat(it.gmtEnd)))
+//            }
+//            range.setTimeRangeList(timeList)
         },{
             DialogUtils.ToastShow(this@OrderActivity,"请求出错")
         })

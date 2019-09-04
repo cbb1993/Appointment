@@ -11,4 +11,7 @@
     <color name="yellow">#FFEB3B</color>
     <color name="blue_normal">#54ADE9</color>
     <color name="blue_select">#2E6BD6</color>
+
+    <color name="meet_blue">#3078ef</color>
+    <color name="meet_grey">#BECBCC</color>
 </resources>
