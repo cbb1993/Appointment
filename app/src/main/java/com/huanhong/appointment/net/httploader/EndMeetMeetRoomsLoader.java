@@ -13,6 +13,7 @@ import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.QueryMap;
 
 /**
@@ -33,7 +34,7 @@ public class EndMeetMeetRoomsLoader extends ObjectLoader {
     }
 
     public interface RequestService {
-        @POST(Constant.UPDATE_MEET)
+        @PUT(Constant.UPDATE_MEET)
         Observable<BaseResponse<Object>> request(@Header("Authorization") String token, @Body Map<String, Object> map);
     }
 }

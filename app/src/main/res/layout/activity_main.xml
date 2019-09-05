@@ -158,7 +158,7 @@
                android:id="@+id/tv_delay_15"
                android:layout_gravity="center_vertical"
                android:textSize="21dp"
-               android:textColor="#8A8888"
+               android:textColor="#BECBCC"
                android:text="15min"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content" />
@@ -166,7 +166,7 @@
                android:id="@+id/tv_delay_30"
                android:layout_marginLeft="20dp"
                android:textSize="21dp"
-               android:textColor="#8A8888"
+               android:textColor="#BECBCC"
                android:text="30min"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content" />
@@ -175,7 +175,7 @@
                android:layout_marginLeft="20dp"
                android:layout_gravity="center_vertical"
                android:textSize="21dp"
-               android:textColor="#8A8888"
+               android:textColor="#BECBCC"
                android:text="60min"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content" />
@@ -185,7 +185,7 @@
     <TextView
         android:layout_below="@+id/ll_meet_set"
         android:layout_marginLeft="522dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:textSize="21dp"
         android:background="#0E0E0E"
         android:gravity="center"
