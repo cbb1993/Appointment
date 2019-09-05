@@ -14,6 +14,9 @@ import com.huanhong.appointment.net.httploader.MeetingUsersLoader
 import com.huanhong.appointment.net.httploader.RoomMeetsLoader
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.activity_order.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -32,10 +35,15 @@ class OrderActivity:AppCompatActivity(){
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
         setContentView(R.layout.activity_order)
         token = intent.getStringExtra("token")
         getMeets()
         getPersons()
+
+        iv_back.setOnClickListener {
+            startActivity(Intent(this@OrderActivity,MainActivity::class.java))
+        }
 
         tv_start_click.setOnClickListener {
             TimePopwindow(this@OrderActivity,tv_start){hour,minute ->
@@ -50,7 +58,7 @@ class OrderActivity:AppCompatActivity(){
                 startStr  = "$h:$m"
                 if(validateStart()){
                     tv_start.text = startStr
-//                    setTime()
+                    setTime()
                 }else{
                     startStr  =""
                 }
@@ -69,7 +77,7 @@ class OrderActivity:AppCompatActivity(){
                 endStr  = "$h:$m"
                 if(validateEnd()){
                     tv_end.text = endStr
-//                    setTime()
+                    setTime()
                 }else{
                     endStr =""
                 }
@@ -85,11 +93,11 @@ class OrderActivity:AppCompatActivity(){
 
     }
 
-//    private fun setTime(){
-//        if(startStr!=""&&endStr!=""){
-//            range.setTimeRange(RangeBar.TimeBean(startStr,endStr),1)
-//        }
-//    }
+    private fun setTime(){
+        if(startStr!=""&&endStr!=""){
+            range.setTimeRange(RangeBar.TimeBean(startStr,endStr,0),100,1)
+        }
+    }
 
     private fun getCurrentDate():String{
        val  calendar =Calendar.getInstance()
@@ -113,21 +121,23 @@ class OrderActivity:AppCompatActivity(){
         map["device"] = deviceId
         RoomMeetsLoader().getRoomMeets(map).subscribe( { it ->
             list.clear()
-            if(it.size > 0){
-                it.forEach { info ->
-                    if(info.gmtEnd < getEndTime() ){
-                        // 会议结束时间是否在当前世界之后
-                        if (System.currentTimeMillis() < info.gmtEnd) {
-                            list.add(info)
-                        }
+            if(it.list.size > 0){
+                it.list.forEach { info ->
+                    if(info.gmtEnd < getEndTime() && info.gmtStart > getStartTime()){
+                        list.add(info)
                     }
                 }
             }
-//            val timeList = ArrayList< RangeBar.TimeBean>()
-//            list.forEach {
-//                timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart),dateFormat(it.gmtEnd)))
-//            }
-//            range.setTimeRangeList(timeList)
+            val timeList = ArrayList<RangeBar.TimeBean>()
+            list.forEach {
+                // 会议结束时间是否在当前时间之前  会议是结束了
+                if (System.currentTimeMillis() >= it.gmtEnd || it.state ==2) {
+                    timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 2))
+                } else {
+                    timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
+                }
+            }
+            range.setTimeRangeList(timeList)
         },{
             DialogUtils.ToastShow(this@OrderActivity,"请求出错")
         })
@@ -157,7 +167,7 @@ class OrderActivity:AppCompatActivity(){
     private fun validateStart():Boolean{
         var time = dateFormatToL(startStr)
         list.forEach {
-            if(it.gmtStart.toLong()<= time && it.gmtEnd.toLong() >= time){
+            if(it.gmtStart<= time && it.gmtEnd>= time){
                 DialogUtils.ToastShow(this@OrderActivity,"当前时间内有会议")
                 return false
             }
@@ -199,6 +209,9 @@ class OrderActivity:AppCompatActivity(){
 
     @SuppressLint("CheckResult")
     private fun add(){
+        if(!validateStart()){
+            return
+        }
         getSelect()
 
         if(et_name.length()==0){
@@ -277,7 +290,14 @@ class OrderActivity:AppCompatActivity(){
         }
     }
     private val joinUsers = ArrayList<JoinUser>()
-
+    private fun getStartTime(): Long {
+        val todayS = Calendar.getInstance()
+        todayS.set(Calendar.HOUR_OF_DAY, 0)
+        todayS.set(Calendar.MINUTE, 0)
+        todayS.set(Calendar.SECOND, 0)
+        todayS.set(Calendar.MILLISECOND, 0)
+        return todayS.timeInMillis
+    }
     private fun getEndTime() :Long{
         val todayEnd = Calendar.getInstance ()
         todayEnd.set(Calendar.HOUR_OF_DAY, 23)
@@ -304,4 +324,22 @@ class OrderActivity:AppCompatActivity(){
         val format =  SimpleDateFormat("HH:mm")
         return format!!.format(Date(time))
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun notifyChange(str: String) {
+        if (str == "100") {
+            getMeets()
+        } else if (str == "200") {
+            AlertDialog(this@OrderActivity, "会议室已和本机解绑") {
+                startActivity(Intent(this@OrderActivity, LoginActivity::class.java))
+            }.show()
+        }
+
+    }
+
 }

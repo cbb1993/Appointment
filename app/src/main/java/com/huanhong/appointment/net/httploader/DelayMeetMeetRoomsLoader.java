@@ -29,12 +29,12 @@ public class DelayMeetMeetRoomsLoader extends ObjectLoader {
         mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
-    public Observable<Object> requset(Map<String,Object> map) {
-        return observe(mScanService.requset(LoginReponseBean.getToken(),map)).map(new PayLoad<Object>());
+    public Observable<Object> request(Map<String,Object> map) {
+        return observe(mScanService.request(LoginReponseBean.getToken(),map)).map(new PayLoad<Object>());
     }
 
     public interface RequestService {
         @PUT(Constant.DELAY_MEET)
-        Observable<BaseResponse<Object>> requset(@Header("Authorization") String token, @Body Map<String, Object> map);
+        Observable<BaseResponse<Object>> request(@Header("Authorization") String token, @Body Map<String, Object> map);
     }
 }

@@ -200,8 +200,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:process=":channel"
             />
-        <activity android:name=".OrderLoginActivity" />
-        <activity android:name=".OrderActivity" />
+        <activity android:name=".OrderLoginActivity" android:launchMode="singleTask" />
+        <activity android:name=".OrderActivity" android:launchMode="singleTask"/>
 
         <receiver
             android:name=".MyMessageReceiver"

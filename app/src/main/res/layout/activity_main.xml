@@ -40,63 +40,19 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
-        <LinearLayout
-            android:layout_centerVertical="true"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_devices"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/tv_order"
+            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/iv_1"
-                android:paddingTop="6dp"
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageView
-                android:id="@+id/iv_2"
-                android:paddingTop="6dp"
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageView
-                android:id="@+id/iv_3"
-                android:paddingTop="6dp"
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageView
-                android:id="@+id/iv_4"
-                android:paddingTop="6dp"
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageView
-                android:id="@+id/iv_5"
-                android:paddingTop="6dp"
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageView
-                android:id="@+id/iv_6"
-                android:paddingTop="6dp"
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 
     <LinearLayout
         android:gravity="center"
-        android:layout_marginTop="243dp"
+        android:layout_marginTop="180dp"
         android:layout_marginLeft="117dp"
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -121,34 +77,36 @@
 
     <View
         android:layout_marginLeft="437dp"
-        android:layout_marginTop="135dp"
+        android:layout_marginTop="100dp"
         android:background="#FFFFFF"
         android:layout_width="1dp"
-        android:layout_height="339dp"/>
+        android:layout_height="280dp"/>
 
     <TextView
         android:layout_marginLeft="522dp"
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="100dp"
         android:text="空闲"
         android:textColor="@color/white"
         android:textSize="44dp"/>
 
     <TextView
+        android:layout_below="@+id/tv_title"
         android:layout_marginLeft="522dp"
-        android:layout_marginTop="217dp"
-        android:visibility="gone"
+        android:layout_marginTop="10dp"
         android:id="@+id/tv_time"
+        android:visibility="gone"
         android:textSize="21dp"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
+        android:layout_below="@+id/tv_time"
         android:visibility="gone"
-        android:layout_marginTop="266dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="522dp"
         android:id="@+id/tv_creator_name"
         android:textColor="@color/white"
@@ -157,8 +115,10 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
+        android:visibility="gone"
+        android:layout_below="@+id/tv_creator_name"
         android:id="@+id/ll_meet_set"
-        android:layout_marginTop="315dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="522dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -223,18 +183,9 @@
     </LinearLayout>
 
     <TextView
-        android:visibility="gone"
-        android:layout_marginTop="315dp"
+        android:layout_below="@+id/ll_meet_set"
         android:layout_marginLeft="522dp"
-        android:id="@+id/tv_count_num"
-        android:textColor="@color/white"
-        android:textSize="21dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_marginLeft="522dp"
-        android:layout_marginTop="420dp"
+        android:layout_marginTop="40dp"
         android:textSize="21dp"
         android:background="#0E0E0E"
         android:gravity="center"

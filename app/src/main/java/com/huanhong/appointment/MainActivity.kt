@@ -7,16 +7,21 @@ import android.os.Handler
 import android.os.Message
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.alibaba.sdk.android.push.CommonCallback
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
+import com.bumptech.glide.Glide
+import com.huanhong.appointment.adapter.CommonAdapter
+import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.Meet
+import com.huanhong.appointment.bean.MeetDevice
 import com.huanhong.appointment.net.DialogUtils
-import com.huanhong.appointment.net.httploader.DelayMeetMeetRoomsLoader
-import com.huanhong.appointment.net.httploader.EndMeetMeetRoomsLoader
-import com.huanhong.appointment.net.httploader.RoomMeetsLoader
-import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
+import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
@@ -41,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     private var roomName = ""
     private var currentMeet : Meet? = null
-
+    private  var delayType = 0 // 是否支持延时 1 不支持
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +71,8 @@ class MainActivity : AppCompatActivity() {
             if(currentMeet !=null){
                 val  map = HashMap<String,Any?>()
                 map["id"] = currentMeet?.id
-                EndMeetMeetRoomsLoader().requset(map).subscribe({
+                map["state"] = 2
+                EndMeetMeetRoomsLoader().request(map).subscribe({
                     DialogUtils.ToastShow(this@MainActivity, "会议已经结束")
                     getMeets()
                 }, {
@@ -98,6 +104,17 @@ class MainActivity : AppCompatActivity() {
                 MeetPop(this@MainActivity,httpList[it]).show(pop_line)
             }
         }
+
+        recycler_devices.layoutManager = LinearLayoutManager(this@MainActivity,LinearLayout.HORIZONTAL,false)
+        recycler_devices.adapter = object :CommonAdapter<MeetDevice>(this,devices,R.layout.item_icon){
+            override fun convert(holder: ViewHolder, t: MutableList<MeetDevice>) {
+                val iv_icon = holder.getView<ImageView>(R.id.iv_icon)
+
+                Glide.with(this@MainActivity).load(t[holder.realPosition].remark).into(iv_icon)
+            }
+        }
+
+        getDevices()
     }
 
     @SuppressLint("CheckResult")
@@ -105,7 +122,8 @@ class MainActivity : AppCompatActivity() {
         val  map = HashMap<String,Any?>()
         map["id"] = currentMeet?.id
         map["delayTimeStr"] = time
-        DelayMeetMeetRoomsLoader().requset(map).subscribe({
+        map["roomId"] = SharedPreferencesUtils.readData("roomId")
+        DelayMeetMeetRoomsLoader().request(map).subscribe({
             DialogUtils.ToastShow(this@MainActivity, "延时成功")
             ll_delay.visibility=View.GONE
             getMeets()
@@ -181,7 +199,7 @@ class MainActivity : AppCompatActivity() {
         currentList.clear()
         var remove = false
         for (meet in httpList) {
-            if (System.currentTimeMillis() < meet.gmtEnd) {
+            if (System.currentTimeMillis() < meet.gmtEnd && (meet.state==1 || meet.state==3)) {
                 currentList.add(meet)
             } else {
                 remove = true
@@ -191,7 +209,7 @@ class MainActivity : AppCompatActivity() {
             val timeList = ArrayList<RangeBar.TimeBean>()
             httpList.forEach {
                 // 会议结束时间是否在当前时间之前  会议是结束了
-                if (System.currentTimeMillis() >= it.gmtEnd) {
+                if (System.currentTimeMillis() >= it.gmtEnd || it.state ==2) {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 2))
                 } else {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
@@ -221,7 +239,6 @@ class MainActivity : AppCompatActivity() {
         use = false
         tv_time.visibility = View.GONE
         tv_creator_name.visibility = View.GONE
-        tv_count_num.visibility = View.GONE
         ll_meet_set.visibility =View.GONE
         ll_delay.visibility =View.GONE
         tv_title.text = "空闲"
@@ -237,11 +254,15 @@ class MainActivity : AppCompatActivity() {
         use = true
         tv_time.visibility = View.VISIBLE
         tv_creator_name.visibility = View.VISIBLE
+        if(delayType==1){
+            ll_meet_set.visibility = View.GONE
+        }else{
+            ll_meet_set.visibility = View.VISIBLE
+        }
         ll_meet_set.visibility = View.VISIBLE
-//        tv_count_num.visibility = View.VISIBLE
+
         tv_time.text = "会议时间: " + dateFormat(meet.gmtStart) + "-" + dateFormat(meet.gmtEnd)
         tv_creator_name.text = "创建人: " + meet.creatorName
-        tv_count_num.text = "人数 " + meet.peopleNum
         tv_title.text = meet.name
         if (currentList.size > 1) {
             tv_next.text = StringConstant.next_conference_cn + currentList[1].name
@@ -259,10 +280,13 @@ class MainActivity : AppCompatActivity() {
         map["device"] = deviceId
         RoomMeetsLoader().getRoomMeets(map).subscribe({ it ->
             httpList.clear()
-            if (it.size > 0) {
-                it.forEach { info ->
-                    // 是否在今天以及之前
-                    if (info.gmtEnd < getEndTime()) {
+            // 配置
+            delayType = it.configuration.delayType
+
+            if (it.list.size > 0) {
+                it.list.forEach { info ->
+                    // 是否在今天
+                    if (info.gmtEnd < getEndTime()&&info.gmtStart>getStartTime()) {
                         httpList.add(info)
                     }
                 }
@@ -270,7 +294,7 @@ class MainActivity : AppCompatActivity() {
             val timeList = ArrayList<RangeBar.TimeBean>()
             httpList.forEach {
                 // 会议结束时间是否在当前时间之前  会议是结束了
-                if (System.currentTimeMillis() >= it.gmtEnd) {
+                if (System.currentTimeMillis() >= it.gmtEnd || it.state ==2) {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 2))
                 } else {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
@@ -280,6 +304,19 @@ class MainActivity : AppCompatActivity() {
             setMeetData()
         }, {
             DialogUtils.ToastShow(this@MainActivity, "请求出错")
+        })
+    }
+
+    private val devices = ArrayList<MeetDevice>()
+    @SuppressLint("CheckResult")
+    private fun getDevices(){
+        var map = HashMap<String, Any>()
+        map["key"] = "meeting_device"
+        MeetingDevicesLoader().request(map).subscribe({
+            devices.clear()
+            devices.addAll(it)
+            recycler_devices.adapter?.notifyDataSetChanged()
+        }, {
         })
     }
 
@@ -309,6 +346,14 @@ class MainActivity : AppCompatActivity() {
         return format!!.format(Date(time))
     }
 
+    private fun getStartTime(): Long {
+        val todayS = Calendar.getInstance()
+        todayS.set(Calendar.HOUR_OF_DAY, 0)
+        todayS.set(Calendar.MINUTE, 0)
+        todayS.set(Calendar.SECOND, 0)
+        todayS.set(Calendar.MILLISECOND, 0)
+        return todayS.timeInMillis
+    }
     private fun getEndTime(): Long {
         val todayEnd = Calendar.getInstance()
         todayEnd.set(Calendar.HOUR_OF_DAY, 23)

@@ -16,7 +16,10 @@ object Constant {
     const val ROOM_INFO = "meeting/room/info"
     const val UNBIND = "meeting/unBinding"
     const val END_MEET = "meeting/end"
+    const val UPDATE_MEET = "meeting/update/state"
     const val DELAY_MEET =  "meeting/delay"
+    const val MEET_DEVICES =  "meeting/devices"
+    const val variable_list =  "variable/list"
 
     /*------------c端接口---------------*/
 

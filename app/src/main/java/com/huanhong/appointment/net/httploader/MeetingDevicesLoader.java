@@ -1,18 +1,21 @@
 package com.huanhong.appointment.net.httploader;
 
 import com.huanhong.appointment.bean.LoginReponseBean;
+import com.huanhong.appointment.bean.MeetDevice;
+import com.huanhong.appointment.bean.Staff;
 import com.huanhong.appointment.constant.Constant;
 import com.huanhong.appointment.net.BaseResponse;
 import com.huanhong.appointment.net.ObjectLoader;
 import com.huanhong.appointment.net.PayLoad;
 import com.huanhong.appointment.net.RetrofitServiceManager;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 
 /**
@@ -21,19 +24,19 @@ import retrofit2.http.QueryMap;
  * Time: 11:18
  * describe:
  */
-public class EndMeetMeetRoomsLoader extends ObjectLoader {
+public class MeetingDevicesLoader extends ObjectLoader {
     private RequestService mScanService;
 
-    public EndMeetMeetRoomsLoader() {
+    public MeetingDevicesLoader() {
         mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
-    public Observable<Object> request(Map<String,Object> map) {
-        return observe(mScanService.request(LoginReponseBean.getToken(),map)).map(new PayLoad<Object>());
+    public Observable<List<MeetDevice>> request(Map<String,Object> map) {
+        return observe(mScanService.request(LoginReponseBean.getToken(),map)).map(new PayLoad<List<MeetDevice>>());
     }
 
     public interface RequestService {
-        @POST(Constant.UPDATE_MEET)
-        Observable<BaseResponse<Object>> request(@Header("Authorization") String token, @Body Map<String, Object> map);
+        @GET(Constant.variable_list)
+        Observable<BaseResponse<List<MeetDevice>>> request(@Header("Authorization") String token, @QueryMap Map<String, Object> map);
     }
 }
