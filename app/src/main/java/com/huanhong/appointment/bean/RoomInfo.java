@@ -41,5 +41,6 @@ public class RoomInfo {
                 deviceCount,maxUseTime,mchId,
                 needAudit,roomId,roomPeopleCount,
                 signInType,storeId;
+        public String deviceIds;
     }
 }

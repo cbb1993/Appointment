@@ -236,10 +236,16 @@ class OrderActivity:AppCompatActivity(){
         map["notificationType"] = notificationType
         map["meetingUsers"] = joinUsers
         MeetAddLoader().request(token,map).subscribe({
-//            DialogUtils.ToastShow(this@OrderActivity,"添加成功")
-            SuccessDialog(this@OrderActivity){
-                startActivity(Intent(this@OrderActivity,MainActivity::class.java))
-            }.show()
+            if(MainActivity.needAudit == 1){
+                SuccessDialog(this@OrderActivity,"该会议需要通过审核，请您耐心等待"){
+                    startActivity(Intent(this@OrderActivity,MainActivity::class.java))
+                }.show()
+            }else{
+                SuccessDialog(this@OrderActivity,""){
+                    startActivity(Intent(this@OrderActivity,MainActivity::class.java))
+                }.show()
+            }
+
         },{})
     }
     data class JoinUser(var attendeeId:String,var attendeeName:String)

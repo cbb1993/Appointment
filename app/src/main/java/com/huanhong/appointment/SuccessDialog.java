@@ -15,11 +15,11 @@ import android.widget.TextView;
  * describe:
  */
 public class SuccessDialog extends Dialog {
-    public SuccessDialog(Context context, ConfirmCallback callback) {
+    public SuccessDialog(Context context,String content ,ConfirmCallback callback) {
         super(context,R.style.app_dialog);
-        init(callback);
+        init(content,callback);
     }
-    private void init( final ConfirmCallback callback) {
+    private void init(String content, final ConfirmCallback callback) {
         setContentView(R.layout.dialog_success);
         setCanceledOnTouchOutside(false);
         if (getWindow() != null) {
@@ -39,6 +39,9 @@ public class SuccessDialog extends Dialog {
                 }
             }
         });
+        TextView tv_remark = findViewById(R.id.tv_remark);
+        tv_remark.setText(content);
+
     }
     public interface ConfirmCallback{
         void confirm();

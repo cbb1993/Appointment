@@ -21,6 +21,8 @@ import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.Meet
 import com.huanhong.appointment.bean.MeetDevice
 import com.huanhong.appointment.net.DialogUtils
+import com.huanhong.appointment.net.Fault
+import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,7 +48,11 @@ class MainActivity : AppCompatActivity() {
 
     private var roomName = ""
     private var currentMeet : Meet? = null
-    private  var delayType = 0 // 是否支持延时 1 不支持
+    private var delayType = 0 // 是否支持延时 1 不支持
+    private var deviceIds = "" // 该会议室有的设备列表
+    companion object {
+        var needAudit = 0 // 1 需要审核  2 不需要审核
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                     DialogUtils.ToastShow(this@MainActivity, "会议已经结束")
                     getMeets()
                 }, {
-                    DialogUtils.ToastShow(this@MainActivity, "结束失败")
+                    ThrowableUtils.ThrowableEnd(it,null)
                 })
             }
         }
@@ -113,8 +119,6 @@ class MainActivity : AppCompatActivity() {
                 Glide.with(this@MainActivity).load(t[holder.realPosition].remark).into(iv_icon)
             }
         }
-
-        getDevices()
     }
 
     @SuppressLint("CheckResult")
@@ -128,7 +132,7 @@ class MainActivity : AppCompatActivity() {
             ll_delay.visibility=View.GONE
             getMeets()
         }, {
-            DialogUtils.ToastShow(this@MainActivity, "延时失败")
+            ThrowableUtils.ThrowableEnd(it,null)
         })
     }
 
@@ -255,9 +259,9 @@ class MainActivity : AppCompatActivity() {
         tv_time.visibility = View.VISIBLE
         tv_creator_name.visibility = View.VISIBLE
         if(delayType==1){
-            ll_meet_set.visibility = View.GONE
+            tv_delay.visibility = View.GONE
         }else{
-            ll_meet_set.visibility = View.VISIBLE
+            tv_delay.visibility = View.VISIBLE
         }
         ll_meet_set.visibility = View.VISIBLE
 
@@ -282,7 +286,10 @@ class MainActivity : AppCompatActivity() {
             httpList.clear()
             // 配置
             delayType = it.configuration.delayType
+            needAudit = it.configuration.needAudit
+            deviceIds = it.configuration.deviceIds
 
+            getDevices()
             if (it.list.size > 0) {
                 it.list.forEach { info ->
                     // 是否在今天
@@ -303,7 +310,8 @@ class MainActivity : AppCompatActivity() {
             range.setTimeRangeList(timeList)
             setMeetData()
         }, {
-            DialogUtils.ToastShow(this@MainActivity, "请求出错")
+            ThrowableUtils.ThrowableEnd(it,null)
+//            DialogUtils.ToastShow(this@MainActivity, "请求出错")
         })
     }
 
@@ -314,12 +322,17 @@ class MainActivity : AppCompatActivity() {
         map["key"] = "meeting_device"
         MeetingDevicesLoader().request(map).subscribe({
             devices.clear()
-            devices.addAll(it)
+            it.forEach { d ->
+                if(deviceIds.indexOf(d.id) > -1){
+                    devices.add(d)
+                }
+            }
             recycler_devices.adapter?.notifyDataSetChanged()
         }, {
         })
     }
 
+    @SuppressLint("CheckResult")
     private fun unbind() {
         val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
         var map = HashMap<String, Any>()
@@ -329,7 +342,8 @@ class MainActivity : AppCompatActivity() {
             unbindPush()
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }, {
-            DialogUtils.ToastShow(this@MainActivity, "解绑失败")
+            ThrowableUtils.ThrowableEnd(it,null)
+//            DialogUtils.ToastShow(this@MainActivity, "解绑失败")
         })
     }
 
@@ -380,10 +394,7 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(p0: String?) {
                 Log.e("---push------", "success")
             }
-
             override fun onFailed(p0: String?, p1: String?) {
-                Log.e("---push------", "---" + p0)
-                Log.e("---push------", "---" + p1)
             }
         })
     }
