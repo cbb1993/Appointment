@@ -21,7 +21,6 @@ import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.Meet
 import com.huanhong.appointment.bean.MeetDevice
 import com.huanhong.appointment.net.DialogUtils
-import com.huanhong.appointment.net.Fault
 import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.SharedPreferencesUtils

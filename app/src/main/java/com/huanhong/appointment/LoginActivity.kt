@@ -1,18 +1,22 @@
 package com.huanhong.appointment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v7.app.AppCompatActivity
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import com.huanhong.appointment.bean.LoginReponseBean
 import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.Fault
 import com.huanhong.appointment.net.httploader.BindStateLoader
 import com.huanhong.appointment.net.httploader.LoginLoader
 import com.huanhong.appointment.net.httploader.MeetRoomsLoader
+import com.huanhong.appointment.utils.KeyUtil
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 
 import kotlinx.android.synthetic.main.activity_login.*
@@ -31,8 +35,11 @@ class LoginActivity: AppCompatActivity(){
 
         et_account.isFocusable = false
         et_password.isFocusable = false
+        et_account.setText("wansheng")
+        et_password.setText("123456")
         btn_login.setOnClickListener {
             if(validate()){
+                Log.e("-----","---login")
                 val map = HashMap<String,String>()
                 map["account"] = et_account.text.toString()
                 map["password"] = et_password.text.toString()
@@ -101,4 +108,6 @@ class LoginActivity: AppCompatActivity(){
         },{
         })
     }
+
+
 }

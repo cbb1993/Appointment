@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="203dp"
     android:layout_height="134dp"
-    android:id="@+id/root"
-    android:background="@mipmap/bind_bg_normal">
+    android:layout_marginBottom="10dp"
+    android:id="@+id/root">
     <TextView
         android:drawablePadding="5dp"
         android:drawableTop="@mipmap/room"

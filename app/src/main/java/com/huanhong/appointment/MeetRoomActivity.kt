@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
@@ -41,11 +42,12 @@ class MeetRoomActivity:AppCompatActivity(){
                 val tv_name = holder.getView<TextView>(R.id.tv_name)
                 val iv_select = holder.getView<View>(R.id.iv_select)
                 val root = holder.getView<View>(R.id.root)
+
                 tv_name.text = t[holder.realPosition].fullName
                 if(t[holder.realPosition].deviceMac==null){
-                    root.setBackgroundResource(R.mipmap.bind_bg_normal)
+                    root.setBackgroundResource(R.drawable.shape_meet_unbind)
                 }else{
-                    root.setBackgroundResource(R.mipmap.bind_bg_select)
+                    root.setBackgroundResource(R.drawable.shape_meet_bind)
                 }
                 if(holder.realPosition==p){
                     iv_select.visibility= View.VISIBLE

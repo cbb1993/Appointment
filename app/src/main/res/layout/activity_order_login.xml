@@ -34,7 +34,6 @@ android:background="@mipmap/login_bg">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <EditText
-            android:text="18888888888"
             android:id="@+id/et_account"
             android:textColorHint="@color/gray_ef"
             android:paddingLeft="5dp"
@@ -56,7 +55,6 @@ android:background="@mipmap/login_bg">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <EditText
-            android:text="9547"
             android:id="@+id/et_password"
             android:textColorHint="@color/gray_ef"
             android:inputType="textPassword"

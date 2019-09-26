@@ -14,4 +14,6 @@
 
     <color name="meet_blue">#3078ef</color>
     <color name="meet_grey">#BECBCC</color>
+    <color name="meet_unbind">#82bae8</color>
+    <color name="meet_bind">#468bc4</color>
 </resources>

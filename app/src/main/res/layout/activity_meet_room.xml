@@ -7,6 +7,7 @@
         android:background="@mipmap/bind_head"
         android:layout_width="match_parent"
         android:layout_height="149dp">
+
         <TextView
             android:text="绑订会议室"
             android:textColor="#C5C9CC"
@@ -33,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <android.support.v7.widget.RecyclerView
+            android:paddingBottom="100dp"
             android:id="@+id/recycler_room"
             android:layout_margin="20dp"
             android:layout_width="match_parent"
