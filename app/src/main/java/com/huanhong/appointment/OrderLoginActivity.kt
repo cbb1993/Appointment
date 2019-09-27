@@ -27,8 +27,10 @@ class OrderLoginActivity : AppCompatActivity() {
                 map["code"] = et_password.text.toString()
                 OrderLoginLoader().getLoginInFo(map).subscribe({
                         if(it!=null){
+                            val user = it.user
                             startActivity(Intent(this@OrderLoginActivity,OrderActivity::class.java)
-                                    .putExtra("token",it.token))
+                                    .putExtra("token",it.token)
+                                    .putExtra("id",user.id))
                         }
                 },{})
             }

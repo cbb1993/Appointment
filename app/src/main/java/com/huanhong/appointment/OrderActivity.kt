@@ -30,6 +30,7 @@ import kotlin.collections.HashMap
  */
 class OrderActivity:AppCompatActivity(){
     private var token:String?=null
+    private var id:String?=null
     private var startStr =""
     private var endStr =""
     @SuppressLint("SetTextI18n")
@@ -38,6 +39,7 @@ class OrderActivity:AppCompatActivity(){
         EventBus.getDefault().register(this)
         setContentView(R.layout.activity_order)
         token = intent.getStringExtra("token")
+        id = intent.getStringExtra("id")
         getMeets()
         getPersons()
 
@@ -258,6 +260,9 @@ class OrderActivity:AppCompatActivity(){
                             }
                         }
                         if(!exsit){
+                            if(user.userId == id){
+                                user.check = true
+                            }
                             userList.add(user)
                         }
                     }
