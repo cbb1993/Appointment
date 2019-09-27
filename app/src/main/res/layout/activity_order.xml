@@ -197,76 +197,76 @@
 
 
 
-      <LinearLayout
-          android:gravity="center_vertical"
-          android:layout_marginTop="10dp"
-          android:orientation="vertical"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-          <TextView
-              android:textSize="21dp"
-              android:layout_marginBottom="5dp"
-              android:textColor="@color/white"
-              android:text="通知模式 ："
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content" />
-          <RadioGroup
-              android:id="@+id/rg_select_notify"
-              android:orientation="horizontal"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
-              <RadioButton
-                  android:id="@+id/rb_notify_1"
-                  android:textColor="@color/white"
-                  android:text="短信"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content" />
-              <RadioButton
-                  android:id="@+id/rb_notify_2"
-                  android:layout_marginLeft="10dp"
-                  android:textColor="@color/white"
-                  android:text="邮箱"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content" />
-              <RadioButton
-                  android:id="@+id/rb_notify_3"
-                  android:layout_marginLeft="10dp"
-                  android:textColor="@color/white"
-                  android:text="小程序"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content" />
-              <RadioButton
-                  android:id="@+id/rb_notify_4"
-                  android:layout_marginLeft="10dp"
-                  android:textColor="@color/white"
-                  android:text="短信+邮箱"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content" />
-              <RadioButton
-                  android:id="@+id/rb_notify_5"
-                  android:layout_marginLeft="10dp"
-                  android:textColor="@color/white"
-                  android:text="短信+小程序"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content" />
-              <RadioButton
-                  android:id="@+id/rb_notify_6"
-                  android:layout_marginLeft="10dp"
-                  android:textColor="@color/white"
-                  android:text="邮箱+小程序"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content" />
-              <RadioButton
-                  android:id="@+id/rb_notify_7"
-                  android:layout_marginLeft="10dp"
-                  android:textColor="@color/white"
-                  android:text="短信+邮箱+小程序"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content" />
+<!--      <LinearLayout-->
+<!--          android:gravity="center_vertical"-->
+<!--          android:layout_marginTop="10dp"-->
+<!--          android:orientation="vertical"-->
+<!--          android:layout_width="wrap_content"-->
+<!--          android:layout_height="wrap_content">-->
+<!--          <TextView-->
+<!--              android:textSize="21dp"-->
+<!--              android:layout_marginBottom="5dp"-->
+<!--              android:textColor="@color/white"-->
+<!--              android:text="通知模式 ："-->
+<!--              android:layout_width="wrap_content"-->
+<!--              android:layout_height="wrap_content" />-->
+<!--          <RadioGroup-->
+<!--              android:id="@+id/rg_select_notify"-->
+<!--              android:orientation="horizontal"-->
+<!--              android:layout_width="wrap_content"-->
+<!--              android:layout_height="wrap_content">-->
+<!--              <RadioButton-->
+<!--                  android:id="@+id/rb_notify_1"-->
+<!--                  android:textColor="@color/white"-->
+<!--                  android:text="短信"-->
+<!--                  android:layout_width="wrap_content"-->
+<!--                  android:layout_height="wrap_content" />-->
+<!--              <RadioButton-->
+<!--                  android:id="@+id/rb_notify_2"-->
+<!--                  android:layout_marginLeft="10dp"-->
+<!--                  android:textColor="@color/white"-->
+<!--                  android:text="邮箱"-->
+<!--                  android:layout_width="wrap_content"-->
+<!--                  android:layout_height="wrap_content" />-->
+<!--              <RadioButton-->
+<!--                  android:id="@+id/rb_notify_3"-->
+<!--                  android:layout_marginLeft="10dp"-->
+<!--                  android:textColor="@color/white"-->
+<!--                  android:text="小程序"-->
+<!--                  android:layout_width="wrap_content"-->
+<!--                  android:layout_height="wrap_content" />-->
+<!--              <RadioButton-->
+<!--                  android:id="@+id/rb_notify_4"-->
+<!--                  android:layout_marginLeft="10dp"-->
+<!--                  android:textColor="@color/white"-->
+<!--                  android:text="短信+邮箱"-->
+<!--                  android:layout_width="wrap_content"-->
+<!--                  android:layout_height="wrap_content" />-->
+<!--              <RadioButton-->
+<!--                  android:id="@+id/rb_notify_5"-->
+<!--                  android:layout_marginLeft="10dp"-->
+<!--                  android:textColor="@color/white"-->
+<!--                  android:text="短信+小程序"-->
+<!--                  android:layout_width="wrap_content"-->
+<!--                  android:layout_height="wrap_content" />-->
+<!--              <RadioButton-->
+<!--                  android:id="@+id/rb_notify_6"-->
+<!--                  android:layout_marginLeft="10dp"-->
+<!--                  android:textColor="@color/white"-->
+<!--                  android:text="邮箱+小程序"-->
+<!--                  android:layout_width="wrap_content"-->
+<!--                  android:layout_height="wrap_content" />-->
+<!--              <RadioButton-->
+<!--                  android:id="@+id/rb_notify_7"-->
+<!--                  android:layout_marginLeft="10dp"-->
+<!--                  android:textColor="@color/white"-->
+<!--                  android:text="短信+邮箱+小程序"-->
+<!--                  android:layout_width="wrap_content"-->
+<!--                  android:layout_height="wrap_content" />-->
 
-          </RadioGroup>
+<!--          </RadioGroup>-->
 
-      </LinearLayout>
+<!--      </LinearLayout>-->
 
       <com.huanhong.appointment.RangeBar
           android:layout_marginTop="20dp"
@@ -283,7 +283,7 @@
 
 
     <Button
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="50dp"
         android:layout_alignParentBottom="true"
         android:textColor="@color/white"
         android:gravity="center"

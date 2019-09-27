@@ -86,7 +86,7 @@ class OrderActivity:AppCompatActivity(){
                 }
             }
         }
-        rg_select_notify.check(R.id.rb_notify_1)
+//        rg_select_notify.check(R.id.rb_notify_1)
 
         btn_complete.setOnClickListener {
             add()
@@ -144,19 +144,19 @@ class OrderActivity:AppCompatActivity(){
         })
     }
 
-    private var notificationType = 1
+//    private var notificationType = 1
     private fun getSelect(){
 
-        when(rg_select_notify.checkedRadioButtonId){
-            R.id.rb_notify_1 -> notificationType = 1
-            R.id.rb_notify_2 -> notificationType = 2
-            R.id.rb_notify_3 -> notificationType = 3
-            R.id.rb_notify_4 -> notificationType = 4
-            R.id.rb_notify_5 -> notificationType = 5
-            R.id.rb_notify_6 -> notificationType = 6
-            R.id.rb_notify_7 -> notificationType = 7
-
-        }
+//        when(rg_select_notify.checkedRadioButtonId){
+//            R.id.rb_notify_1 -> notificationType = 1
+//            R.id.rb_notify_2 -> notificationType = 2
+//            R.id.rb_notify_3 -> notificationType = 3
+//            R.id.rb_notify_4 -> notificationType = 4
+//            R.id.rb_notify_5 -> notificationType = 5
+//            R.id.rb_notify_6 -> notificationType = 6
+//            R.id.rb_notify_7 -> notificationType = 7
+//
+//        }
     }
 
     private fun validateStart():Boolean{
@@ -227,7 +227,7 @@ class OrderActivity:AppCompatActivity(){
         map["gmtEnd"] =  getCurrentDate() +" "+tv_end.text.toString() + ":00"
         map["roomId"] = SharedPreferencesUtils.readData("roomId")
         map["roomName"] = SharedPreferencesUtils.readData("roomName")
-        map["notificationType"] = notificationType
+//        map["notificationType"] = notificationType
         map["meetingUsers"] = joinUsers
         MeetAddLoader().request(token,map).subscribe({
             if(MainActivity.needAudit == 1){
