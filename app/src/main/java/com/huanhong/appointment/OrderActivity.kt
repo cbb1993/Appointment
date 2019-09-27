@@ -9,6 +9,7 @@ import android.util.Log
 import com.huanhong.appointment.bean.Meet
 import com.huanhong.appointment.bean.Staff
 import com.huanhong.appointment.net.DialogUtils
+import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.MeetAddLoader
 import com.huanhong.appointment.net.httploader.MeetingUsersLoader
 import com.huanhong.appointment.net.httploader.RoomMeetsLoader
@@ -139,7 +140,7 @@ class OrderActivity:AppCompatActivity(){
             }
             range.setTimeRangeList(timeList)
         },{
-            DialogUtils.ToastShow(this@OrderActivity,"请求出错")
+            ThrowableUtils.ThrowableEnd(it,null)
         })
     }
 
@@ -239,7 +240,7 @@ class OrderActivity:AppCompatActivity(){
                 }.show()
             }
 
-        },{})
+        },{ ThrowableUtils.ThrowableEnd(it,null)})
     }
     data class JoinUser(var attendeeId:String,var attendeeName:String)
 
@@ -269,7 +270,7 @@ class OrderActivity:AppCompatActivity(){
                 }
             }
         },{
-            DialogUtils.ToastShow(this@OrderActivity,"请求出错")
+            ThrowableUtils.ThrowableEnd(it,null)
         })
 
 

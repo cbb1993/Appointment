@@ -111,7 +111,7 @@ class MeetRoomActivity:AppCompatActivity(){
         homeDevice["homeDevice"] = map
         BindMeetRoomsLoader().bind(homeDevice).subscribe( {
             DialogUtils.ToastShow(this@MeetRoomActivity,"绑定成功")
-            SharedPreferencesUtils.addData("roomName",room.fullName)
+            SharedPreferencesUtils.addData("roomName",room.roomName)
             SharedPreferencesUtils.addData("roomId",room.id)
             startActivity(Intent(this@MeetRoomActivity,MainActivity::class.java))
             finish()

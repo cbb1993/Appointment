@@ -24,6 +24,7 @@ object Constant {
     /*------------c端接口---------------*/
 
     const val registerLogin =BASE_URL_C + "user/registerLogin"
+    const val getSmsCode =BASE_URL_C + "user/getSmsCode"
     const val meetingUsers =BASE_URL_C + "meeting/meetingUsers"
     const val MEET_ADD =BASE_URL_C + "meeting/add"
 }

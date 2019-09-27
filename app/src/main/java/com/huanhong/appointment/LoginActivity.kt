@@ -13,6 +13,7 @@ import android.util.Log
 import com.huanhong.appointment.bean.LoginReponseBean
 import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.Fault
+import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.BindStateLoader
 import com.huanhong.appointment.net.httploader.LoginLoader
 import com.huanhong.appointment.net.httploader.MeetRoomsLoader
@@ -49,7 +50,7 @@ class LoginActivity: AppCompatActivity(){
                             LoginReponseBean.setToken(it.token)
                             validateBind()
                         }
-                },{})
+                },{  ThrowableUtils.ThrowableEnd(it,null)})
             }
         }
 
@@ -97,7 +98,7 @@ class LoginActivity: AppCompatActivity(){
                 it.forEach { info ->
                     if(info.deviceMac ==  Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)){
                         SharedPreferencesUtils.addData("roomId",info.id)
-                        SharedPreferencesUtils.addData("roomName",info.fullName)
+                        SharedPreferencesUtils.addData("roomName",info.roomName)
                         startActivity(Intent(this@LoginActivity,MainActivity::class.java))
                     }
                 }
