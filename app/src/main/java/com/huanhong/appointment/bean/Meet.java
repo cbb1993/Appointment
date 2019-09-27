@@ -16,5 +16,5 @@ public class Meet {
         },*/
    public long gmtEnd,gmtStart;
    public int state;
-   public String id,name,creatorName,peopleNum;
+   public String id,name,creatorName,peopleNum,delayTimeStr;
 }

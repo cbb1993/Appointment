@@ -20,8 +20,6 @@ class OrderLoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_login)
 
-        et_account.isFocusable = false
-        et_password.isFocusable = false
         btn_login.setOnClickListener {
             if(validate()){
                 val map = HashMap<String,String>()

@@ -33,8 +33,6 @@ class LoginActivity: AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        et_account.isFocusable = false
-        et_password.isFocusable = false
         et_account.setText("wansheng")
         et_password.setText("123456")
         btn_login.setOnClickListener {

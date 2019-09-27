@@ -83,8 +83,6 @@ class OrderActivity:AppCompatActivity(){
                 }
             }
         }
-
-        rg_select_sign.check(R.id.rb_sign_1)
         rg_select_notify.check(R.id.rb_notify_1)
 
         btn_complete.setOnClickListener {
@@ -143,15 +141,9 @@ class OrderActivity:AppCompatActivity(){
         })
     }
 
-    private var signInType = 0
     private var notificationType = 1
     private fun getSelect(){
-        when(rg_select_sign.checkedRadioButtonId){
-            R.id.rb_sign_1 -> signInType = 0
-            R.id.rb_sign_2 -> signInType = 1
-            R.id.rb_sign_3 -> signInType = 2
-            R.id.rb_sign_4 -> signInType = 3
-        }
+
         when(rg_select_notify.checkedRadioButtonId){
             R.id.rb_notify_1 -> notificationType = 1
             R.id.rb_notify_2 -> notificationType = 2
@@ -232,7 +224,6 @@ class OrderActivity:AppCompatActivity(){
         map["gmtEnd"] =  getCurrentDate() +" "+tv_end.text.toString() + ":00"
         map["roomId"] = SharedPreferencesUtils.readData("roomId")
         map["roomName"] = SharedPreferencesUtils.readData("roomName")
-        map["signInType"] =signInType
         map["notificationType"] = notificationType
         map["meetingUsers"] = joinUsers
         MeetAddLoader().request(token,map).subscribe({

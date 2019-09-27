@@ -17,7 +17,6 @@
             android:layout_marginTop="5dp">
 
             <TextView
-                android:gravity="center"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:text="会议主题:"
@@ -39,7 +38,6 @@
             android:layout_marginTop="5dp">
 
             <TextView
-                android:gravity="center"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:text="会议时间:"
@@ -61,7 +59,6 @@
             android:layout_marginTop="5dp">
 
             <TextView
-                android:gravity="center"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:text="创建人:"
@@ -83,7 +80,6 @@
             android:layout_marginTop="5dp">
 
             <TextView
-                android:gravity="center"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:text="延迟:"

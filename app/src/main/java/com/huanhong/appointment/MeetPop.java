@@ -52,7 +52,13 @@ public class MeetPop {
         tv_title.setText(meet.name);
         tv_time.setText(dateFormat(meet.gmtStart) + "-" + dateFormat(meet.gmtEnd));
         tv_creator.setText(meet.creatorName);
-//        tv_delay.setText(meet.d);
+        String s = meet.delayTimeStr;
+        if("".equals(s)){
+            tv_delay.setText("0分钟");
+        }else {
+            tv_delay.setText(s+"分钟");
+        }
+
 
     }
 

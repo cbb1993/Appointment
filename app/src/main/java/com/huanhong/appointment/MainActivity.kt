@@ -87,22 +87,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         tv_delay.setOnClickListener {
-            if(ll_delay.isShown){
-                ll_delay.visibility=View.GONE
-            }else{
-                ll_delay.visibility=View.VISIBLE
+            SelectPopwindow(this,tv_delay) { it ->
+                delay(it)
             }
         }
 
-        tv_delay_15.setOnClickListener {
-            delay("15")
-        }
-        tv_delay_30.setOnClickListener {
-            delay("30")
-        }
-        tv_delay_60.setOnClickListener {
-            delay("60")
-        }
 
         range.setMeetClickListner {it ->
             if(it<httpList.size){
@@ -128,7 +117,6 @@ class MainActivity : AppCompatActivity() {
         map["roomId"] = SharedPreferencesUtils.readData("roomId")
         DelayMeetMeetRoomsLoader().request(map).subscribe({
             DialogUtils.ToastShow(this@MainActivity, "延时成功")
-            ll_delay.visibility=View.GONE
             getMeets()
         }, {
             ThrowableUtils.ThrowableEnd(it,null)
@@ -243,7 +231,6 @@ class MainActivity : AppCompatActivity() {
         tv_time.visibility = View.GONE
         tv_creator_name.visibility = View.GONE
         ll_meet_set.visibility =View.GONE
-        ll_delay.visibility =View.GONE
         tv_title.text = "空闲"
         if (meet == null) {
             tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
