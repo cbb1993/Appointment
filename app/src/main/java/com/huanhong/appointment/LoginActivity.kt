@@ -33,11 +33,10 @@ class LoginActivity: AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        et_account.setText("wansheng")
-        et_password.setText("123456")
+//        et_account.setText("wansheng")
+//        et_password.setText("123456")
         btn_login.setOnClickListener {
             if(validate()){
-                Log.e("-----","---login")
                 val map = HashMap<String,String>()
                 map["account"] = et_account.text.toString()
                 map["password"] = et_password.text.toString()
