@@ -43,7 +43,7 @@ class MeetRoomActivity:AppCompatActivity(){
                 val iv_select = holder.getView<View>(R.id.iv_select)
                 val root = holder.getView<View>(R.id.root)
 
-                tv_name.text = t[holder.realPosition].fullName
+                tv_name.text = t[holder.realPosition].roomName
                 if(t[holder.realPosition].deviceMac==null){
                     root.setBackgroundResource(R.drawable.shape_meet_unbind)
                 }else{
