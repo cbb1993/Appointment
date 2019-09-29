@@ -16,4 +16,32 @@
     <color name="meet_grey">#BECBCC</color>
     <color name="meet_unbind">#82bae8</color>
     <color name="meet_bind">#468bc4</color>
+
+
+
+    <color name="lib_main">@color/lib_normal</color>
+    <color name="lib_deputy">#9ac7ff</color>
+    <color name="lib_normal">#222222</color>
+    <color name="lib_detail">#666666</color>
+    <color name="lib_menu">#999999</color>
+    <color name="lib_line">#e1e1e1</color>
+    <color name="lib_status_bar">#404040</color>
+    <color name="lib_bg">#efeff4</color>
+    <color name="lib_black">#000000</color>
+    <color name="lib_hint">#999999</color>
+    <color name="lib_title">@color/lib_white</color>
+    <color name="lib_title_text">@color/lib_normal</color>
+    <color name="lib_shadow">#88000000</color>
+
+    <color name="lib_grey">#dddddd</color>
+    <!--<color name="lib_orange">#ffb74d</color>-->
+    <color name="lib_orange">#febd01</color>
+    <color name="lib_red">#eb4f38</color>
+    <color name="lib_pink">#fea096</color>
+    <color name="lib_blue">#82d0fd</color>
+    <color name="lib_white">#FFFFFF</color>
+
+    <color name="lib_transparent">#00000000</color>
+    <color name="lib_green">#8dd9ac</color>
+    <color name="lib_blue_4c98ea">#4c98ea</color>
 </resources>

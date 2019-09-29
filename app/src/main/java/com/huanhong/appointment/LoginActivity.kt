@@ -69,9 +69,9 @@ class LoginActivity: AppCompatActivity(){
             show = !show
         }
 
-//        Handler().postDelayed({
-//            requestPermission()
-//        },1000)
+        Handler().postDelayed({
+            requestPermission()
+        },1000)
     }
 
     @SuppressLint("CheckResult")

@@ -1,20 +1,22 @@
 package com.huanhong.appointment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import com.alibaba.sdk.android.push.CommonCallback
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
 import com.bumptech.glide.Glide
@@ -27,7 +29,6 @@ import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
-import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -59,12 +60,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        initView()
         EventBus.getDefault().register(this)
         setMeetData()
         initTimer()
 
-        iv_setting.setOnClickListener {
+        tv_setting?.setOnClickListener {
             ConfirmDialog(this@MainActivity, "是否确认解绑此会议室") {
                 unbind()
             }.show()
@@ -72,11 +74,11 @@ class MainActivity : AppCompatActivity() {
         bindPush()
         roomName = SharedPreferencesUtils.readData("roomName")!!
 
-        tv_order.setOnClickListener {
+        tv_order!!.setOnClickListener {
             startActivity(Intent(this@MainActivity, OrderLoginActivity::class.java))
         }
 
-        tv_end.setOnClickListener {
+        tv_end!!.setOnClickListener {
             if (currentMeet != null) {
                 val map = HashMap<String, Any?>()
                 map["id"] = currentMeet?.id
@@ -90,21 +92,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        tv_delay.setOnClickListener {
+        tv_delay!!.setOnClickListener {
             SelectPopwindow(this, tv_delay) { it ->
                 delay(it)
             }
         }
 
 
-        range.setMeetClickListner { it ->
+        range!!.setMeetClickListner { it ->
             if (it < httpList.size) {
                 MeetPop(this@MainActivity, httpList[it]).show(pop_line)
             }
         }
 
-        recycler_devices.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayout.HORIZONTAL, false)
-        recycler_devices.adapter = object : CommonAdapter<MeetDevice>(this, devices, R.layout.item_icon) {
+        recycler_devices!!.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayout.HORIZONTAL, false)
+        recycler_devices!!.adapter = object : CommonAdapter<MeetDevice>(this, devices, R.layout.item_icon) {
             override fun convert(holder: ViewHolder, t: MutableList<MeetDevice>) {
                 val iv_icon = holder.getView<ImageView>(R.id.iv_icon)
 
@@ -144,7 +146,7 @@ class MainActivity : AppCompatActivity() {
         if (minute.length == 1) {
             minute = "0$minute"
         }
-        range.setCurrentTime("$hour:$minute")
+        range!!.setCurrentTime("$hour:$minute")
 
         timeHandler = @SuppressLint("HandlerLeak")
         object : Handler() {
@@ -177,15 +179,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         val date = "$hour:$minute"
-        tv_date.text = date
-        tv_date_week.text = "${calendar.get(Calendar.YEAR)}-$month-$day ${arr[calendar.get(Calendar.DAY_OF_WEEK) - 1]}"
+        tv_date!!.text = date
+        tv_date_week!!.text = "${calendar.get(Calendar.YEAR)}-$month-$day ${arr[calendar.get(Calendar.DAY_OF_WEEK) - 1]}"
 
         if (calendar.get(Calendar.SECOND) == 0) {
-            range.setCurrentTime("$hour:$minute")
+            range!!.setCurrentTime("$hour:$minute")
             setMeetData()
         }
-
-        hideBottomUIMenu()
     }
 
     var arr = arrayOf("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
@@ -212,7 +212,7 @@ class MainActivity : AppCompatActivity() {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
                 }
             }
-            range.setTimeRangeList(timeList)
+            range!!.setTimeRangeList(timeList)
         }
         if (currentList.size > 0) {
             var meet = currentList[0]
@@ -225,45 +225,45 @@ class MainActivity : AppCompatActivity() {
             free(null)
         }
         if (use) {
-            room_name.text = "${roomName}:占用"
+            room_name!!.text = "${roomName}:占用"
         } else {
-            room_name.text = "${roomName}:空闲"
+            room_name!!.text = "${roomName}:空闲"
         }
     }
 
     private fun free(meet: Meet?) {
         currentMeet = null
         use = false
-        tv_time.visibility = View.GONE
-        tv_creator_name.visibility = View.GONE
-        ll_meet_set.visibility = View.GONE
-        tv_title.text = "空闲"
+        tv_time!!.visibility = View.GONE
+        tv_creator_name!!.visibility = View.GONE
+        ll_meet_set!!.visibility = View.GONE
+        tv_title!!.text = "空闲"
         if (meet == null) {
-            tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
+            tv_next!!.text = StringConstant.next_conference_cn + StringConstant.none_cn
         } else {
-            tv_next.text = StringConstant.next_conference_cn + meet.name
+            tv_next!!.text = StringConstant.next_conference_cn + meet.name
         }
     }
 
     private fun ing(meet: Meet) {
         currentMeet = meet
         use = true
-        tv_time.visibility = View.VISIBLE
-        tv_creator_name.visibility = View.VISIBLE
+        tv_time?.visibility = View.VISIBLE
+        tv_creator_name?.visibility = View.VISIBLE
         if (delayType == 1) {
-            tv_delay.visibility = View.GONE
+            tv_delay?.visibility = View.GONE
         } else {
-            tv_delay.visibility = View.VISIBLE
+            tv_delay?.visibility = View.VISIBLE
         }
-        ll_meet_set.visibility = View.VISIBLE
+        ll_meet_set?.visibility = View.VISIBLE
 
-        tv_time.text = "会议时间: " + dateFormat(meet.gmtStart) + "-" + dateFormat(meet.gmtEnd)
-        tv_creator_name.text = "创建人: " + meet.creatorName
-        tv_title.text = meet.name
+        tv_time?.text = "会议时间: " + dateFormat(meet.gmtStart) + "-" + dateFormat(meet.gmtEnd)
+        tv_creator_name?.text = "创建人: " + meet.creatorName
+        tv_title?.text = meet.name
         if (currentList.size > 1) {
-            tv_next.text = StringConstant.next_conference_cn + currentList[1].name
+            tv_next?.text = StringConstant.next_conference_cn + currentList[1].name
         } else {
-            tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
+            tv_next?.text = StringConstant.next_conference_cn + StringConstant.none_cn
         }
     }
 
@@ -299,7 +299,7 @@ class MainActivity : AppCompatActivity() {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
                 }
             }
-            range.setTimeRangeList(timeList)
+            range!!.setTimeRangeList(timeList)
             setMeetData()
         }, {
             ThrowableUtils.ThrowableEnd(it, null)
@@ -319,7 +319,7 @@ class MainActivity : AppCompatActivity() {
                     devices.add(d)
                 }
             }
-            recycler_devices.adapter?.notifyDataSetChanged()
+            recycler_devices?.adapter?.notifyDataSetChanged()
         }, {
         })
     }
@@ -394,6 +394,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        removeFromWindow()
         super.onDestroy()
         unbindPush()
         EventBus.getDefault().unregister(this)
@@ -409,18 +410,110 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-//    private var mLockView :RelativeLayout? =null
-//    private var iv_setting : ImageView? =null
-//    private fun initView() {
-//        mLockView =
-//                LayoutInflater.from(this).inflate(R.layout.activity_main, null) as RelativeLayout
-//        iv_setting =mLockView. findViewById()
-//    }
+    private var mLockView :RelativeLayout? =null
+    private var tv_setting : TextView? =null
+    private var tv_order : TextView? =null
+    private var tv_end : TextView? =null
+    private var tv_delay : TextView? =null
+    private var tv_date : TextView? =null
+    private var room_name : TextView? =null
+    private var tv_date_week : TextView? =null
+    private var tv_time : TextView? =null
+    private var ll_meet_set : View? =null
+    private var tv_creator_name : TextView? =null
+    private var tv_next : TextView? =null
+    private var tv_title : TextView? =null
+    private var range : RangeBar? =null
+    private var recycler_devices : RecyclerView? =null
+    private var pop_line : View? =null
 
-
-    private fun hideBottomUIMenu() {
-        //隐藏虚拟按键，并且全屏
-        ViewUtils.hideBottomUIMenu(this)
+    // 密码锁
+    private lateinit var view_lock: View
+    private lateinit var ll_lock: View
+    private lateinit var tv_confirm: View
+    private lateinit var tv_cancel: View
+    private lateinit var et_password: EditText
+    private val password = "123"
+    private fun initView() {
+        mLockView =
+                LayoutInflater.from(this).inflate(R.layout.activity_main, null) as RelativeLayout
+        tv_setting =mLockView!!. findViewById(R.id.tv_setting)
+        tv_order =mLockView!!. findViewById(R.id.tv_order)
+        tv_end =mLockView!!. findViewById(R.id.tv_end)
+        tv_delay =mLockView!!. findViewById(R.id.tv_delay)
+        range =mLockView!!. findViewById(R.id.range)
+        recycler_devices =mLockView!!. findViewById(R.id.recycler_devices)
+        pop_line =mLockView!!. findViewById(R.id.pop_line)
+        tv_date =mLockView!!. findViewById(R.id.tv_date)
+        tv_date_week =mLockView!!. findViewById(R.id.tv_date_week)
+        room_name =mLockView!!. findViewById(R.id.room_name)
+        tv_time =mLockView!!. findViewById(R.id.tv_time)
+        tv_creator_name =mLockView!!. findViewById(R.id.tv_creator_name)
+        ll_meet_set =mLockView!!. findViewById(R.id.ll_meet_set)
+        tv_title =mLockView!!. findViewById(R.id.tv_title)
+        tv_next =mLockView!!. findViewById(R.id.tv_next)
+        initLockView()
+        addToWindow()
     }
+
+    // 初始化密码框
+    private fun initLockView() {
+        view_lock = mLockView!!.findViewById(R.id.view_lock)
+        ll_lock = mLockView!!.findViewById(R.id.ll_lock)
+        tv_confirm = mLockView!!.findViewById(R.id.tv_confirm)
+        tv_cancel = mLockView!!.findViewById(R.id.tv_cancel)
+        et_password = mLockView!!.findViewById(R.id.et_password) as EditText
+
+        view_lock.setOnLongClickListener {
+            ll_lock.visibility = View.VISIBLE
+            true
+        }
+        tv_cancel.setOnClickListener {
+            hideSoftKeyboard(tv_cancel)
+            ll_lock.visibility = View.INVISIBLE
+            et_password.setText("")
+        }
+        tv_confirm.setOnClickListener {
+            if (et_password.length() != 0) {
+                if (et_password.text.toString() == password) {
+                    removeFromWindow()
+                    System.exit(0)
+                }
+            }
+        }
+    }
+
+    private fun addToWindow() {
+        if (mLockView != null && mLockView?.parent == null) {
+            windowManager.addView(mLockView, getLockLayoutParams())
+            ViewUtils.setSystemUiGone(mLockView)
+        }
+    }
+
+    private fun removeFromWindow() {
+        if (mLockView != null && mLockView?.parent == null) {
+            windowManager.removeView(mLockView)
+        }
+    }
+
+
+    // 获得锁屏的设置
+    private fun getLockLayoutParams(): WindowManager.LayoutParams {
+        val mLayoutParams = WindowManager.LayoutParams()
+        mLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+        mLayoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+        if (Build.VERSION.SDK_INT >= 26) {//8.0新特性
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        }
+        mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
+        mLayoutParams.flags = (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                or WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        return mLayoutParams
+    }
+    fun hideSoftKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
 
 }
