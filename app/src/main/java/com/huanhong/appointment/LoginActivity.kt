@@ -1,9 +1,13 @@
 package com.huanhong.appointment
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v7.app.AppCompatActivity
@@ -19,6 +23,8 @@ import com.huanhong.appointment.net.httploader.LoginLoader
 import com.huanhong.appointment.net.httploader.MeetRoomsLoader
 import com.huanhong.appointment.utils.KeyUtil
 import com.huanhong.appointment.utils.SharedPreferencesUtils
+import com.yanzhenjie.permission.Action
+import com.yanzhenjie.permission.AndPermission
 
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -62,6 +68,10 @@ class LoginActivity: AppCompatActivity(){
             }
             show = !show
         }
+
+//        Handler().postDelayed({
+//            requestPermission()
+//        },1000)
     }
 
     @SuppressLint("CheckResult")
@@ -106,6 +116,41 @@ class LoginActivity: AppCompatActivity(){
         },{
         })
     }
+
+
+    private fun requestPermission() {
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            val p = arrayOf(
+                   Manifest.permission.READ_PHONE_STATE,
+                   Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                   Manifest.permission.READ_EXTERNAL_STORAGE,
+                   Manifest.permission.WAKE_LOCK,
+                   Manifest.permission.SYSTEM_ALERT_WINDOW,
+                   Manifest.permission.WRITE_SETTINGS)
+
+           AndPermission.with(this)
+                   .runtime()
+                   .permission(p)
+                   // 用户给权限了
+                   .onGranted { getWindowP() }
+                   .onDenied { getWindowP()
+                   }.start()
+       }else {
+       }
+   }
+
+   private fun getWindowP() {
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+           if (!Settings.canDrawOverlays(this)) {
+               val intent =  Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                       Uri.parse("package:$packageName"))
+               startActivityForResult(intent, 101)
+           }
+       }
+   }
+
+
 
 
 }

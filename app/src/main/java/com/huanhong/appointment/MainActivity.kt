@@ -2,6 +2,7 @@ package com.huanhong.appointment
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -9,9 +10,11 @@ import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.alibaba.sdk.android.push.CommonCallback
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
@@ -24,6 +27,7 @@ import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.SharedPreferencesUtils
+import com.huanhong.appointment.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -46,9 +50,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var calendar: Calendar
 
     private var roomName = ""
-    private var currentMeet : Meet? = null
+    private var currentMeet: Meet? = null
     private var delayType = 0 // 是否支持延时 1 不支持
     private var deviceIds = "" // 该会议室有的设备列表
+
     companion object {
         var needAudit = 0 // 1 需要审核  2 不需要审核
     }
@@ -73,34 +78,34 @@ class MainActivity : AppCompatActivity() {
         }
 
         tv_end.setOnClickListener {
-            if(currentMeet !=null){
-                val  map = HashMap<String,Any?>()
+            if (currentMeet != null) {
+                val map = HashMap<String, Any?>()
                 map["id"] = currentMeet?.id
                 map["state"] = 2
                 EndMeetMeetRoomsLoader().request(map).subscribe({
                     DialogUtils.ToastShow(this@MainActivity, "会议已经结束")
                     getMeets()
                 }, {
-                    ThrowableUtils.ThrowableEnd(it,null)
+                    ThrowableUtils.ThrowableEnd(it, null)
                 })
             }
         }
 
         tv_delay.setOnClickListener {
-            SelectPopwindow(this,tv_delay) { it ->
+            SelectPopwindow(this, tv_delay) { it ->
                 delay(it)
             }
         }
 
 
-        range.setMeetClickListner {it ->
-            if(it<httpList.size){
-                MeetPop(this@MainActivity,httpList[it]).show(pop_line)
+        range.setMeetClickListner { it ->
+            if (it < httpList.size) {
+                MeetPop(this@MainActivity, httpList[it]).show(pop_line)
             }
         }
 
-        recycler_devices.layoutManager = LinearLayoutManager(this@MainActivity,LinearLayout.HORIZONTAL,false)
-        recycler_devices.adapter = object :CommonAdapter<MeetDevice>(this,devices,R.layout.item_icon){
+        recycler_devices.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayout.HORIZONTAL, false)
+        recycler_devices.adapter = object : CommonAdapter<MeetDevice>(this, devices, R.layout.item_icon) {
             override fun convert(holder: ViewHolder, t: MutableList<MeetDevice>) {
                 val iv_icon = holder.getView<ImageView>(R.id.iv_icon)
 
@@ -110,8 +115,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("CheckResult")
-    private fun delay(time:String){
-        val  map = HashMap<String,Any?>()
+    private fun delay(time: String) {
+        val map = HashMap<String, Any?>()
         map["id"] = currentMeet?.id
         map["delayTimeStr"] = time
         map["roomId"] = SharedPreferencesUtils.readData("roomId")
@@ -119,13 +124,14 @@ class MainActivity : AppCompatActivity() {
             DialogUtils.ToastShow(this@MainActivity, "延时成功")
             getMeets()
         }, {
-            ThrowableUtils.ThrowableEnd(it,null)
+            ThrowableUtils.ThrowableEnd(it, null)
         })
     }
 
     override fun onResume() {
         super.onResume()
         getMeets()
+        hideBottomUIMenu()
     }
 
     private fun initTimer() {
@@ -190,7 +196,7 @@ class MainActivity : AppCompatActivity() {
         currentList.clear()
         var remove = false
         for (meet in httpList) {
-            if (System.currentTimeMillis() < meet.gmtEnd && (meet.state==1 || meet.state==3)) {
+            if (System.currentTimeMillis() < meet.gmtEnd && (meet.state == 1 || meet.state == 3)) {
                 currentList.add(meet)
             } else {
                 remove = true
@@ -200,7 +206,7 @@ class MainActivity : AppCompatActivity() {
             val timeList = ArrayList<RangeBar.TimeBean>()
             httpList.forEach {
                 // 会议结束时间是否在当前时间之前  会议是结束了
-                if (System.currentTimeMillis() >= it.gmtEnd || it.state ==2) {
+                if (System.currentTimeMillis() >= it.gmtEnd || it.state == 2) {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 2))
                 } else {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
@@ -226,11 +232,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun free(meet: Meet?) {
-        currentMeet=null
+        currentMeet = null
         use = false
         tv_time.visibility = View.GONE
         tv_creator_name.visibility = View.GONE
-        ll_meet_set.visibility =View.GONE
+        ll_meet_set.visibility = View.GONE
         tv_title.text = "空闲"
         if (meet == null) {
             tv_next.text = StringConstant.next_conference_cn + StringConstant.none_cn
@@ -240,13 +246,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun ing(meet: Meet) {
-        currentMeet=meet
+        currentMeet = meet
         use = true
         tv_time.visibility = View.VISIBLE
         tv_creator_name.visibility = View.VISIBLE
-        if(delayType==1){
+        if (delayType == 1) {
             tv_delay.visibility = View.GONE
-        }else{
+        } else {
             tv_delay.visibility = View.VISIBLE
         }
         ll_meet_set.visibility = View.VISIBLE
@@ -279,7 +285,7 @@ class MainActivity : AppCompatActivity() {
             if (it.list.size > 0) {
                 it.list.forEach { info ->
                     // 是否在今天
-                    if (info.gmtEnd < getEndTime()&&info.gmtStart>getStartTime()) {
+                    if (info.gmtEnd < getEndTime() && info.gmtStart > getStartTime()) {
                         httpList.add(info)
                     }
                 }
@@ -287,7 +293,7 @@ class MainActivity : AppCompatActivity() {
             val timeList = ArrayList<RangeBar.TimeBean>()
             httpList.forEach {
                 // 会议结束时间是否在当前时间之前  会议是结束了
-                if (System.currentTimeMillis() >= it.gmtEnd || it.state ==2) {
+                if (System.currentTimeMillis() >= it.gmtEnd || it.state == 2) {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 2))
                 } else {
                     timeList.add(RangeBar.TimeBean(dateFormat(it.gmtStart), dateFormat(it.gmtEnd), 1))
@@ -296,20 +302,20 @@ class MainActivity : AppCompatActivity() {
             range.setTimeRangeList(timeList)
             setMeetData()
         }, {
-            ThrowableUtils.ThrowableEnd(it,null)
+            ThrowableUtils.ThrowableEnd(it, null)
 //            DialogUtils.ToastShow(this@MainActivity, "请求出错")
         })
     }
 
     private val devices = ArrayList<MeetDevice>()
     @SuppressLint("CheckResult")
-    private fun getDevices(){
+    private fun getDevices() {
         var map = HashMap<String, Any>()
         map["key"] = "meeting_device"
         MeetingDevicesLoader().request(map).subscribe({
             devices.clear()
             it.forEach { d ->
-                if(deviceIds.indexOf(d.id) > -1){
+                if (deviceIds.indexOf(d.id) > -1) {
                     devices.add(d)
                 }
             }
@@ -328,7 +334,7 @@ class MainActivity : AppCompatActivity() {
             unbindPush()
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }, {
-            ThrowableUtils.ThrowableEnd(it,null)
+            ThrowableUtils.ThrowableEnd(it, null)
 //            DialogUtils.ToastShow(this@MainActivity, "解绑失败")
         })
     }
@@ -354,6 +360,7 @@ class MainActivity : AppCompatActivity() {
         todayS.set(Calendar.MILLISECOND, 0)
         return todayS.timeInMillis
     }
+
     private fun getEndTime(): Long {
         val todayEnd = Calendar.getInstance()
         todayEnd.set(Calendar.HOUR_OF_DAY, 23)
@@ -380,6 +387,7 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(p0: String?) {
                 Log.e("---push------", "success")
             }
+
             override fun onFailed(p0: String?, p1: String?) {
             }
         })
@@ -399,5 +407,19 @@ class MainActivity : AppCompatActivity() {
             override fun onFailed(p0: String?, p1: String?) {
             }
         })
+    }
+
+//    private var mLockView :RelativeLayout? =null
+//    private var iv_setting : ImageView? =null
+//    private fun initView() {
+//        mLockView =
+//                LayoutInflater.from(this).inflate(R.layout.activity_main, null) as RelativeLayout
+//        iv_setting =mLockView. findViewById()
+//    }
+
+
+    private fun hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        ViewUtils.hideBottomUIMenu(this)
     }
 }
