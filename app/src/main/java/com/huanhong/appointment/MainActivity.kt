@@ -225,9 +225,9 @@ class MainActivity : AppCompatActivity() {
             free(null)
         }
         if (use) {
-            room_name!!.text = "${roomName}:占用"
+            room_name!!.text = "${roomName}:会议中"
         } else {
-            room_name!!.text = "${roomName}:空闲"
+            room_name!!.text = "${roomName}:可使用"
         }
     }
 
