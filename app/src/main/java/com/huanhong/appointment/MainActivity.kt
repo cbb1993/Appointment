@@ -2,7 +2,6 @@ package com.huanhong.appointment
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -131,7 +130,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         getMeets()
-        hideBottomUIMenu()
     }
 
     private fun initTimer() {
@@ -186,6 +184,8 @@ class MainActivity : AppCompatActivity() {
             range.setCurrentTime("$hour:$minute")
             setMeetData()
         }
+
+        hideBottomUIMenu()
     }
 
     var arr = arrayOf("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
@@ -422,4 +422,5 @@ class MainActivity : AppCompatActivity() {
         //隐藏虚拟按键，并且全屏
         ViewUtils.hideBottomUIMenu(this)
     }
+
 }
