@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initTimer() {
+
         calendar = Calendar.getInstance()
         calendar.time = Date()
 
