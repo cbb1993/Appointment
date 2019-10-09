@@ -186,6 +186,13 @@ class MainActivity : AppCompatActivity() {
             range!!.setCurrentTime("$hour:$minute")
             setMeetData()
         }
+        // 每日刷新
+        if(date == "00:10" && calendar.get(Calendar.SECOND) == 0){
+            getMeets()
+        }
+        if(date == "01:10" && calendar.get(Calendar.SECOND) == 0){
+            getMeets()
+        }
     }
 
     var arr = arrayOf("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
