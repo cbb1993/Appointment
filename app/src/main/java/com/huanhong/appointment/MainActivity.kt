@@ -511,7 +511,7 @@ class MainActivity : AppCompatActivity() {
         mLayoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
         if (Build.VERSION.SDK_INT >= 26) {//8.0新特性
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        }
+        }else
         mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
         mLayoutParams.flags = (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 or WindowManager.LayoutParams.FLAG_FULLSCREEN)

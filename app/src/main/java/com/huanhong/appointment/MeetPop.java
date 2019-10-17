@@ -3,6 +3,7 @@ package com.huanhong.appointment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -67,6 +68,14 @@ public class MeetPop {
             popupWindow.dismiss();
         }
         popupWindow.showAsDropDown(view,-120,0);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(popupWindow!=null){
+                    popupWindow.dismiss();
+                }
+            }
+        },5000);
     }
 
     private String dateFormat(long l) {
