@@ -66,10 +66,11 @@ class MainActivity : AppCompatActivity() {
         setMeetData()
         initTimer()
 
-        tv_setting?.setOnClickListener {
-            ConfirmDialog(this@MainActivity, "是否确认解绑此会议室") {
-                unbind()
-            }.show()
+        tv_setting!!.setOnClickListener {
+            rl_unbind.visibility  = View.VISIBLE
+//            ConfirmDialog(this@MainActivity, "是否确认解绑此会议室") {
+//                unbind()
+//            }.show()
         }
         bindPush()
         roomName = SharedPreferencesUtils.readData("roomName")!!
@@ -337,9 +338,12 @@ class MainActivity : AppCompatActivity() {
         var map = HashMap<String, Any>()
         map["device"] = deviceId
         UnbindMeetRoomsLoader().unbind(map).subscribe({
-            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
+//            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
             unbindPush()
+            removeFromWindow()
+            System.exit(0)
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+
         }, {
             ThrowableUtils.ThrowableEnd(it, null)
 //            DialogUtils.ToastShow(this@MainActivity, "解绑失败")
@@ -441,6 +445,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tv_cancel: View
     private lateinit var et_password: EditText
     private val password = "123"
+
+    // 解绑
+    private lateinit var tv_unbind_cancel: View
+    private lateinit var tv_unbind_confirm: View
+    private lateinit var rl_unbind: View
+
     private fun initView() {
         mLockView =
                 LayoutInflater.from(this).inflate(R.layout.activity_main, null) as RelativeLayout
@@ -459,8 +469,21 @@ class MainActivity : AppCompatActivity() {
         ll_meet_set =mLockView!!. findViewById(R.id.ll_meet_set)
         tv_title =mLockView!!. findViewById(R.id.tv_title)
         tv_next =mLockView!!. findViewById(R.id.tv_next)
+        rl_unbind =mLockView!!. findViewById(R.id.rl_unbind)
+        tv_unbind_cancel =mLockView!!. findViewById(R.id.tv_unbind_cancel)
+        tv_unbind_confirm =mLockView!!. findViewById(R.id.tv_unbind_confirm)
         initLockView()
         addToWindow()
+
+
+        tv_unbind_cancel.setOnClickListener {
+            rl_unbind.visibility = View.GONE
+        }
+
+        tv_unbind_confirm.setOnClickListener {
+            rl_unbind.visibility = View.GONE
+            unbind()
+        }
     }
 
     // 初始化密码框
