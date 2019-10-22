@@ -7,6 +7,7 @@ import android.util.Log;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.liulishuo.filedownloader.FileDownloader;
 
 public class BaseApplication extends Application {
     public static Application application;
@@ -20,6 +21,7 @@ public class BaseApplication extends Application {
         super.onCreate();
         application = this;
         initPushService(this);
+        FileDownloader.init(this);
     }
 
     /**

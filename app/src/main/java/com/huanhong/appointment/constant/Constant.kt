@@ -20,6 +20,7 @@ object Constant {
     const val DELAY_MEET =  "meeting/delay"
     const val MEET_DEVICES =  "meeting/devices"
     const val variable_list =  "variable/list"
+    const val version =  "meeting/version"
 
     /*------------c端接口---------------*/
 

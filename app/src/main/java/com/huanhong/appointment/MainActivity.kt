@@ -67,7 +67,9 @@ class MainActivity : AppCompatActivity() {
         initTimer()
 
         tv_setting!!.setOnClickListener {
-            rl_unbind.visibility  = View.VISIBLE
+            unBind = true
+            ll_lock.visibility = View.VISIBLE
+//            rl_unbind.visibility  = View.VISIBLE
 //            ConfirmDialog(this@MainActivity, "是否确认解绑此会议室") {
 //                unbind()
 //            }.show()
@@ -188,10 +190,10 @@ class MainActivity : AppCompatActivity() {
             setMeetData()
         }
         // 每日刷新
-        if(date == "00:10" && calendar.get(Calendar.SECOND) == 0){
+        if (date == "00:10" && calendar.get(Calendar.SECOND) == 0) {
             getMeets()
         }
-        if(date == "01:10" && calendar.get(Calendar.SECOND) == 0){
+        if (date == "01:10" && calendar.get(Calendar.SECOND) == 0) {
             getMeets()
         }
     }
@@ -338,7 +340,7 @@ class MainActivity : AppCompatActivity() {
         var map = HashMap<String, Any>()
         map["device"] = deviceId
         UnbindMeetRoomsLoader().unbind(map).subscribe({
-//            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
+            //            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
             unbindPush()
             removeFromWindow()
             System.exit(0)
@@ -421,22 +423,22 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private var mLockView :RelativeLayout? =null
-    private var tv_setting : TextView? =null
-    private var tv_order : TextView? =null
-    private var tv_end : TextView? =null
-    private var tv_delay : TextView? =null
-    private var tv_date : TextView? =null
-    private var room_name : TextView? =null
-    private var tv_date_week : TextView? =null
-    private var tv_time : TextView? =null
-    private var ll_meet_set : View? =null
-    private var tv_creator_name : TextView? =null
-    private var tv_next : TextView? =null
-    private var tv_title : TextView? =null
-    private var range : RangeBar? =null
-    private var recycler_devices : RecyclerView? =null
-    private var pop_line : View? =null
+    private var mLockView: RelativeLayout? = null
+    private var tv_setting: TextView? = null
+    private var tv_order: TextView? = null
+    private var tv_end: TextView? = null
+    private var tv_delay: TextView? = null
+    private var tv_date: TextView? = null
+    private var room_name: TextView? = null
+    private var tv_date_week: TextView? = null
+    private var tv_time: TextView? = null
+    private var ll_meet_set: View? = null
+    private var tv_creator_name: TextView? = null
+    private var tv_next: TextView? = null
+    private var tv_title: TextView? = null
+    private var range: RangeBar? = null
+    private var recycler_devices: RecyclerView? = null
+    private var pop_line: View? = null
 
     // 密码锁
     private lateinit var view_lock: View
@@ -447,43 +449,45 @@ class MainActivity : AppCompatActivity() {
     private val password = "123"
 
     // 解绑
-    private lateinit var tv_unbind_cancel: View
-    private lateinit var tv_unbind_confirm: View
-    private lateinit var rl_unbind: View
+//    private lateinit var tv_unbind_cancel: View
+//    private lateinit var tv_unbind_confirm: View
+//    private lateinit var rl_unbind: View
+
+    private var unBind = false
 
     private fun initView() {
         mLockView =
                 LayoutInflater.from(this).inflate(R.layout.activity_main, null) as RelativeLayout
-        tv_setting =mLockView!!. findViewById(R.id.tv_setting)
-        tv_order =mLockView!!. findViewById(R.id.tv_order)
-        tv_end =mLockView!!. findViewById(R.id.tv_end)
-        tv_delay =mLockView!!. findViewById(R.id.tv_delay)
-        range =mLockView!!. findViewById(R.id.range)
-        recycler_devices =mLockView!!. findViewById(R.id.recycler_devices)
-        pop_line =mLockView!!. findViewById(R.id.pop_line)
-        tv_date =mLockView!!. findViewById(R.id.tv_date)
-        tv_date_week =mLockView!!. findViewById(R.id.tv_date_week)
-        room_name =mLockView!!. findViewById(R.id.room_name)
-        tv_time =mLockView!!. findViewById(R.id.tv_time)
-        tv_creator_name =mLockView!!. findViewById(R.id.tv_creator_name)
-        ll_meet_set =mLockView!!. findViewById(R.id.ll_meet_set)
-        tv_title =mLockView!!. findViewById(R.id.tv_title)
-        tv_next =mLockView!!. findViewById(R.id.tv_next)
-        rl_unbind =mLockView!!. findViewById(R.id.rl_unbind)
-        tv_unbind_cancel =mLockView!!. findViewById(R.id.tv_unbind_cancel)
-        tv_unbind_confirm =mLockView!!. findViewById(R.id.tv_unbind_confirm)
+        tv_setting = mLockView!!.findViewById(R.id.tv_setting)
+        tv_order = mLockView!!.findViewById(R.id.tv_order)
+        tv_end = mLockView!!.findViewById(R.id.tv_end)
+        tv_delay = mLockView!!.findViewById(R.id.tv_delay)
+        range = mLockView!!.findViewById(R.id.range)
+        recycler_devices = mLockView!!.findViewById(R.id.recycler_devices)
+        pop_line = mLockView!!.findViewById(R.id.pop_line)
+        tv_date = mLockView!!.findViewById(R.id.tv_date)
+        tv_date_week = mLockView!!.findViewById(R.id.tv_date_week)
+        room_name = mLockView!!.findViewById(R.id.room_name)
+        tv_time = mLockView!!.findViewById(R.id.tv_time)
+        tv_creator_name = mLockView!!.findViewById(R.id.tv_creator_name)
+        ll_meet_set = mLockView!!.findViewById(R.id.ll_meet_set)
+        tv_title = mLockView!!.findViewById(R.id.tv_title)
+        tv_next = mLockView!!.findViewById(R.id.tv_next)
+//        rl_unbind =mLockView!!. findViewById(R.id.rl_unbind)
+//        tv_unbind_cancel =mLockView!!. findViewById(R.id.tv_unbind_cancel)
+//        tv_unbind_confirm =mLockView!!. findViewById(R.id.tv_unbind_confirm)
         initLockView()
         addToWindow()
 
 
-        tv_unbind_cancel.setOnClickListener {
-            rl_unbind.visibility = View.GONE
-        }
-
-        tv_unbind_confirm.setOnClickListener {
-            rl_unbind.visibility = View.GONE
-            unbind()
-        }
+//        tv_unbind_cancel.setOnClickListener {
+//            rl_unbind.visibility = View.GONE
+//        }
+//
+//        tv_unbind_confirm.setOnClickListener {
+//            rl_unbind.visibility = View.GONE
+//            unbind()
+//        }
     }
 
     // 初始化密码框
@@ -495,6 +499,7 @@ class MainActivity : AppCompatActivity() {
         et_password = mLockView!!.findViewById(R.id.et_password) as EditText
 
         view_lock.setOnLongClickListener {
+            unBind = false
             ll_lock.visibility = View.VISIBLE
             true
         }
@@ -506,8 +511,12 @@ class MainActivity : AppCompatActivity() {
         tv_confirm.setOnClickListener {
             if (et_password.length() != 0) {
                 if (et_password.text.toString() == password) {
-                    removeFromWindow()
-                    System.exit(0)
+                    if (unBind) {
+                        unbind()
+                    } else {
+                        removeFromWindow()
+                        System.exit(0)
+                    }
                 }
             }
         }
@@ -534,12 +543,13 @@ class MainActivity : AppCompatActivity() {
         mLayoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
         if (Build.VERSION.SDK_INT >= 26) {//8.0新特性
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        }else
-        mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
+        } else
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR
         mLayoutParams.flags = (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 or WindowManager.LayoutParams.FLAG_FULLSCREEN)
         return mLayoutParams
     }
+
     fun hideSoftKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
