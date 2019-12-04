@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_meet_room.*
  * Time: 11:19
  * describe:
  */
-class MeetRoomActivity:AppCompatActivity(){
+class MeetRoomActivity:BaseActivity(){
     private val list = ArrayList<Room>()
     private var p = -1
     @SuppressLint("CheckResult")

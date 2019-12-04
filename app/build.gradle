@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -59,5 +60,9 @@ dependencies {
     implementation 'com.yanzhenjie.permission:support:2.0.1'
 
     implementation 'com.liulishuo.filedownloader:library:1.4.2'
+    implementation 'com.powershare:atccev:1.3.0'
+
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:multidex-instrumentation:1.0.3'
 
 }

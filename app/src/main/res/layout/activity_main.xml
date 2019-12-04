@@ -306,6 +306,11 @@
             </LinearLayout>
         </RelativeLayout>
 
+
+        <include
+            android:id="@+id/rl_net"
+            android:visibility="gone"
+            layout="@layout/layout_network_tip"/>
     </RelativeLayout>
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package com.huanhong.appointment;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.alibaba.sdk.android.push.CloudPushService;
@@ -19,6 +20,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(this);
         application = this;
         initPushService(this);
         FileDownloader.init(this);

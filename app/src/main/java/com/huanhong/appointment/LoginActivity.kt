@@ -44,7 +44,7 @@ import java.lang.reflect.Type
  * Time: 9:32
  * describe:
  */
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
     var show = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
                         validateBind()
                     }
                 }, { ThrowableUtils.ThrowableEnd(it, null) })
+
             }
         }
 
@@ -260,6 +261,5 @@ class LoginActivity : AppCompatActivity() {
 //            DialogUtils.ToastShow(this@LoginActivity,"文件解析失败")
 //        }
 //    }
-
 
 }

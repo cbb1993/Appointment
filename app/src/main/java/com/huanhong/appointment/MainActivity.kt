@@ -43,7 +43,7 @@ import kotlin.collections.HashMap
  * Time: 13:29
  * describe:
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
 
     lateinit var timeHandler: Handler
@@ -62,17 +62,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         initView()
-        EventBus.getDefault().register(this)
         setMeetData()
         initTimer()
 
         tv_setting!!.setOnClickListener {
             unBind = true
             ll_lock.visibility = View.VISIBLE
-//            rl_unbind.visibility  = View.VISIBLE
-//            ConfirmDialog(this@MainActivity, "是否确认解绑此会议室") {
-//                unbind()
-//            }.show()
         }
         bindPush()
         roomName = SharedPreferencesUtils.readData("roomName")!!
@@ -137,6 +132,16 @@ class MainActivity : AppCompatActivity() {
         getMeets()
     }
 
+    override fun checkNetwork(isConnected: Boolean) {
+        super.checkNetwork(isConnected)
+        if(isConnected){
+            rl_net?.visibility = View.GONE
+            getMeets()
+        }else{
+            rl_net?.visibility = View.VISIBLE
+        }
+    }
+
     private fun initTimer() {
         calendar = Calendar.getInstance()
         calendar.time = Date()
@@ -189,13 +194,11 @@ class MainActivity : AppCompatActivity() {
             range!!.setCurrentTime("$hour:$minute")
             setMeetData()
         }
-        // 每日刷新
-        if (date == "00:10" && calendar.get(Calendar.SECOND) == 0) {
+        // 每5分钟刷新
+        if ((minute.endsWith("0" )||minute.endsWith("5" ))&& calendar.get(Calendar.SECOND) == 0) {
             getMeets()
         }
-        if (date == "01:10" && calendar.get(Calendar.SECOND) == 0) {
-            getMeets()
-        }
+
     }
 
     var arr = arrayOf("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
@@ -410,7 +413,6 @@ class MainActivity : AppCompatActivity() {
         removeFromWindow()
         super.onDestroy()
         unbindPush()
-        EventBus.getDefault().unregister(this)
     }
 
     private fun unbindPush() {
@@ -439,6 +441,7 @@ class MainActivity : AppCompatActivity() {
     private var range: RangeBar? = null
     private var recycler_devices: RecyclerView? = null
     private var pop_line: View? = null
+    private var rl_net: View? = null
 
     // 密码锁
     private lateinit var view_lock: View
@@ -473,6 +476,7 @@ class MainActivity : AppCompatActivity() {
         ll_meet_set = mLockView!!.findViewById(R.id.ll_meet_set)
         tv_title = mLockView!!.findViewById(R.id.tv_title)
         tv_next = mLockView!!.findViewById(R.id.tv_next)
+        rl_net = mLockView!!.findViewById(R.id.rl_net)
 //        rl_unbind =mLockView!!. findViewById(R.id.rl_unbind)
 //        tv_unbind_cancel =mLockView!!. findViewById(R.id.tv_unbind_cancel)
 //        tv_unbind_confirm =mLockView!!. findViewById(R.id.tv_unbind_confirm)
