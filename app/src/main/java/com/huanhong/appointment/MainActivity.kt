@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.provider.Settings
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -24,12 +23,13 @@ import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.Meet
 import com.huanhong.appointment.bean.MeetDevice
+import com.huanhong.appointment.camera.CameraView
+import com.huanhong.appointment.camera.ImageUtils
 import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
@@ -458,6 +458,12 @@ class MainActivity : BaseActivity() {
 
     private var unBind = false
 
+    private lateinit var mCameraView:CameraView
+    private lateinit var rl_camera:View
+    private lateinit var rl_state:View
+    private lateinit var iv_pic:ImageView
+    private lateinit var tv_state:TextView
+
     private fun initView() {
         mLockView =
                 LayoutInflater.from(this).inflate(R.layout.activity_main, null) as RelativeLayout
@@ -492,6 +498,50 @@ class MainActivity : BaseActivity() {
 //            rl_unbind.visibility = View.GONE
 //            unbind()
 //        }
+        rl_state= mLockView!!.findViewById(R.id.rl_state)
+        iv_pic= mLockView!!.findViewById(R.id.iv_pic)
+        tv_state= mLockView!!.findViewById(R.id.tv_state)
+
+        mCameraView= mLockView!!.findViewById(R.id.view_camera)
+        rl_camera= mLockView!!.findViewById(R.id.rl_camera)
+        mCameraView.setDismissCallback {
+            rl_camera.visibility= View.INVISIBLE
+        }
+        mCameraView.setTakePhotoStateCallback(object :CameraView.TakePhotoStateCallback{
+            override fun start() {
+                updateCheckState(1)
+            }
+            override fun dismiss() {
+                updateCheckState(3)
+            }
+            override fun success() {
+                updateCheckState(2)
+            }
+        })
+        mLockView!!.findViewById<View>(R.id.tv_camera).setOnClickListener {
+            rl_camera.visibility= View.VISIBLE
+        }
+        mLockView!!.findViewById<View>(R.id.rl_camera_src).setOnClickListener {
+            mCameraView.takePhoto()
+        }
+        rl_camera.visibility= View.INVISIBLE
+    }
+
+    private fun updateCheckState(flag :Int){
+        when(flag){
+            1->{
+                rl_state.visibility = View.VISIBLE
+                Glide.with(this).load(ImageUtils.lastPath).into(iv_pic)
+                tv_state.text = "正在签到..."
+            }
+            2->{
+                tv_state.text = "签到成功";
+            }
+            3 ->{
+                rl_state.visibility = View.GONE;
+            }
+        }
+
     }
 
     // 初始化密码框

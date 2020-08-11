@@ -50,8 +50,8 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-//        et_account.setText("vansn")
-//        et_password.setText("123456")
+        et_account.setText("vansn")
+        et_password.setText("123456")
         btn_login.setOnClickListener {
             if (validate()) {
                 val map = HashMap<String, String>()
@@ -155,6 +155,7 @@ class LoginActivity : BaseActivity() {
 
             val p = arrayOf(
                     Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WAKE_LOCK,
