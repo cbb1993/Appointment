@@ -30,8 +30,12 @@ import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -507,17 +511,10 @@ class MainActivity : BaseActivity() {
         mCameraView.setDismissCallback {
             rl_camera.visibility= View.INVISIBLE
         }
-        mCameraView.setTakePhotoStateCallback(object :CameraView.TakePhotoStateCallback{
-            override fun start() {
-                updateCheckState(1)
-            }
-            override fun dismiss() {
-                updateCheckState(3)
-            }
-            override fun success() {
-                updateCheckState(2)
-            }
-        })
+        mCameraView.setTakePhotoStateCallback {
+            // 开始上传
+            checkPhoto(ImageUtils.lastPath)
+        }
         mLockView!!.findViewById<View>(R.id.tv_camera).setOnClickListener {
             rl_camera.visibility= View.VISIBLE
         }
@@ -535,13 +532,51 @@ class MainActivity : BaseActivity() {
                 tv_state.text = "正在签到..."
             }
             2->{
-                tv_state.text = "签到成功";
+                handler.sendEmptyMessageDelayed(1,2000)
+                tv_state.text = "签到成功"
             }
             3 ->{
+                handler.sendEmptyMessageDelayed(1,2000)
+                tv_state.text = errorMsg
+            }
+            4 ->{
                 rl_state.visibility = View.GONE;
             }
         }
 
+    }
+
+    @SuppressLint("HandlerLeak")
+    var handler: Handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            updateCheckState(4)
+        }
+    }
+
+    private var errorMsg = ""
+    @SuppressLint("CheckResult")
+    fun checkPhoto(path: String) {
+        val file = File(path)
+//        var file =File(file1.parentFile,"photo_check_test.jpg")
+//        ImageUtils.lastPath = file.absolutePath
+        updateCheckState(1)
+        val filePart = MultipartBody.Part.createFormData(
+                "file",
+                file.name,
+                RequestBody.create(MediaType.parse("image/*"), file)
+        )
+        PhotoCheckLoader().request(filePart).subscribe({
+            updateCheckState(2)
+        }, {
+            errorMsg="签到失败，请重新签到"
+            updateCheckState(3)
+        })
+    }
+
+
+    private fun toRequestBody(value: String): RequestBody {
+        return RequestBody.create(MediaType.parse("text/plain"), value)
     }
 
     // 初始化密码框

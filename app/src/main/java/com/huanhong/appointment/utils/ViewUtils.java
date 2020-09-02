@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -184,4 +185,17 @@ public class ViewUtils {
         }
     }
 
+    // 获得锁屏的设置
+    public static WindowManager.LayoutParams getLockLayoutParams() {
+        WindowManager.LayoutParams mLayoutParams =new  WindowManager.LayoutParams();
+        mLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        mLayoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        if (Build.VERSION.SDK_INT >= 26) {//8.0新特性
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        mLayoutParams.flags = (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        | WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        return mLayoutParams;
+    }
 }

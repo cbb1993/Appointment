@@ -212,6 +212,8 @@
             />
         <activity android:name=".OrderLoginActivity" android:launchMode="singleTask" />
         <activity android:name=".OrderActivity" android:launchMode="singleTask"/>
+        <activity android:name=".EquipmentActivity" android:launchMode="singleTask" android:screenOrientation="landscape"/>
+        <activity android:name=".SeatActivity" android:launchMode="singleTask" android:screenOrientation="landscape"/>
 
         <receiver
             android:name=".MyMessageReceiver"

@@ -136,13 +136,12 @@ class LoginActivity : BaseActivity() {
     @SuppressLint("CheckResult")
     private fun getList() {
         MeetRoomsLoader().rooms.subscribe({
-            if (it != null) {
-                it.forEach { info ->
-                    if (info.deviceMac == Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)) {
-                        SharedPreferencesUtils.addData("roomId", info.id)
-                        SharedPreferencesUtils.addData("roomName", info.roomName)
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    }
+            it?.forEach { info ->
+                if (info.deviceMac == Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)) {
+                    SharedPreferencesUtils.addData("roomId", info.id)
+                    SharedPreferencesUtils.addData("roomName", info.roomName)
+//                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    startActivity(Intent(this@LoginActivity, SeatActivity::class.java))
                 }
             }
         }, {

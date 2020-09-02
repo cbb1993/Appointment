@@ -33,8 +33,8 @@ public class CameraProxy implements Camera.AutoFocusCallback {
     private Camera mCamera;
     private Parameters mParameters;
     private CameraInfo mCameraInfo = new CameraInfo();
-//    private int mCameraId = CameraInfo.CAMERA_FACING_BACK;
-    private int mCameraId = CameraInfo.CAMERA_FACING_FRONT;
+    private int mCameraId = CameraInfo.CAMERA_FACING_BACK;
+//    private int mCameraId = CameraInfo.CAMERA_FACING_FRONT;
     private int mPreviewWidth = 1440; // default 1440
     private int mPreviewHeight = 1080; // default 1080
     private float mPreviewScale = mPreviewHeight * 1f / mPreviewWidth;

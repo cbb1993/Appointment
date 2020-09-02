@@ -97,31 +97,9 @@ public class CameraView extends RelativeLayout {
             if(takePhotoStateCallback!=null){
                 takePhotoStateCallback.start();
             }
-            handler.sendEmptyMessageDelayed(1,3000);
         }
     }
 
-    private void success(){
-        if(takePhotoStateCallback!=null){
-            takePhotoStateCallback.success();
-        }
-        handler.sendEmptyMessageDelayed(2,1000);
-    }
-
-    @SuppressLint("HandlerLeak")
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if(msg.what == 1){
-                success();
-            }else if(msg.what == 2){
-                if(takePhotoStateCallback!=null){
-                    takePhotoStateCallback.dismiss();
-                }
-            }
-        }
-    };
 
     private TakePhotoStateCallback takePhotoStateCallback;
 
@@ -136,8 +114,6 @@ public class CameraView extends RelativeLayout {
 
     public interface TakePhotoStateCallback{
         void start();
-        void success();
-        void dismiss();
     }
     public interface DismissCallback{
         void dismiss();
