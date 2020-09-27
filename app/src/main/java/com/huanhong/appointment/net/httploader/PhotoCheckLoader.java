@@ -1,5 +1,6 @@
 package com.huanhong.appointment.net.httploader;
 
+import com.huanhong.appointment.bean.CheckPhotoBean;
 import com.huanhong.appointment.bean.LoginReponseBean;
 import com.huanhong.appointment.bean.Room;
 import com.huanhong.appointment.constant.Constant;
@@ -36,15 +37,15 @@ public class PhotoCheckLoader extends ObjectLoader {
         mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
-    public Observable<Object> request(MultipartBody.Part file) {
-        return observe(mScanService.request("1",file)).map(new PayLoad<Object>());
+    public Observable<CheckPhotoBean> request(MultipartBody.Part file) {
+        return observe(mScanService.request("1",file)).map(new PayLoad<CheckPhotoBean>());
     }
 
     public interface RequestService {
         // 192.168.1.23:8081
         @Multipart
-        @POST("http://thorode.vaiwan.com/ryzf-consumer/api/sense/compareFace1N")
-        Observable<BaseResponse<Object>> request(@Query ("lib_ids") String id,
+        @POST(Constant.compareFace1N)
+        Observable<BaseResponse<CheckPhotoBean>> request(@Query ("lib_ids") String id,
                                                  @Part MultipartBody.Part file  );
     }
 }

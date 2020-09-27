@@ -1,5 +1,6 @@
 package com.huanhong.appointment.net.httploader;
 
+import com.huanhong.appointment.bean.VerificationBean;
 import com.huanhong.appointment.constant.Constant;
 import com.huanhong.appointment.bean.LoginReponseBean;
 import com.huanhong.appointment.net.BaseResponse;
@@ -29,12 +30,12 @@ public class BindStateLoader extends ObjectLoader {
         mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
-    public Observable<Object> getBindState(Map<String,String> map) {
-        return observe(mScanService.getBindState(LoginReponseBean.getToken(),map)).map(new PayLoad<Object>());
+    public Observable<VerificationBean> getBindState(Map<String,String> map) {
+        return observe(mScanService.getBindState(LoginReponseBean.getToken(),map)).map(new PayLoad<VerificationBean>());
     }
 
     public interface RequestService {
         @POST(Constant.BIND_STATE)
-        Observable<BaseResponse<Object>> getBindState(@Header("Authorization") String token, @QueryMap Map<String,String> map);
+        Observable<BaseResponse<VerificationBean>> getBindState(@Header("Authorization") String token, @QueryMap Map<String,String> map);
     }
 }

@@ -8,6 +8,7 @@ import com.huanhong.appointment.net.ObjectLoader;
 import com.huanhong.appointment.net.PayLoad;
 import com.huanhong.appointment.net.RetrofitServiceManager;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +31,12 @@ public class MeetRoomsLoader extends ObjectLoader {
         mScanService = RetrofitServiceManager.getInstance().create(RequestService.class);
     }
 
-    public Observable<List<Room>> getRooms() {
-        return observe(mScanService.getRooms(LoginReponseBean.getToken())).map(new PayLoad<List<Room>>());
+    public Observable<List<Room>> getRooms(HashMap<String, String> map) {
+        return observe(mScanService.getRooms(LoginReponseBean.getToken(),map)).map(new PayLoad<List<Room>>());
     }
 
     public interface RequestService {
         @GET(Constant.ROOMS)
-        Observable<BaseResponse<List<Room>>> getRooms(@Header("Authorization") String token);
+        Observable<BaseResponse<List<Room>>> getRooms(@Header("Authorization") String token,@QueryMap HashMap<String, String> map);
     }
 }

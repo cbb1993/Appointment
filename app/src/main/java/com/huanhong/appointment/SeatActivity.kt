@@ -2,21 +2,32 @@ package com.huanhong.appointment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.provider.Settings
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import com.alibaba.sdk.android.push.CommonCallback
+import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
 import com.bumptech.glide.Glide
 import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.MeetDevice
+import com.huanhong.appointment.bean.Seat
+import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.MeetingDevicesLoader
+import com.huanhong.appointment.net.httploader.QRCodeLoader
+import com.huanhong.appointment.net.httploader.SeatsLoader
+import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
+import com.huanhong.appointment.utils.QRCodeUtil
+import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -46,7 +57,15 @@ class SeatActivity : BaseActivity() {
     var arr = arrayOf("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
 
     // 器材
-    private lateinit var recycler_equipment: RecyclerView
+    private lateinit var recycler_seat: RecyclerView
+    private val seats = ArrayList<Seat>()
+
+    // 二维码
+    private lateinit var iv_qrcode :ImageView
+
+    // 解绑
+    private lateinit var tv_setting: TextView
+    private var unBind = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,16 +79,24 @@ class SeatActivity : BaseActivity() {
         initDevicesList()
         addToWindow()
         initDate()
-        initEquipments()
+        initSeats()
+
+        getQRCode()
+        handler.sendEmptyMessage(1)
     }
 
-    private fun initEquipments() {
-        recycler_equipment = mLockView.findViewById(R.id.recycler_equipment)
-        recycler_equipment.layoutManager = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
-        recycler_equipment.adapter = object : CommonAdapter<MeetDevice>(this, devices, R.layout.item_equipment) {
-            override fun convert(holder: ViewHolder, t: MutableList<MeetDevice>) {
-                val iv_icon = holder.getView<ImageView>(R.id.iv_icon)
-                Glide.with(this@SeatActivity).load(t[holder.realPosition].remark).into(iv_icon)
+    private fun initSeats() {
+        recycler_seat = mLockView.findViewById(R.id.recycler_seat)
+        recycler_seat.layoutManager = GridLayoutManager(this, 6)
+        recycler_seat.adapter = object : CommonAdapter<Seat>(this, seats, R.layout.item_seat) {
+            override fun convert(holder: ViewHolder, t: MutableList<Seat>) {
+//               1.可用 2.占用中 3.锁定
+                val iv_seat = holder.getView<ImageView>(R.id.iv_seat)
+                when(t[holder.realPosition].state){
+                    1 -> iv_seat.setImageResource(R.mipmap.icon_seat_normal)
+                    2 -> iv_seat.setImageResource(R.mipmap.icon_seat_select)
+                    3 -> iv_seat.setImageResource(R.mipmap.icon_seat_forbid)
+                }
             }
         }
     }
@@ -105,6 +132,7 @@ class SeatActivity : BaseActivity() {
 
     // 初始化密码框
     private fun initLockView() {
+
         view_lock = mLockView.findViewById(R.id.view_lock)
         ll_lock = mLockView.findViewById(R.id.ll_lock)
         tv_confirm = mLockView.findViewById(R.id.tv_confirm)
@@ -122,10 +150,20 @@ class SeatActivity : BaseActivity() {
         tv_confirm.setOnClickListener {
             if (et_password.length() != 0) {
                 if (et_password.text.toString() == password) {
-                    removeFromWindow()
-                    exitProcess(0)
+                    if (unBind) {
+                        unbind()
+                    } else {
+                        removeFromWindow()
+                        exitProcess(0)
+                    }
                 }
             }
+        }
+        // 解绑
+        tv_setting = mLockView.findViewById(R.id.tv_setting)
+        tv_setting.setOnClickListener {
+            unBind =true
+            ll_lock.visibility = View.VISIBLE
         }
     }
 
@@ -140,8 +178,44 @@ class SeatActivity : BaseActivity() {
                 devices.add(d)
             }
             recycler_devices.adapter?.notifyDataSetChanged()
-            recycler_equipment.adapter?.notifyDataSetChanged()
         }, {
+        })
+    }
+
+    @SuppressLint("CheckResult")
+    private fun getQRCode() {
+        iv_qrcode = mLockView.findViewById(R.id.iv_qrcode)
+        val map = HashMap<String, Any>()
+        map["roomId"] = SharedPreferencesUtils.readData("roomId")
+        QRCodeLoader().request(map).subscribe({
+            iv_qrcode.setImageBitmap(QRCodeUtil.createQRCodeBitmap(it,800, 800))
+        }, {
+        })
+    }
+
+    @SuppressLint("CheckResult")
+    private fun getSeats() {
+        SeatsLoader().request(SharedPreferencesUtils.readData("roomId")).subscribe({
+            seats.clear()
+            seats.addAll(it)
+            recycler_seat.adapter?.notifyDataSetChanged()
+        }, {
+        })
+    }
+
+    @SuppressLint("CheckResult")
+    private fun unbind() {
+        val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
+        var map = java.util.HashMap<String, Any>()
+        map["device"] = deviceId
+        UnbindMeetRoomsLoader().unbind(map).subscribe({
+            //            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
+            removeFromWindow()
+            System.exit(0)
+            startActivity(Intent(this@SeatActivity, LoginActivity::class.java))
+
+        }, {
+            ThrowableUtils.ThrowableEnd(it, null)
         })
     }
 
@@ -178,6 +252,8 @@ class SeatActivity : BaseActivity() {
 
     private fun removeFromWindow() {
         if (mLockView.parent == null) {
+            timeHandler.removeCallbacksAndMessages(null)
+            handler.removeCallbacksAndMessages(null)
             windowManager.removeView(mLockView)
         }
     }
@@ -185,5 +261,13 @@ class SeatActivity : BaseActivity() {
     fun hideSoftKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+    @SuppressLint("HandlerLeak")
+    val handler = object :Handler(){
+        override fun handleMessage(msg: Message?) {
+            super.handleMessage(msg)
+            getSeats()
+            sendEmptyMessageDelayed(1,15_000)
+        }
     }
 }

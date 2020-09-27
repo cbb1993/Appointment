@@ -26,6 +26,7 @@ public class RangeBar extends RelativeLayout {
             "14:00", "16:00", "18:00", "20:00", "22:00"};
     private LayoutInflater inflater;
     private Context context;
+    private int height = 50;
 
     public RangeBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -41,7 +42,7 @@ public class RangeBar extends RelativeLayout {
 
     private View getBgView() {
         View view = new View(context);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(itemWidth*12, 50);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(itemWidth*12, height);
         view.setLayoutParams(lp);
         view.setBackgroundResource(R.drawable.range_bar_bg);
         return view;
@@ -100,7 +101,7 @@ public class RangeBar extends RelativeLayout {
             line.setLayoutParams(lp);
         }
     }
-    int itemWidth = 100 ;
+    int itemWidth = 128 ;
     public void setTimeRange( TimeBean bean ,int tag,int flag) {
         if (bean.start.contains(":") && bean.end.contains(":")) {
             String[] starts = bean.start.split(":");
@@ -120,7 +121,7 @@ public class RangeBar extends RelativeLayout {
             int width  =  endLeft  - startLeft;
 
             final View rangView = new View(context);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, 50);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, height);
             lp.leftMargin = startLeft;
             rangView.setLayoutParams(lp);
             if(flag==0){

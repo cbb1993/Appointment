@@ -23,6 +23,7 @@ import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.Meet
 import com.huanhong.appointment.bean.MeetDevice
+import com.huanhong.appointment.bean.RoomInfo
 import com.huanhong.appointment.camera.CameraView
 import com.huanhong.appointment.camera.ImageUtils
 import com.huanhong.appointment.net.DialogUtils
@@ -30,16 +31,18 @@ import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
+import com.smbd.peripheral.SmbdLed
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import top.zibin.luban.Luban
+import top.zibin.luban.OnCompressListener
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * Created by 坎坎.
@@ -48,8 +51,6 @@ import kotlin.collections.HashMap
  * describe:
  */
 class MainActivity : BaseActivity() {
-
-
     lateinit var timeHandler: Handler
     lateinit var calendar: Calendar
 
@@ -62,9 +63,16 @@ class MainActivity : BaseActivity() {
         var needAudit = 0 // 1 需要审核  2 不需要审核
     }
 
+    private val isDevice = true
+
+    private lateinit var mSmbdLed:SmbdLed
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        if(isDevice){
+            mSmbdLed = SmbdLed()
+        }
         initView()
         setMeetData()
         initTimer()
@@ -133,7 +141,7 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        getMeets()
+        meetingHandler.sendEmptyMessage(1)
     }
 
     override fun checkNetwork(isConnected: Boolean) {
@@ -260,6 +268,11 @@ class MainActivity : BaseActivity() {
         } else {
             tv_next!!.text = StringConstant.next_conference_cn + meet.name
         }
+
+        if(isDevice){
+            mSmbdLed.onYellow(true)
+        }
+        rl_root.setBackgroundResource(R.mipmap.main_bg)
     }
 
     private fun ing(meet: Meet) {
@@ -282,16 +295,30 @@ class MainActivity : BaseActivity() {
         } else {
             tv_next?.text = StringConstant.next_conference_cn + StringConstant.none_cn
         }
+        if(isDevice){
+            mSmbdLed.onRed(true)
+        }
+
+        meetingType(""+meet.typeId)
     }
 
     private val httpList = ArrayList<Meet>()
     private val currentList = ArrayList<Meet>()
+    private var lastData: RoomInfo? = null
     @SuppressLint("CheckResult")
     private fun getMeets() {
         val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
         var map = HashMap<String, String>()
         map["device"] = deviceId
         RoomMeetsLoader().getRoomMeets(map).subscribe({ it ->
+//            val compareMeeting = compareMeeting(lastData, it)
+//            Log.e("---000--","------$compareMeeting")
+//            // 返回true 表示一致 无需更新
+//            if(compareMeeting){
+//                return@subscribe
+//            }
+//            Log.e("---111--","------")
+            lastData = it
             httpList.clear()
             // 配置
             delayType = it.configuration.delayType
@@ -307,6 +334,7 @@ class MainActivity : BaseActivity() {
                     }
                 }
             }
+
             val timeList = ArrayList<RangeBar.TimeBean>()
             httpList.forEach {
                 // 会议结束时间是否在当前时间之前  会议是结束了
@@ -323,6 +351,47 @@ class MainActivity : BaseActivity() {
 //            DialogUtils.ToastShow(this@MainActivity, "请求出错")
         })
     }
+
+    private fun compareMeeting(last:RoomInfo?,current:RoomInfo):Boolean{
+        if(last == null){
+            return false
+        }
+        if(last.list.size != current.list.size){
+            // 会议长度不相等 数据有更新
+            return false
+        }
+        val length = current.list.size
+        for (lastMeeting in last.list) {
+            var exist = false
+            for (i in 0 until length ) {
+                if(lastMeeting.id == current.list[i].id){
+                    exist = true
+                }
+            }
+            // 遍历下来这个id不存在
+            if(!exist){
+                return false
+            }
+        }
+        return true
+    }
+
+    @SuppressLint("CheckResult")
+    private fun signIn(id:String) {
+        if(currentMeet==null){
+            return
+        }
+        var map = HashMap<String, Any>()
+        map["mId"] =currentMeet!!.id
+        map["userId"] =id
+        SignInLoader().request(map).subscribe({
+            updateCheckState(2)
+        }, {
+            errorMsg="签到失败，请重新签到"
+            updateCheckState(3)
+        })
+    }
+
 
     private val devices = ArrayList<MeetDevice>()
     @SuppressLint("CheckResult")
@@ -446,6 +515,9 @@ class MainActivity : BaseActivity() {
     private var recycler_devices: RecyclerView? = null
     private var pop_line: View? = null
     private var rl_net: View? = null
+    //
+    private var rl_error: View? = null
+
 
     // 密码锁
     private lateinit var view_lock: View
@@ -468,9 +540,13 @@ class MainActivity : BaseActivity() {
     private lateinit var iv_pic:ImageView
     private lateinit var tv_state:TextView
 
+    private lateinit var rl_root:View
+
+
     private fun initView() {
         mLockView =
                 LayoutInflater.from(this).inflate(R.layout.activity_main, null) as RelativeLayout
+        rl_root = mLockView!!.findViewById(R.id.rl_root)
         tv_setting = mLockView!!.findViewById(R.id.tv_setting)
         tv_order = mLockView!!.findViewById(R.id.tv_order)
         tv_end = mLockView!!.findViewById(R.id.tv_end)
@@ -487,6 +563,7 @@ class MainActivity : BaseActivity() {
         tv_title = mLockView!!.findViewById(R.id.tv_title)
         tv_next = mLockView!!.findViewById(R.id.tv_next)
         rl_net = mLockView!!.findViewById(R.id.rl_net)
+        rl_error = mLockView!!.findViewById(R.id.rl_error)
 //        rl_unbind =mLockView!!. findViewById(R.id.rl_unbind)
 //        tv_unbind_cancel =mLockView!!. findViewById(R.id.tv_unbind_cancel)
 //        tv_unbind_confirm =mLockView!!. findViewById(R.id.tv_unbind_confirm)
@@ -515,12 +592,20 @@ class MainActivity : BaseActivity() {
             // 开始上传
             checkPhoto(ImageUtils.lastPath)
         }
+        val tv_face_tip = mLockView!!.findViewById<TextView>(R.id.tv_face_tip)
+
         mLockView!!.findViewById<View>(R.id.tv_camera).setOnClickListener {
-            rl_camera.visibility= View.VISIBLE
+            if(use){
+//                rl_camera.visibility= View.VISIBLE
+                tv_face_tip.visibility = View.VISIBLE
+                Handler().postDelayed(Runnable {
+                    tv_face_tip.visibility = View.GONE
+                    mCameraView.takePhoto()
+                },1000)
+
+            }
         }
-        mLockView!!.findViewById<View>(R.id.rl_camera_src).setOnClickListener {
-            mCameraView.takePhoto()
-        }
+
         rl_camera.visibility= View.INVISIBLE
     }
 
@@ -546,6 +631,18 @@ class MainActivity : BaseActivity() {
 
     }
 
+    @SuppressLint("CheckResult")
+    private fun meetingType(id:String){
+        MeetTypeLoader().request(id).subscribe({
+            if(it.themeId == 1){
+                rl_root.setBackgroundResource(R.mipmap.red_bg)
+            }else{
+                rl_root.setBackgroundResource(R.mipmap.main_bg)
+            }
+        },{})
+    }
+
+
     @SuppressLint("HandlerLeak")
     var handler: Handler = object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -554,12 +651,13 @@ class MainActivity : BaseActivity() {
         }
     }
 
+
     private var errorMsg = ""
     @SuppressLint("CheckResult")
-    fun checkPhoto(path: String) {
-        val file = File(path)
-//        var file =File(file1.parentFile,"photo_check_test.jpg")
-//        ImageUtils.lastPath = file.absolutePath
+    fun checkPhoto(path2: String) {
+        val file2 = File(path2)
+        var file =File(file2.parentFile,"test.png")
+        ImageUtils.lastPath = file.absolutePath
         updateCheckState(1)
         val filePart = MultipartBody.Part.createFormData(
                 "file",
@@ -567,7 +665,7 @@ class MainActivity : BaseActivity() {
                 RequestBody.create(MediaType.parse("image/*"), file)
         )
         PhotoCheckLoader().request(filePart).subscribe({
-            updateCheckState(2)
+            signIn(it.id)
         }, {
             errorMsg="签到失败，请重新签到"
             updateCheckState(3)
@@ -645,4 +743,27 @@ class MainActivity : BaseActivity() {
     }
 
 
+    fun luban(file: File) {
+        Luban.with(this)
+                .load(file) // 传人要压缩的图片列表
+                .ignoreBy(100) // 忽略不压缩图片的大小
+                .setTargetDir(file.parent) // 设置压缩后文件存储位置
+                .setCompressListener(object : OnCompressListener {
+                    //设置回调
+                    override fun onStart() {}
+                    override fun onSuccess(file: File) {
+                        Log.e("-------", "---------" + file.absolutePath)
+                    }
+                    override fun onError(e: Throwable) {}
+                }).launch()
+    }
+
+    @SuppressLint("HandlerLeak")
+    val meetingHandler = object :Handler(){
+        override fun handleMessage(msg: Message?) {
+            super.handleMessage(msg)
+            getMeets()
+            sendEmptyMessageDelayed(1,10_000)
+        }
+    }
 }

@@ -2,9 +2,11 @@ package com.huanhong.appointment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.provider.Settings
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -15,8 +17,15 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
+import com.huanhong.appointment.bean.Equipment
 import com.huanhong.appointment.bean.MeetDevice
+import com.huanhong.appointment.net.ThrowableUtils
+import com.huanhong.appointment.net.httploader.EquipmentsLoader
 import com.huanhong.appointment.net.httploader.MeetingDevicesLoader
+import com.huanhong.appointment.net.httploader.QRCodeLoader
+import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
+import com.huanhong.appointment.utils.QRCodeUtil
+import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -37,6 +46,8 @@ class EquipmentActivity : BaseActivity() {
     // 右上角设备图片
     private lateinit var recycler_devices: RecyclerView
     private val devices = ArrayList<MeetDevice>()
+    private var deviceIds = "" // 该会议室有的设备列表
+
 
     // 时间
     private lateinit var tv_date: TextView
@@ -47,6 +58,15 @@ class EquipmentActivity : BaseActivity() {
 
     // 器材
     private lateinit var recycler_equipment: RecyclerView
+    private val equipments = ArrayList<Equipment>()
+
+    // 二维码
+    private lateinit var iv_qrcode :ImageView
+
+
+    // 解绑
+    private lateinit var tv_setting: TextView
+    private var unBind = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,15 +81,32 @@ class EquipmentActivity : BaseActivity() {
         addToWindow()
         initDate()
         initEquipments()
+
+        getQRCode()
+        handler.sendEmptyMessage(1)
     }
 
     private fun initEquipments() {
         recycler_equipment = mLockView.findViewById(R.id.recycler_equipment)
-        recycler_equipment.layoutManager = LinearLayoutManager(this, LinearLayout.HORIZONTAL, false)
-        recycler_equipment.adapter = object : CommonAdapter<MeetDevice>(this, devices, R.layout.item_equipment) {
-            override fun convert(holder: ViewHolder, t: MutableList<MeetDevice>) {
+        recycler_equipment.layoutManager = LinearLayoutManager(this)
+        recycler_equipment.adapter = object : CommonAdapter<Equipment>(this, equipments, R.layout.item_equipment) {
+            override fun convert(holder: ViewHolder, t: MutableList<Equipment>) {
                 val iv_icon = holder.getView<ImageView>(R.id.iv_icon)
-                Glide.with(this@EquipmentActivity).load(t[holder.realPosition].remark).into(iv_icon)
+                if(t[holder.realPosition].icon == null){
+                    Glide.with(this@EquipmentActivity)
+                            .load(R.mipmap.icon_run_equipment)
+                            .into(iv_icon)
+                }else {
+                    Glide.with(this@EquipmentActivity)
+                            .load(t[holder.realPosition].icon)
+                            .into(iv_icon)
+                }
+                val tv_name = holder.getView<TextView>(R.id.tv_name)
+                val tv_used = holder.getView<TextView>(R.id.tv_used)
+                val tv_left = holder.getView<TextView>(R.id.tv_left)
+                tv_name.text = t[holder.realPosition].title
+                tv_used.text = t[holder.realPosition].used
+                tv_left.text = t[holder.realPosition].number
             }
         }
     }
@@ -122,10 +159,21 @@ class EquipmentActivity : BaseActivity() {
         tv_confirm.setOnClickListener {
             if (et_password.length() != 0) {
                 if (et_password.text.toString() == password) {
-                    removeFromWindow()
-                    exitProcess(0)
+                    if (unBind) {
+                        unbind()
+                    } else {
+                        removeFromWindow()
+                        exitProcess(0)
+                    }
                 }
             }
+        }
+
+        // 解绑
+        tv_setting = mLockView.findViewById(R.id.tv_setting)
+        tv_setting.setOnClickListener {
+            unBind =true
+            ll_lock.visibility = View.VISIBLE
         }
     }
 
@@ -145,6 +193,42 @@ class EquipmentActivity : BaseActivity() {
         })
     }
 
+    @SuppressLint("CheckResult")
+    private fun getQRCode() {
+        iv_qrcode = mLockView.findViewById(R.id.iv_qrcode)
+
+        val map = HashMap<String, Any>()
+        map["roomId"] = SharedPreferencesUtils.readData("roomId")
+        QRCodeLoader().request(map).subscribe({
+            iv_qrcode.setImageBitmap(QRCodeUtil.createQRCodeBitmap(it,800, 800))
+        }, {
+        })
+    }
+
+    @SuppressLint("CheckResult")
+    private fun getEquipments() {
+        EquipmentsLoader().request(SharedPreferencesUtils.readData("roomId")).subscribe({
+            equipments.clear()
+            equipments.addAll(it)
+            recycler_equipment.adapter!!.notifyDataSetChanged()
+        }, {
+        })
+    }
+    @SuppressLint("CheckResult")
+    private fun unbind() {
+        val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
+        var map = java.util.HashMap<String, Any>()
+        map["device"] = deviceId
+        UnbindMeetRoomsLoader().unbind(map).subscribe({
+            //            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
+            removeFromWindow()
+            System.exit(0)
+            startActivity(Intent(this@EquipmentActivity, LoginActivity::class.java))
+
+        }, {
+            ThrowableUtils.ThrowableEnd(it, null)
+        })
+    }
     private fun setTimer() {
         calendar.time = Date()
         var month = (calendar.get(Calendar.MONTH) + 1).toString()
@@ -178,6 +262,8 @@ class EquipmentActivity : BaseActivity() {
 
     private fun removeFromWindow() {
         if (mLockView.parent == null) {
+            timeHandler.removeCallbacksAndMessages(null)
+            handler.removeCallbacksAndMessages(null)
             windowManager.removeView(mLockView)
         }
     }
@@ -185,5 +271,15 @@ class EquipmentActivity : BaseActivity() {
     fun hideSoftKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+
+    @SuppressLint("HandlerLeak")
+    val handler = object :Handler(){
+        override fun handleMessage(msg: Message?) {
+            super.handleMessage(msg)
+            getEquipments()
+            sendEmptyMessageDelayed(1,15_000)
+        }
     }
 }

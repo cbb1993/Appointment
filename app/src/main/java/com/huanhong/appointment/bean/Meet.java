@@ -1,5 +1,8 @@
 package com.huanhong.appointment.bean;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 /**
  * Created by 坎坎.
  * Date: 2019/7/19
@@ -14,7 +17,31 @@ public class Meet {
             "id":3,
             "name":"周会"
         },*/
-   public long gmtEnd,gmtStart;
-   public int state;
-   public String id,name,creatorName,peopleNum,delayTimeStr;
+   private String gmtEnd,gmtStart;
+   public int state,typeId,id;
+   public String name,creatorName,peopleNum,delayTimeStr;
+
+   public long getGmtEnd() {
+      if(gmtEnd!=null){
+         return getTime(gmtEnd);
+      }
+      return 0;
+   }
+
+   public long getGmtStart() {
+      if(gmtStart!=null){
+         return getTime(gmtStart);
+      }
+      return 0;
+   }
+
+   private long getTime(String date){
+      SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      try {
+         return fmt.parse(date).getTime();
+      } catch (ParseException e) {
+         e.printStackTrace();
+      }
+      return 0;
+   }
 }

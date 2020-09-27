@@ -19,6 +19,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.huanhong.appointment.R;
 
+import java.io.File;
+import java.util.List;
+
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
+
 /**
  * Created by 坎坎.
  * Date: 2020/7/31
@@ -118,4 +124,5 @@ public class CameraView extends RelativeLayout {
     public interface DismissCallback{
         void dismiss();
     }
+
 }

@@ -3,10 +3,10 @@ package com.huanhong.appointment.constant
 
 object Constant {
     const val HAS_NETWORK_KEY = "has_network"
-    const val BASE_URL = "http://www.aiairy.com/ryzf-platform/api/"
-//    const val BASE_URL = "http://192.168.1.20:8082/ryzf-platform/api/"
-    const val BASE_URL_C = "https://www.aiairy.com/ryzf-consumer/api/"
-//    const val BASE_URL_C = "https://192.168.1.20:8081/ryzf-consumer/api/"
+    const val Base = "https://vis.bjcapitalland.com.cn/"
+//    const val Base = "https://www.aiairy.com/"
+    const val BASE_URL = "${Base}ryzf-platform/api/"
+    const val BASE_URL_C = "${Base}ryzf-consumer/api/"
 
     /*------------b端接口---------------*/
     const val SIGN_IN = "login"
@@ -21,6 +21,10 @@ object Constant {
     const val MEET_DEVICES =  "meeting/devices"
     const val variable_list =  "variable/list"
     const val version =  "meeting/version"
+    // 会议签到
+    const val signIn =  "meeting/signIn"
+    // 会议类型
+    const val type =  "meetingType/info/{id}"
 
     /*------------c端接口---------------*/
 
@@ -28,4 +32,13 @@ object Constant {
     const val getSmsCode =BASE_URL_C + "user/getSmsCode"
     const val meetingUsers =BASE_URL_C + "meeting/meetingUsers"
     const val MEET_ADD =BASE_URL_C + "meeting/add"
+
+
+    const val QR_CODE = BASE_URL+"roomInventory/qr"
+    const val equipments = BASE_URL + "equipment/room/{id}"
+    const val station = BASE_URL + "station/room/{id}"
+
+    //上传人脸图片
+
+    const val compareFace1N = "${Base}visitor/api/sense/compareFace1N"
 }

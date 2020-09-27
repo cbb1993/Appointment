@@ -13,21 +13,21 @@
             android:layout_width="20dp"
             android:layout_height="20dp"/>
         <TextView
-            android:text="器材名称"
+            android:id="@+id/tv_name"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <TextView
+        android:id="@+id/tv_used"
         android:layout_centerHorizontal="true"
-        android:text="已被占用"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
         android:layout_alignParentRight="true"
-        android:text="可使用"
+        android:id="@+id/tv_left"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

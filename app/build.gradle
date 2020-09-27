@@ -64,4 +64,8 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.support:multidex-instrumentation:1.0.3'
 
+    implementation 'com.google.zxing:core:3.3.0'
+    // 图片压缩
+    implementation 'top.zibin:Luban:1.1.3'
+
 }

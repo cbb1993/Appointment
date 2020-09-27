@@ -45,13 +45,17 @@ import java.lang.reflect.Type
  * describe:
  */
 class LoginActivity : BaseActivity() {
+//    companion object {
+//        // 7 MainActivity 8 SeatActivity  9 EquipmentActivity
+//        val loginToActivity = 7
+//    }
+
     var show = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        et_account.setText("vansn")
-        et_password.setText("123456")
+//        et_account.setText("scpad")
+//        et_password.setText("123456")
         btn_login.setOnClickListener {
             if (validate()) {
                 val map = HashMap<String, String>()
@@ -112,7 +116,7 @@ class LoginActivity : BaseActivity() {
         val map = HashMap<String, String>()
         map["device"] = ANDROID_ID
         BindStateLoader().getBindState(map).subscribe({
-            getList()
+            getList(it.flatsTag)
         }, {
             var f = it as Fault
             if (f.status == 1005) {
@@ -134,15 +138,26 @@ class LoginActivity : BaseActivity() {
     }
 
     @SuppressLint("CheckResult")
-    private fun getList() {
-        MeetRoomsLoader().rooms.subscribe({
+    private fun getList(flatsTag:Int) {
+        val map = HashMap<String, String>()
+        map["flatsTag"] = "" + flatsTag
+        MeetRoomsLoader().getRooms(map).subscribe({
+            var b = false
             it?.forEach { info ->
                 if (info.deviceMac == Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)) {
+                    b = true
                     SharedPreferencesUtils.addData("roomId", info.id)
                     SharedPreferencesUtils.addData("roomName", info.roomName)
-//                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    startActivity(Intent(this@LoginActivity, SeatActivity::class.java))
                 }
+            }
+            if (b) {
+                when(flatsTag){
+                    7-> startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    8-> startActivity(Intent(this@LoginActivity, SeatActivity::class.java))
+                    9-> startActivity(Intent(this@LoginActivity, EquipmentActivity::class.java))
+                }
+            } else {
+                startActivity(Intent(this@LoginActivity, MeetRoomActivity::class.java))
             }
         }, {
         })
@@ -197,10 +212,12 @@ class LoginActivity : BaseActivity() {
                 .setListener(object : FileDownloadListener() {
                     override fun warn(task: BaseDownloadTask) {
                     }
+
                     override fun completed(task: BaseDownloadTask) {
                         DialogUtils.ToastShow(this@LoginActivity, "下载完成")
                         install(file)
                     }
+
                     override fun pending(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
 

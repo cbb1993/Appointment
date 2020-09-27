@@ -18,7 +18,7 @@ public class LoginReponseBean {
     public String token;
 
     public static void setToken(String token){
-        SharedPreferencesUtils.addData("token","Bearer_"+token);
+        SharedPreferencesUtils.addData("token","Bearer "+token);
     }
     public static String getToken(){
        return SharedPreferencesUtils.readData("token");

@@ -51,7 +51,7 @@ public class MeetPop {
         TextView tv_delay = view.findViewById(R.id.tv_delay);
 
         tv_title.setText(meet.name);
-        tv_time.setText(dateFormat(meet.gmtStart) + "-" + dateFormat(meet.gmtEnd));
+        tv_time.setText(dateFormat(meet.getGmtStart()) + "-" + dateFormat(meet.getGmtEnd()));
         tv_creator.setText(meet.creatorName);
         String s = meet.delayTimeStr;
         if("".equals(s)){

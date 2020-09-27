@@ -6,103 +6,41 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/equipmet_bg">
-
-        <LinearLayout
-            android:id="@+id/ll_lock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/lib_shape_rect_main_radius"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
-            android:visibility="invisible">
-
-            <LinearLayout
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/et_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="center"
-                    android:hint="请输入设备密码"
-                    android:inputType="number"
-                    android:textColor="@color/lib_white"
-                    android:textColorHint="@color/lib_hint" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_confirm"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/lib_shape_rect_grey_radius"
-                    android:gravity="center"
-                    android:paddingLeft="6dp"
-                    android:paddingTop="3dp"
-                    android:paddingRight="6dp"
-                    android:paddingBottom="3dp"
-                    android:text="确认" />
-
-                <TextView
-                    android:id="@+id/tv_cancel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/lib_shape_rect_grey_radius"
-                    android:gravity="center"
-                    android:paddingLeft="6dp"
-                    android:paddingTop="3dp"
-                    android:paddingRight="6dp"
-                    android:paddingBottom="3dp"
-                    android:text="取消" />
-            </LinearLayout>
-        </LinearLayout>
+        android:background="@mipmap/seat_bg">
 
         <TextView
             android:layout_margin="10dp"
-            android:textSize="26sp"
             android:textColor="@color/white"
-            android:text="健身房器材使用情况"
+            android:text="共享工位使用情况"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <View
-            android:id="@+id/view_lock"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="解绑"
+            android:textColor="@color/white"
+            android:id="@+id/tv_setting"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+
 
         <android.support.v7.widget.RecyclerView
             android:layout_margin="10dp"
             android:id="@+id/recycler_devices"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/tv_setting"
             android:layout_marginRight="10dp" />
+
+
 
         <include
             layout="@layout/layout_time_qrcode"
             android:visibility="gone" />
-        
+
         <FrameLayout
             android:layout_alignParentRight="true"
             android:layout_marginTop="50dp"
@@ -121,7 +59,7 @@
                 android:layout_height="match_parent">
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_equipment"
+                    android:id="@+id/recycler_seat"
                     android:layout_marginTop="10dp"
                     android:padding="10dp"
                     android:layout_width="match_parent"
@@ -138,6 +76,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                         <ImageView
+                            android:src="@mipmap/icon_seat_normal"
                             android:layout_marginRight="5dp"
                             android:id="@+id/iv_icon"
                             android:layout_width="30dp"
@@ -155,11 +94,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                         <ImageView
+                            android:src="@mipmap/icon_seat_forbid"
                             android:layout_marginRight="5dp"
                             android:layout_width="30dp"
                             android:layout_height="30dp"/>
                         <TextView
-                            android:text="可选"
+                            android:text="不可选"
                             android:textColor="@color/white"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -171,11 +111,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                         <ImageView
+                            android:src="@mipmap/icon_seat_select"
                             android:layout_marginRight="5dp"
                             android:layout_width="30dp"
                             android:layout_height="30dp"/>
                         <TextView
-                            android:text="可选"
+                            android:text="已选"
                             android:textColor="@color/white"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -185,6 +126,12 @@
             </LinearLayout>
         </FrameLayout>
 
+        <View
+            android:id="@+id/view_lock"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <include
+            layout="@layout/layout_lock"/>
         <include
             android:id="@+id/rl_net"
             layout="@layout/layout_network_tip"

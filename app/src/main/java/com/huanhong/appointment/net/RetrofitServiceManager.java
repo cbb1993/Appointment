@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitServiceManager {
     private static final int DEFAULT_TIME_OUT = 30;//超时时间 5s
-    private static final int DEFAULT_READ_TIME_OUT = 10;
+    private static final int DEFAULT_READ_TIME_OUT = 30;
     private Retrofit mRetrofit;
 
     private RetrofitServiceManager() {
@@ -25,6 +25,7 @@ public class RetrofitServiceManager {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(DEFAULT_TIME_OUT, TimeUnit.SECONDS);//连接超时时间        builder.writeTimeout(DEFAULT_READ_TIME_OUT,TimeUnit.SECONDS);//写操作 超时时间
         builder.readTimeout(DEFAULT_READ_TIME_OUT, TimeUnit.SECONDS);//读操作超时时间
+        builder.writeTimeout(DEFAULT_READ_TIME_OUT, TimeUnit.SECONDS);//读操作超时时间
         // 添加公共参数拦截器
 //        HttpCommonInterceptor commonInterceptor = new HttpCommonInterceptor.Builder()
 //                .addHeaderParams("Content-Type", "application/json;charset=UTF-8")
