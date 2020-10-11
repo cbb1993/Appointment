@@ -44,4 +44,9 @@
     <color name="lib_transparent">#00000000</color>
     <color name="lib_green">#8dd9ac</color>
     <color name="lib_blue_4c98ea">#4c98ea</color>
+
+
+    <color name="seat_normal">#ffffff</color>
+    <color name="seat_select">#4173E1</color>
+    <color name="seat_forbid">#CACACA</color>
 </resources>

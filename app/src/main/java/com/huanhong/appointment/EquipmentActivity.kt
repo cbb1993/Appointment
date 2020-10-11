@@ -27,6 +27,7 @@ import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
 import com.huanhong.appointment.utils.QRCodeUtil
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
+import com.smbd.peripheral.SmbdLed
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -71,6 +72,9 @@ class EquipmentActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+
+        val mSmbdLed = SmbdLed()
+        mSmbdLed.onYellow(true)
     }
 
     private fun initView() {

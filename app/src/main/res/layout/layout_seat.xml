@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_seat_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_marginStart="1dp"
+            android:id="@+id/iv_seat_2"
+            android:layout_width="58dp"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/iv_seat_3"
+            android:layout_width="58dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:layout_marginStart="1dp"
+            android:id="@+id/iv_seat_4"
+            android:layout_width="58dp"
+            android:layout_height="70dp" />
+
+        <ImageView
+            android:id="@+id/iv_seat_5"
+            android:layout_width="58dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:layout_marginStart="1dp"
+            android:id="@+id/iv_seat_6"
+            android:layout_width="58dp"
+            android:layout_height="70dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="top"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_seat_7"
+            android:layout_width="58dp"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_marginStart="1dp"
+            android:id="@+id/iv_seat_8"
+            android:layout_width="58dp"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/iv_seat_9"
+            android:layout_width="58dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:layout_marginStart="1dp"
+            android:id="@+id/iv_seat_10"
+            android:layout_width="58dp"
+            android:layout_height="70dp" />
+
+        <ImageView
+            android:id="@+id/iv_seat_11"
+            android:layout_width="58dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="20dp" />
+
+        <ImageView
+            android:layout_marginStart="1dp"
+            android:id="@+id/iv_seat_12"
+            android:layout_width="58dp"
+            android:layout_height="70dp" />
+    </LinearLayout>
+</LinearLayout>

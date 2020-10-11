@@ -65,12 +65,12 @@ class MainActivity : BaseActivity() {
 
     private val isDevice = true
 
-    private lateinit var mSmbdLed:SmbdLed
+    private lateinit var mSmbdLed: SmbdLed
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(isDevice){
+        if (isDevice) {
             mSmbdLed = SmbdLed()
         }
         initView()
@@ -146,10 +146,10 @@ class MainActivity : BaseActivity() {
 
     override fun checkNetwork(isConnected: Boolean) {
         super.checkNetwork(isConnected)
-        if(isConnected){
+        if (isConnected) {
             rl_net?.visibility = View.GONE
             getMeets()
-        }else{
+        } else {
             rl_net?.visibility = View.VISIBLE
         }
     }
@@ -207,7 +207,7 @@ class MainActivity : BaseActivity() {
             setMeetData()
         }
         // 每5分钟刷新
-        if ((minute.endsWith("0" )||minute.endsWith("5" ))&& calendar.get(Calendar.SECOND) == 0) {
+        if ((minute.endsWith("0") || minute.endsWith("5")) && calendar.get(Calendar.SECOND) == 0) {
             getMeets()
         }
 
@@ -269,8 +269,8 @@ class MainActivity : BaseActivity() {
             tv_next!!.text = StringConstant.next_conference_cn + meet.name
         }
 
-        if(isDevice){
-            mSmbdLed.onYellow(true)
+        if (isDevice) {
+            mSmbdLed.onClose()
         }
         rl_root.setBackgroundResource(R.mipmap.main_bg)
     }
@@ -295,16 +295,17 @@ class MainActivity : BaseActivity() {
         } else {
             tv_next?.text = StringConstant.next_conference_cn + StringConstant.none_cn
         }
-        if(isDevice){
+        if (isDevice) {
             mSmbdLed.onRed(true)
         }
 
-        meetingType(""+meet.typeId)
+        meetingType("" + meet.typeId)
     }
 
     private val httpList = ArrayList<Meet>()
     private val currentList = ArrayList<Meet>()
     private var lastData: RoomInfo? = null
+
     @SuppressLint("CheckResult")
     private fun getMeets() {
         val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
@@ -352,24 +353,24 @@ class MainActivity : BaseActivity() {
         })
     }
 
-    private fun compareMeeting(last:RoomInfo?,current:RoomInfo):Boolean{
-        if(last == null){
+    private fun compareMeeting(last: RoomInfo?, current: RoomInfo): Boolean {
+        if (last == null) {
             return false
         }
-        if(last.list.size != current.list.size){
+        if (last.list.size != current.list.size) {
             // 会议长度不相等 数据有更新
             return false
         }
         val length = current.list.size
         for (lastMeeting in last.list) {
             var exist = false
-            for (i in 0 until length ) {
-                if(lastMeeting.id == current.list[i].id){
+            for (i in 0 until length) {
+                if (lastMeeting.id == current.list[i].id) {
                     exist = true
                 }
             }
             // 遍历下来这个id不存在
-            if(!exist){
+            if (!exist) {
                 return false
             }
         }
@@ -377,23 +378,25 @@ class MainActivity : BaseActivity() {
     }
 
     @SuppressLint("CheckResult")
-    private fun signIn(id:String) {
-        if(currentMeet==null){
+    private fun signIn(id: String) {
+        if (currentMeet == null) {
             return
         }
         var map = HashMap<String, Any>()
-        map["mId"] =currentMeet!!.id
-        map["userId"] =id
+        map["mId"] = currentMeet!!.id
+        map["userId"] = id
         SignInLoader().request(map).subscribe({
             updateCheckState(2)
         }, {
-            errorMsg="签到失败，请重新签到"
+            val msg = ThrowableUtils.ThrowableEnd2(it)
+            errorMsg = msg
             updateCheckState(3)
         })
     }
 
 
     private val devices = ArrayList<MeetDevice>()
+
     @SuppressLint("CheckResult")
     private fun getDevices() {
         var map = HashMap<String, Any>()
@@ -474,7 +477,6 @@ class MainActivity : BaseActivity() {
     private fun bindPush() {
         PushServiceFactory.getCloudPushService().bindAccount(Settings.System.getString(contentResolver, Settings.System.ANDROID_ID), object : CommonCallback {
             override fun onSuccess(p0: String?) {
-                Log.e("---push------", "success")
             }
 
             override fun onFailed(p0: String?, p1: String?) {
@@ -515,6 +517,7 @@ class MainActivity : BaseActivity() {
     private var recycler_devices: RecyclerView? = null
     private var pop_line: View? = null
     private var rl_net: View? = null
+
     //
     private var rl_error: View? = null
 
@@ -534,13 +537,13 @@ class MainActivity : BaseActivity() {
 
     private var unBind = false
 
-    private lateinit var mCameraView:CameraView
-    private lateinit var rl_camera:View
-    private lateinit var rl_state:View
-    private lateinit var iv_pic:ImageView
-    private lateinit var tv_state:TextView
+    private lateinit var mCameraView: CameraView
+    private lateinit var rl_camera: View
+    private lateinit var rl_state: View
+    private lateinit var iv_pic: ImageView
+    private lateinit var tv_state: TextView
 
-    private lateinit var rl_root:View
+    private lateinit var rl_root: View
 
 
     private fun initView() {
@@ -579,14 +582,14 @@ class MainActivity : BaseActivity() {
 //            rl_unbind.visibility = View.GONE
 //            unbind()
 //        }
-        rl_state= mLockView!!.findViewById(R.id.rl_state)
-        iv_pic= mLockView!!.findViewById(R.id.iv_pic)
-        tv_state= mLockView!!.findViewById(R.id.tv_state)
+        rl_state = mLockView!!.findViewById(R.id.rl_state)
+        iv_pic = mLockView!!.findViewById(R.id.iv_pic)
+        tv_state = mLockView!!.findViewById(R.id.tv_state)
 
-        mCameraView= mLockView!!.findViewById(R.id.view_camera)
-        rl_camera= mLockView!!.findViewById(R.id.rl_camera)
+        mCameraView = mLockView!!.findViewById(R.id.view_camera)
+        rl_camera = mLockView!!.findViewById(R.id.rl_camera)
         mCameraView.setDismissCallback {
-            rl_camera.visibility= View.INVISIBLE
+            rl_camera.visibility = View.INVISIBLE
         }
         mCameraView.setTakePhotoStateCallback {
             // 开始上传
@@ -595,36 +598,36 @@ class MainActivity : BaseActivity() {
         val tv_face_tip = mLockView!!.findViewById<TextView>(R.id.tv_face_tip)
 
         mLockView!!.findViewById<View>(R.id.tv_camera).setOnClickListener {
-            if(use){
+            if (use) {
 //                rl_camera.visibility= View.VISIBLE
                 tv_face_tip.visibility = View.VISIBLE
                 Handler().postDelayed(Runnable {
                     tv_face_tip.visibility = View.GONE
                     mCameraView.takePhoto()
-                },1000)
+                }, 1000)
 
             }
         }
 
-        rl_camera.visibility= View.INVISIBLE
+        rl_camera.visibility = View.INVISIBLE
     }
 
-    private fun updateCheckState(flag :Int){
-        when(flag){
-            1->{
+    private fun updateCheckState(flag: Int) {
+        when (flag) {
+            1 -> {
                 rl_state.visibility = View.VISIBLE
                 Glide.with(this).load(ImageUtils.lastPath).into(iv_pic)
                 tv_state.text = "正在签到..."
             }
-            2->{
-                handler.sendEmptyMessageDelayed(1,2000)
+            2 -> {
+                handler.sendEmptyMessageDelayed(1, 2000)
                 tv_state.text = "签到成功"
             }
-            3 ->{
-                handler.sendEmptyMessageDelayed(1,2000)
+            3 -> {
+                handler.sendEmptyMessageDelayed(1, 2000)
                 tv_state.text = errorMsg
             }
-            4 ->{
+            4 -> {
                 rl_state.visibility = View.GONE;
             }
         }
@@ -632,14 +635,14 @@ class MainActivity : BaseActivity() {
     }
 
     @SuppressLint("CheckResult")
-    private fun meetingType(id:String){
+    private fun meetingType(id: String) {
         MeetTypeLoader().request(id).subscribe({
-            if(it.themeId == 1){
+            if (it.themeId == 1) {
                 rl_root.setBackgroundResource(R.mipmap.red_bg)
-            }else{
+            } else {
                 rl_root.setBackgroundResource(R.mipmap.main_bg)
             }
-        },{})
+        }, {})
     }
 
 
@@ -653,10 +656,10 @@ class MainActivity : BaseActivity() {
 
 
     private var errorMsg = ""
+
     @SuppressLint("CheckResult")
     fun checkPhoto(path2: String) {
-        val file2 = File(path2)
-        var file =File(file2.parentFile,"test.png")
+        val file = File(path2)
         ImageUtils.lastPath = file.absolutePath
         updateCheckState(1)
         val filePart = MultipartBody.Part.createFormData(
@@ -666,9 +669,18 @@ class MainActivity : BaseActivity() {
         )
         PhotoCheckLoader().request(filePart).subscribe({
             signIn(it.id)
+            // 清除所有缓存数据
+            for (f in file.parentFile.listFiles()) {
+                f.delete()
+            }
         }, {
-            errorMsg="签到失败，请重新签到"
+            val msg = ThrowableUtils.ThrowableEnd2(it)
+            errorMsg = msg
             updateCheckState(3)
+            // 清除所有缓存数据
+            for (f in file.parentFile.listFiles()) {
+                f.delete()
+            }
         })
     }
 
@@ -754,16 +766,17 @@ class MainActivity : BaseActivity() {
                     override fun onSuccess(file: File) {
                         Log.e("-------", "---------" + file.absolutePath)
                     }
+
                     override fun onError(e: Throwable) {}
                 }).launch()
     }
 
     @SuppressLint("HandlerLeak")
-    val meetingHandler = object :Handler(){
+    val meetingHandler = object : Handler() {
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
             getMeets()
-            sendEmptyMessageDelayed(1,10_000)
+            sendEmptyMessageDelayed(1, 10_000)
         }
     }
 }

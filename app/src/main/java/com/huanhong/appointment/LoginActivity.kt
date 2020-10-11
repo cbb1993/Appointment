@@ -104,6 +104,8 @@ class LoginActivity : BaseActivity() {
                 ThrowableUtils.ThrowableEnd(it, null)
             })
         }
+
+        tv_version.text = "v${BuildConfig.VERSION_NAME}"
     }
 
     inline fun <reified T : Any> Gson.fromJson(json: String): T {

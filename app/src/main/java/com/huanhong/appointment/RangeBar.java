@@ -101,7 +101,7 @@ public class RangeBar extends RelativeLayout {
             line.setLayoutParams(lp);
         }
     }
-    int itemWidth = 128 ;
+    int itemWidth = 120 ;
     public void setTimeRange( TimeBean bean ,int tag,int flag) {
         if (bean.start.contains(":") && bean.end.contains(":")) {
             String[] starts = bean.start.split(":");

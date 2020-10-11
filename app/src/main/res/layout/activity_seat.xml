@@ -43,7 +43,7 @@
 
         <FrameLayout
             android:layout_alignParentRight="true"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="120dp"
             android:layout_marginRight="40dp"
             android:layout_width="500dp"
             android:layout_height="400dp">
@@ -58,13 +58,99 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_seat"
-                    android:layout_marginTop="10dp"
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="260dp"/>
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp">
+                    <LinearLayout
+                        android:layout_marginTop="110dp"
+                        android:background="@drawable/shape_bg_seat_code"
+                        android:orientation="vertical"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:gravity="center"
+                            android:text="1"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"/>
+                        <TextView
+                            android:gravity="center"
+                            android:text="2"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_marginStart="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <LinearLayout
+                            android:layout_marginBottom="20dp"
+
+                            android:layout_marginTop="20dp"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp">
+                            <TextView
+                                android:gravity="center"
+                                android:text="A"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:layout_width="58dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:gravity="center"
+                                android:text="B"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:layout_width="58dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:layout_marginStart="20dp"
+                                android:gravity="center"
+                                android:text="C"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:layout_width="58dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:gravity="center"
+                                android:text="D"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:layout_width="58dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:layout_marginStart="20dp"
+                                android:gravity="center"
+                                android:text="E"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:layout_width="58dp"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:gravity="center"
+                                android:text="F"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:layout_width="58dp"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
+<!--                        <android.support.v7.widget.RecyclerView-->
+<!--                            android:id="@+id/recycler_seat"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="140dp"/>-->
+
+                        <include layout="@layout/layout_seat2" />
+                    </LinearLayout>
+                </LinearLayout>
                 <LinearLayout
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -75,12 +161,11 @@
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
-                        <ImageView
-                            android:src="@mipmap/icon_seat_normal"
+                        <View
+                            android:background="@color/seat_normal"
                             android:layout_marginRight="5dp"
-                            android:id="@+id/iv_icon"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"/>
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"/>
                         <TextView
                             android:text="可选"
                             android:textColor="@color/white"
@@ -93,11 +178,11 @@
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
-                        <ImageView
-                            android:src="@mipmap/icon_seat_forbid"
+                        <View
+                            android:background="@color/seat_forbid"
                             android:layout_marginRight="5dp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"/>
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"/>
                         <TextView
                             android:text="不可选"
                             android:textColor="@color/white"
@@ -110,11 +195,11 @@
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
-                        <ImageView
-                            android:src="@mipmap/icon_seat_select"
+                        <View
+                            android:background="@color/seat_select"
                             android:layout_marginRight="5dp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"/>
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"/>
                         <TextView
                             android:text="已选"
                             android:textColor="@color/white"

@@ -7,15 +7,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.provider.Settings
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import com.alibaba.sdk.android.push.CommonCallback
-import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
 import com.bumptech.glide.Glide
 import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
@@ -29,6 +26,7 @@ import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
 import com.huanhong.appointment.utils.QRCodeUtil
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
+import com.smbd.peripheral.SmbdLed
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -57,7 +55,7 @@ class SeatActivity : BaseActivity() {
     var arr = arrayOf("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
 
     // 器材
-    private lateinit var recycler_seat: RecyclerView
+//    private lateinit var recycler_seat: RecyclerView
     private val seats = ArrayList<Seat>()
 
     // 二维码
@@ -67,9 +65,39 @@ class SeatActivity : BaseActivity() {
     private lateinit var tv_setting: TextView
     private var unBind = false
 
+    // 座位图
+    private lateinit var view_circle_1:View
+    private lateinit var view_1:View
+    private lateinit var view_circle_2:View
+    private lateinit var view_2:View
+    private lateinit var view_circle_3:View
+    private lateinit var view_3:View
+    private lateinit var view_circle_4:View
+    private lateinit var view_4:View
+    private lateinit var view_circle_5:View
+    private lateinit var view_5:View
+    private lateinit var view_circle_6:View
+    private lateinit var view_6:View
+    private lateinit var view_circle_7:View
+    private lateinit var view_7:View
+    private lateinit var view_circle_8:View
+    private lateinit var view_8:View
+    private lateinit var view_circle_9:View
+    private lateinit var view_9:View
+    private lateinit var view_circle_10:View
+    private lateinit var view_10:View
+    private lateinit var view_circle_11:View
+    private lateinit var view_11:View
+    private lateinit var view_circle_12:View
+    private lateinit var view_12:View
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+
+        val mSmbdLed = SmbdLed()
+        mSmbdLed.onYellow(true)
     }
 
     private fun initView() {
@@ -86,19 +114,51 @@ class SeatActivity : BaseActivity() {
     }
 
     private fun initSeats() {
-        recycler_seat = mLockView.findViewById(R.id.recycler_seat)
-        recycler_seat.layoutManager = GridLayoutManager(this, 6)
-        recycler_seat.adapter = object : CommonAdapter<Seat>(this, seats, R.layout.item_seat) {
-            override fun convert(holder: ViewHolder, t: MutableList<Seat>) {
-//               1.可用 2.占用中 3.锁定
-                val iv_seat = holder.getView<ImageView>(R.id.iv_seat)
-                when(t[holder.realPosition].state){
-                    1 -> iv_seat.setImageResource(R.mipmap.icon_seat_normal)
-                    2 -> iv_seat.setImageResource(R.mipmap.icon_seat_select)
-                    3 -> iv_seat.setImageResource(R.mipmap.icon_seat_forbid)
-                }
-            }
-        }
+//        recycler_seat = mLockView.findViewById(R.id.recycler_seat)
+////        recycler_seat.layoutManager = GridLayoutManager(this, 6)
+////        recycler_seat.adapter = object : CommonAdapter<Seat>(this, seats, R.layout.item_seat) {
+////            override fun convert(holder: ViewHolder, t: MutableList<Seat>) {
+//////               1.可用 2.占用中 3.锁定
+////                val iv_seat = holder.getView<ImageView>(R.id.iv_seat)
+////                if(holder.realPosition<6){
+////                    when(t[holder.realPosition].state){
+////                        1 -> iv_seat.setImageResource(R.mipmap.white_up)
+////                        2 -> iv_seat.setImageResource(R.mipmap.blue_up)
+////                        3 -> iv_seat.setImageResource(R.mipmap.grey_up)
+////                    }
+////                }else{
+////                    when(t[holder.realPosition].state){
+////                        1 -> iv_seat.setImageResource(R.mipmap.white_down)
+////                        2 -> iv_seat.setImageResource(R.mipmap.blue_down)
+////                        3 -> iv_seat.setImageResource(R.mipmap.grey_down)
+////                    }
+////                }
+////            }
+////        }
+        view_circle_1 = mLockView.findViewById(R.id.view_circle_1)
+        view_1 = mLockView.findViewById(R.id.view_1)
+        view_circle_2 = mLockView.findViewById(R.id.view_circle_2)
+        view_2 = mLockView.findViewById(R.id.view_2)
+        view_circle_3 = mLockView.findViewById(R.id.view_circle_3)
+        view_3 = mLockView.findViewById(R.id.view_3)
+        view_circle_4 = mLockView.findViewById(R.id.view_circle_4)
+        view_4 = mLockView.findViewById(R.id.view_4)
+        view_circle_5 = mLockView.findViewById(R.id.view_circle_5)
+        view_5 = mLockView.findViewById(R.id.view_5)
+        view_circle_6 = mLockView.findViewById(R.id.view_circle_6)
+        view_6 = mLockView.findViewById(R.id.view_6)
+        view_circle_7 = mLockView.findViewById(R.id.view_circle_7)
+        view_7 = mLockView.findViewById(R.id.view_7)
+        view_circle_8 = mLockView.findViewById(R.id.view_circle_8)
+        view_8 = mLockView.findViewById(R.id.view_8)
+        view_circle_9 = mLockView.findViewById(R.id.view_circle_9)
+        view_9 = mLockView.findViewById(R.id.view_9)
+        view_circle_10 = mLockView.findViewById(R.id.view_circle_10)
+        view_10 = mLockView.findViewById(R.id.view_10)
+        view_circle_11 = mLockView.findViewById(R.id.view_circle_11)
+        view_11 = mLockView.findViewById(R.id.view_11)
+        view_circle_12 = mLockView.findViewById(R.id.view_circle_12)
+        view_12 = mLockView.findViewById(R.id.view_12)
     }
 
     // 时间
@@ -197,12 +257,49 @@ class SeatActivity : BaseActivity() {
     private fun getSeats() {
         SeatsLoader().request(SharedPreferencesUtils.readData("roomId")).subscribe({
             seats.clear()
-            seats.addAll(it)
-            recycler_seat.adapter?.notifyDataSetChanged()
+            if(it.size<=12){
+                seats.addAll(it)
+            }else{
+                seats.addAll(it.subList(0,12))
+            }
+//            recycler_seat.adapter?.notifyDataSetChanged()
+            for(i in 0 until seats.size){
+                val state = seats[i].state
+                when(i){
+                    0->setViewState(view_circle_1,view_1,state)
+                    1->setViewState(view_circle_2,view_2,state)
+                    2->setViewState(view_circle_3,view_3,state)
+                    3->setViewState(view_circle_4,view_4,state)
+                    4->setViewState(view_circle_5,view_5,state)
+                    5->setViewState(view_circle_6,view_6,state)
+                    6->setViewState(view_circle_7,view_7,state)
+                    7->setViewState(view_circle_8,view_8,state)
+                    8->setViewState(view_circle_9,view_9,state)
+                    9->setViewState(view_circle_10,view_10,state)
+                    10->setViewState(view_circle_11,view_11,state)
+                    11->setViewState(view_circle_12,view_12,state)
+                }
+            }
         }, {
         })
     }
 
+    private fun setViewState(v1:View, v2:View, state:Int){
+        when(state){
+            1 -> {
+                v1.background = getDrawable(R.drawable.shape_circle_white)
+                v2.background = getDrawable(R.color.seat_normal)
+            }
+            2 ->{
+                v1.background = getDrawable(R.drawable.shape_circle_blue)
+                v2.background = getDrawable(R.color.seat_select)
+            }
+            3 -> {
+                v1.background = getDrawable(R.drawable.shape_circle_grey)
+                v2.background = getDrawable(R.color.seat_forbid)
+            }
+        }
+    }
     @SuppressLint("CheckResult")
     private fun unbind() {
         val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)

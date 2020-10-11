@@ -1,6 +1,7 @@
 package com.huanhong.appointment.net;
 
 import android.app.Dialog;
+import android.util.Log;
 
 
 import java.net.ConnectException;
@@ -33,6 +34,23 @@ public class ThrowableUtils {
             DialogUtils.toastShow("无网络连接，请求失败");
         } else {
             DialogUtils.toastShow(throwable.getMessage());
+        }
+    }
+
+    public static String ThrowableEnd2( Throwable throwable) {
+        //出现错误
+        if (throwable instanceof HttpException) { // 网络错误
+            return "网络异常，请稍后重试";
+        } else if (throwable instanceof SocketTimeoutException) { // 其他错误
+            return "网络请求超时，请稍后重试";
+        } else if (throwable instanceof ConnectException) {
+            return "无网络，请求失败";
+        } else if (throwable instanceof Fault) {
+            return ((Fault) throwable).message;
+        } else if (throwable instanceof NullPointerException) {
+            return "请求数据为空";
+        } else {
+            return "签到失败，请重新签到";
         }
     }
 }

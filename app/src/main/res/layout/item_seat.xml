@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    android:gravity="center">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="70dp"
+    android:orientation="horizontal">
     <ImageView
-        android:src="@mipmap/icon_seat_normal"
         android:id="@+id/iv_seat"
-        android:layout_width="30dp"
-        android:layout_height="30dp"/>
-</RelativeLayout>
+        android:layout_width="58dp"
+        android:layout_height="70dp"/>
+    <View
+        android:id="@+id/view_margin"
+        android:layout_width="20dp"
+        android:layout_height="20dp"/>
+</LinearLayout>
