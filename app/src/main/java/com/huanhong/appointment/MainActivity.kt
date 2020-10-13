@@ -3,10 +3,7 @@ package com.huanhong.appointment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.os.*
 import android.provider.Settings
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -29,6 +26,7 @@ import com.huanhong.appointment.camera.ImageUtils
 import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.*
+import com.huanhong.appointment.utils.FileUtil
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
 import com.smbd.peripheral.SmbdLed
@@ -67,6 +65,12 @@ class MainActivity : BaseActivity() {
 
     private lateinit var mSmbdLed: SmbdLed
 
+    private var initDevice = true
+
+    lateinit var meetingCacheFile: File
+
+    var time  = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +80,11 @@ class MainActivity : BaseActivity() {
         initView()
         setMeetData()
         initTimer()
+
+        meetingCacheFile = File(BaseApplication.path)
+        if (!meetingCacheFile.exists()) {
+            meetingCacheFile.mkdirs()
+        }
 
         tv_setting!!.setOnClickListener {
             unBind = true
@@ -123,6 +132,8 @@ class MainActivity : BaseActivity() {
                 Glide.with(this@MainActivity).load(t[holder.realPosition].remark).into(iv_icon)
             }
         }
+
+        getMeets()
     }
 
     @SuppressLint("CheckResult")
@@ -137,11 +148,6 @@ class MainActivity : BaseActivity() {
         }, {
             ThrowableUtils.ThrowableEnd(it, null)
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        meetingHandler.sendEmptyMessage(1)
     }
 
     override fun checkNetwork(isConnected: Boolean) {
@@ -202,12 +208,24 @@ class MainActivity : BaseActivity() {
         tv_date!!.text = date
         tv_date_week!!.text = "${calendar.get(Calendar.YEAR)}-$month-$day ${arr[calendar.get(Calendar.DAY_OF_WEEK) - 1]}"
 
+        val second = calendar.get(Calendar.SECOND)
+
         if (calendar.get(Calendar.SECOND) == 0) {
             range!!.setCurrentTime("$hour:$minute")
             setMeetData()
         }
-        // 每5分钟刷新
-        if ((minute.endsWith("0") || minute.endsWith("5")) && calendar.get(Calendar.SECOND) == 0) {
+        // 是否是凌晨1点 清除 crash 日志 和 会议列表日志
+        if (calendar.get(Calendar.HOUR_OF_DAY) == 1
+                && calendar.get(Calendar.MINUTE) == 0
+                && second == 0) {
+            for (f in meetingCacheFile.listFiles()) {
+                f.delete()
+            }
+        }
+        time = "$date:$second"
+
+//        // 每10秒刷新
+        if (second%10 == 0) {
             getMeets()
         }
 
@@ -326,7 +344,15 @@ class MainActivity : BaseActivity() {
             needAudit = it.configuration.needAudit
             deviceIds = it.configuration.deviceIds
 
-            getDevices()
+            if (initDevice) {
+                getDevices()
+                initDevice = false
+            }
+
+
+            // 写入log
+            FileUtil.appendMethodB(time + "----->" + it.list.size + "条会议\n")
+
             if (it.list.size > 0) {
                 it.list.forEach { info ->
                     // 是否在今天
@@ -353,29 +379,6 @@ class MainActivity : BaseActivity() {
         })
     }
 
-    private fun compareMeeting(last: RoomInfo?, current: RoomInfo): Boolean {
-        if (last == null) {
-            return false
-        }
-        if (last.list.size != current.list.size) {
-            // 会议长度不相等 数据有更新
-            return false
-        }
-        val length = current.list.size
-        for (lastMeeting in last.list) {
-            var exist = false
-            for (i in 0 until length) {
-                if (lastMeeting.id == current.list[i].id) {
-                    exist = true
-                }
-            }
-            // 遍历下来这个id不存在
-            if (!exist) {
-                return false
-            }
-        }
-        return true
-    }
 
     @SuppressLint("CheckResult")
     private fun signIn(id: String) {
@@ -729,6 +732,8 @@ class MainActivity : BaseActivity() {
     }
 
     private fun removeFromWindow() {
+        timeHandler.removeCallbacksAndMessages(null)
+        handler.removeCallbacksAndMessages(null)
         if (mLockView != null && mLockView?.parent == null) {
             windowManager.removeView(mLockView)
         }
@@ -771,12 +776,4 @@ class MainActivity : BaseActivity() {
                 }).launch()
     }
 
-    @SuppressLint("HandlerLeak")
-    val meetingHandler = object : Handler() {
-        override fun handleMessage(msg: Message?) {
-            super.handleMessage(msg)
-            getMeets()
-            sendEmptyMessageDelayed(1, 10_000)
-        }
-    }
 }

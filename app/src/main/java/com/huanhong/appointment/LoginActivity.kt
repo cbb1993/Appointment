@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
+import android.view.View
 import com.google.gson.Gson
 import com.huanhong.appointment.bean.AppVersion
 import com.huanhong.appointment.bean.LoginReponseBean
@@ -51,11 +52,12 @@ class LoginActivity : BaseActivity() {
 //    }
 
     var show = false
+    var bind = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-//        et_account.setText("scpad")
-//        et_password.setText("123456")
+        et_account.setText("scpad")
+        et_password.setText("123456")
         btn_login.setOnClickListener {
             if (validate()) {
                 val map = HashMap<String, String>()
@@ -106,6 +108,12 @@ class LoginActivity : BaseActivity() {
         }
 
         tv_version.text = "v${BuildConfig.VERSION_NAME}"
+
+        view_clear.setOnLongClickListener {
+            bind = false
+            DialogUtils.ToastShow(this, "可以重新绑定")
+            true
+        }
     }
 
     inline fun <reified T : Any> Gson.fromJson(json: String): T {
@@ -118,7 +126,12 @@ class LoginActivity : BaseActivity() {
         val map = HashMap<String, String>()
         map["device"] = ANDROID_ID
         BindStateLoader().getBindState(map).subscribe({
-            getList(it.flatsTag)
+            if(bind){
+                getList(it.flatsTag)
+            }else{
+                startActivity(Intent(this@LoginActivity, MeetRoomActivity::class.java))
+                bind = true
+            }
         }, {
             var f = it as Fault
             if (f.status == 1005) {
@@ -242,6 +255,10 @@ class LoginActivity : BaseActivity() {
         AndPermission
                 .with(this)
                 .install().file(file).start()
+    }
+
+    fun toMeetingRoom(view: View) {
+
     }
 
 //    private fun install(apkPath:String){

@@ -2,17 +2,21 @@ package com.huanhong.appointment;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Environment;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.huanhong.appointment.utils.CrashHandler;
 import com.liulishuo.filedownloader.FileDownloader;
+
+import java.io.File;
 
 public class BaseApplication extends Application {
     public static Application application;
-
+    public static final String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MeetingCache";
     public static Context instance() {
         return application;
     }
@@ -20,6 +24,8 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
         MultiDex.install(this);
         application = this;
         initPushService(this);
