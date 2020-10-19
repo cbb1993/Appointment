@@ -1,4 +1,4 @@
-package com.huanhong.appointment;
+package com.huanhong.appointment.views;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.TimePicker;
+
+import com.huanhong.appointment.R;
 
 /**
  * Created by 坎坎.

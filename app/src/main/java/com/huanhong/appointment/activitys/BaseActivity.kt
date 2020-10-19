@@ -1,4 +1,4 @@
-package com.huanhong.appointment
+package com.huanhong.appointment.activitys
 
 import android.content.Context
 import android.content.IntentFilter
@@ -10,6 +10,9 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import com.huanhong.appointment.NetworkChangeEvent
+import com.huanhong.appointment.receivers.NetworkChangeReceiver
+import com.huanhong.appointment.R
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

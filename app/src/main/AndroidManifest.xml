@@ -71,6 +71,8 @@
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -81,15 +83,16 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".LoginActivity" android:launchMode="singleTask" android:screenOrientation="landscape">
+        <activity android:name=".activitys.SplashActivity" android:launchMode="singleTask" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"  android:launchMode="singleTask" android:screenOrientation="landscape"/>
-        <activity android:name=".MeetRoomActivity"  android:launchMode="singleTask" android:screenOrientation="landscape"/>
+        <activity android:name=".activitys.LoginActivity"  android:launchMode="singleTask" android:screenOrientation="landscape"/>
+        <activity android:name=".activitys.MainActivity"  android:launchMode="singleTask" android:screenOrientation="landscape"/>
+        <activity android:name=".activitys.MeetRoomActivity"  android:launchMode="singleTask" android:screenOrientation="landscape"/>
 
 
         <!--Push SDK 相关组件，required-->
@@ -210,13 +213,13 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:process=":channel"
             />
-        <activity android:name=".OrderLoginActivity" android:launchMode="singleTask" />
-        <activity android:name=".OrderActivity" android:launchMode="singleTask"/>
-        <activity android:name=".EquipmentActivity" android:launchMode="singleTask" android:screenOrientation="landscape"/>
-        <activity android:name=".SeatActivity" android:launchMode="singleTask" android:screenOrientation="landscape"/>
+        <activity android:name=".activitys.OrderLoginActivity" android:launchMode="singleTask" />
+        <activity android:name=".activitys.OrderActivity" android:launchMode="singleTask"/>
+        <activity android:name=".activitys.EquipmentActivity" android:launchMode="singleTask" android:screenOrientation="landscape"/>
+        <activity android:name=".activitys.SeatActivity" android:launchMode="singleTask" android:screenOrientation="landscape"/>
 
         <receiver
-            android:name=".MyMessageReceiver"
+            android:name=".receivers.MyMessageReceiver"
             android:exported="false"> <!-- 为保证receiver安全，建议设置不可导出，如需对其他应用开放可通过android：permission进行限制 -->
             <intent-filter>
                 <action android:name="com.alibaba.push2.action.NOTIFICATION_OPENED" />
@@ -240,6 +243,15 @@
         <meta-data
             android:name="design_height_in_dp"
             android:value="768"/>
+
+        <receiver android:name=".receivers.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

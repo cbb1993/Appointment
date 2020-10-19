@@ -24,6 +24,14 @@ public class SharedPreferencesUtils {
         editor.commit();
     }
 
+    public static void addData(String key, int value) {
+        init();
+
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt(key, value);
+        editor.commit();
+    }
+
     public static void addData(String key, boolean value) {
         init();
 
@@ -49,6 +57,11 @@ public class SharedPreferencesUtils {
     public static Set<String> readStringSerData(String key) {
         init();
         return mSharedPreferences.getStringSet(key, new HashSet<String>());
+    }
+
+    public static int readIntData(String key) {
+        init();
+        return mSharedPreferences.getInt(key, 0);
     }
 
     public static String readData(String key) {

@@ -1,4 +1,4 @@
-package com.huanhong.appointment;
+package com.huanhong.appointment.views;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.huanhong.appointment.R;
+
 /**
  * Created by 坎坎.
  * Date: 2019/6/6
@@ -16,7 +18,7 @@ import android.widget.TextView;
  */
 public class AlertDialog extends Dialog {
     public AlertDialog(Context context, String content, ConfirmCallback callback) {
-        super(context,R.style.app_dialog);
+        super(context, R.style.app_dialog);
         init(content,callback);
     }
     private TextView tv_content;

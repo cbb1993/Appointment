@@ -111,8 +111,17 @@
         android:layout_height="wrap_content"/>
 
     <View
+        android:layout_alignParentRight="true"
         android:id="@+id/view_clear"
-        android:layout_width="100dp"
-        android:layout_height="100dp"/>
+        android:layout_width="60dp"
+        android:layout_height="60dp"/>
+
+    <TextView
+        android:id="@+id/tv_setting"
+        android:textSize="20sp"
+        android:padding="20dp"
+        android:text="设置"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.huanhong.appointment
+package com.huanhong.appointment.activitys
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.v7.app.AppCompatActivity
+import com.huanhong.appointment.R
 import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.ThrowableUtils
 import com.huanhong.appointment.net.httploader.GetCodeRoomsLoader
@@ -32,7 +33,7 @@ class OrderLoginActivity : AppCompatActivity() {
                 OrderLoginLoader().getLoginInFo(map).subscribe({
                         if(it!=null){
                             val user = it.user
-                            startActivity(Intent(this@OrderLoginActivity,OrderActivity::class.java)
+                            startActivity(Intent(this@OrderLoginActivity, OrderActivity::class.java)
                                     .putExtra("token",it.token)
                                     .putExtra("id",user.id))
                         }

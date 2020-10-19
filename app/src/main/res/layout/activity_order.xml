@@ -268,7 +268,7 @@
 
 <!--      </LinearLayout>-->
 
-      <com.huanhong.appointment.RangeBar
+      <com.huanhong.appointment.views.RangeBar
           android:layout_marginTop="20dp"
           android:layout_gravity="center_horizontal"
           android:layout_marginBottom="10dp"
@@ -276,7 +276,7 @@
           android:layout_width="wrap_content"
           android:layout_height="100dp">
 
-      </com.huanhong.appointment.RangeBar>
+      </com.huanhong.appointment.views.RangeBar>
   </LinearLayout>
 
 

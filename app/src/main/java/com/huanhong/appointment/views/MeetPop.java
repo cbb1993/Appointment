@@ -1,4 +1,4 @@
-package com.huanhong.appointment;
+package com.huanhong.appointment.views;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.huanhong.appointment.R;
 import com.huanhong.appointment.bean.Meet;
 
 import java.text.SimpleDateFormat;

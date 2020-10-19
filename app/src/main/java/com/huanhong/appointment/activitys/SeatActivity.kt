@@ -1,4 +1,4 @@
-package com.huanhong.appointment
+package com.huanhong.appointment.activitys
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -14,6 +14,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.bumptech.glide.Glide
+import com.huanhong.appointment.R
 import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.MeetDevice
@@ -26,6 +27,7 @@ import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
 import com.huanhong.appointment.utils.QRCodeUtil
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
+import com.huanhong.appointment.views.ConfigPopwindow
 import com.smbd.peripheral.SmbdLed
 import java.util.*
 import kotlin.collections.ArrayList
@@ -95,9 +97,15 @@ class SeatActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
-
-        val mSmbdLed = SmbdLed()
-        mSmbdLed.onYellow(true)
+        if(ConfigPopwindow.getDeviceType() == 0){
+            val mSmbdLed = SmbdLed()
+            when (ConfigPopwindow.getSeatLightType()) {
+                0 -> mSmbdLed.onGreen(true)
+                1 -> mSmbdLed.onRed(true)
+                2 -> mSmbdLed.onYellow(true)
+                3 -> mSmbdLed.onClose()
+            }
+        }
     }
 
     private fun initView() {
@@ -206,6 +214,7 @@ class SeatActivity : BaseActivity() {
             hideSoftKeyboard(tv_cancel)
             ll_lock.visibility = View.INVISIBLE
             et_password.setText("")
+            unBind = false
         }
         tv_confirm.setOnClickListener {
             if (et_password.length() != 0) {
@@ -213,6 +222,7 @@ class SeatActivity : BaseActivity() {
                     if (unBind) {
                         unbind()
                     } else {
+                        SplashActivity.clearLogin()
                         removeFromWindow()
                         exitProcess(0)
                     }
@@ -307,6 +317,7 @@ class SeatActivity : BaseActivity() {
         map["device"] = deviceId
         UnbindMeetRoomsLoader().unbind(map).subscribe({
             //            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
+            SplashActivity.clearLogin()
             removeFromWindow()
             System.exit(0)
             startActivity(Intent(this@SeatActivity, LoginActivity::class.java))

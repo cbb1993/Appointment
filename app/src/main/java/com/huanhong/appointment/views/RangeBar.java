@@ -1,4 +1,4 @@
-package com.huanhong.appointment;
+package com.huanhong.appointment.views;
 
 import android.content.Context;
 import android.os.Build;
@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.huanhong.appointment.R;
 
 import java.util.ArrayList;
 import java.util.List;

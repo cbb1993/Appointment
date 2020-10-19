@@ -1,13 +1,15 @@
-package com.huanhong.appointment
+package com.huanhong.appointment.activitys
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import android.widget.TextView
+import com.huanhong.appointment.views.ConfirmDialog
+import com.huanhong.appointment.R
+import com.huanhong.appointment.views.SelectScreenPopwindow
 import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.Room
@@ -16,6 +18,7 @@ import com.huanhong.appointment.net.httploader.BindMeetRoomsLoader
 import com.huanhong.appointment.net.httploader.MeetRoomsLoader
 import com.huanhong.appointment.net.httploader.UnbindMeetRoomsLoader
 import com.huanhong.appointment.utils.SharedPreferencesUtils
+import com.huanhong.appointment.views.ConfigPopwindow
 import kotlinx.android.synthetic.main.activity_meet_room.*
 
 /**
@@ -27,7 +30,9 @@ import kotlinx.android.synthetic.main.activity_meet_room.*
 class MeetRoomActivity : BaseActivity() {
     private val list = ArrayList<Room>()
     private var p = -1
-    private var flatsTag: Int = 7
+
+    //    private var flatsTag: Int = 7
+    private var areaType: Int = 0
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,17 +76,26 @@ class MeetRoomActivity : BaseActivity() {
             onBackPressed()
         }
 
-        iv_setting.setOnClickListener {
-            SelectScreenPopwindow(this, iv_back, SelectScreenPopwindow.ConfirmCallback {
-                flatsTag = it
-                when(it){
-                    7 -> tv_title.text = "绑定会议室"
-                    8 -> tv_title.text = "绑定办公区"
-                    9 -> tv_title.text = "绑定健身房"
-                }
-                request(it)
-            })
+//        iv_setting.setOnClickListener {
+//            SelectScreenPopwindow(this, iv_back, SelectScreenPopwindow.ConfirmCallback {
+//                flatsTag = it
+//                when (it) {
+//                    7 -> tv_title.text = "绑定会议室"
+//                    8 -> tv_title.text = "绑定办公区"
+//                    9 -> tv_title.text = "绑定健身房"
+//                }
+//                request(it)
+//            })
+//        }
+
+        // 获得需要显示的view
+        areaType = ConfigPopwindow.getAreaType()
+        when (areaType) {
+            0 -> tv_title.text = "绑定会议室"
+            1 -> tv_title.text = "绑定办公区"
+            2 -> tv_title.text = "绑定健身房"
         }
+        request(areaType + 7)
     }
 
     @SuppressLint("CheckResult")
@@ -131,10 +145,10 @@ class MeetRoomActivity : BaseActivity() {
             DialogUtils.ToastShow(this@MeetRoomActivity, "绑定成功")
             SharedPreferencesUtils.addData("roomName", room.roomName)
             SharedPreferencesUtils.addData("roomId", room.id)
-            when (flatsTag) {
-                7 -> startActivity(Intent(this@MeetRoomActivity, MainActivity::class.java))
-                8 -> startActivity(Intent(this@MeetRoomActivity, SeatActivity::class.java))
-                9 -> startActivity(Intent(this@MeetRoomActivity, EquipmentActivity::class.java))
+            when (areaType) {
+                0 -> startActivity(Intent(this@MeetRoomActivity, MainActivity::class.java))
+                1 -> startActivity(Intent(this@MeetRoomActivity, SeatActivity::class.java))
+                2 -> startActivity(Intent(this@MeetRoomActivity, EquipmentActivity::class.java))
             }
             finish()
         }, {

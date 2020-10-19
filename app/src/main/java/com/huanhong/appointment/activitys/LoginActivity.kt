@@ -1,8 +1,7 @@
-package com.huanhong.appointment
+package com.huanhong.appointment.activitys
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -10,14 +9,11 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.provider.Settings
-import android.support.v4.content.ContextCompat.getSystemService
-import android.support.v4.content.FileProvider
-import android.support.v7.app.AppCompatActivity
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.view.View
 import com.google.gson.Gson
+import com.huanhong.appointment.*
 import com.huanhong.appointment.bean.AppVersion
 import com.huanhong.appointment.bean.LoginReponseBean
 import com.huanhong.appointment.net.DialogUtils
@@ -27,17 +23,15 @@ import com.huanhong.appointment.net.httploader.BindStateLoader
 import com.huanhong.appointment.net.httploader.LoginLoader
 import com.huanhong.appointment.net.httploader.MeetRoomsLoader
 import com.huanhong.appointment.net.httploader.UpdateLoader
-import com.huanhong.appointment.utils.KeyUtil
 import com.huanhong.appointment.utils.SharedPreferencesUtils
+import com.huanhong.appointment.views.ConfigPopwindow
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
-import com.yanzhenjie.permission.Action
 import com.yanzhenjie.permission.AndPermission
 
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
-import java.lang.reflect.Type
 
 /**
  * Created by 坎坎.
@@ -56,8 +50,8 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        et_account.setText("scpad")
-        et_password.setText("123456")
+//        et_account.setText("scpad")
+//        et_password.setText("123456")
         btn_login.setOnClickListener {
             if (validate()) {
                 val map = HashMap<String, String>()
@@ -114,6 +108,10 @@ class LoginActivity : BaseActivity() {
             DialogUtils.ToastShow(this, "可以重新绑定")
             true
         }
+
+        tv_setting.setOnClickListener {
+            ConfigPopwindow(this,tv_setting)
+        }
     }
 
     inline fun <reified T : Any> Gson.fromJson(json: String): T {
@@ -166,6 +164,8 @@ class LoginActivity : BaseActivity() {
                 }
             }
             if (b) {
+                // 做个缓存 已登录 和 flatsTag
+                SplashActivity.setLogin()
                 when(flatsTag){
                     7-> startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     8-> startActivity(Intent(this@LoginActivity, SeatActivity::class.java))

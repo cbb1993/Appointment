@@ -1,11 +1,11 @@
-package com.huanhong.appointment
+package com.huanhong.appointment.activitys
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
+import com.huanhong.appointment.*
 import com.huanhong.appointment.bean.Meet
 import com.huanhong.appointment.bean.Staff
 import com.huanhong.appointment.net.DialogUtils
@@ -14,6 +14,7 @@ import com.huanhong.appointment.net.httploader.MeetAddLoader
 import com.huanhong.appointment.net.httploader.MeetingUsersLoader
 import com.huanhong.appointment.net.httploader.RoomMeetsLoader
 import com.huanhong.appointment.utils.SharedPreferencesUtils
+import com.huanhong.appointment.views.*
 import kotlinx.android.synthetic.main.activity_order.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -45,44 +46,44 @@ class OrderActivity:AppCompatActivity(){
         getPersons()
 
         iv_back.setOnClickListener {
-            startActivity(Intent(this@OrderActivity,MainActivity::class.java))
+            startActivity(Intent(this@OrderActivity, MainActivity::class.java))
         }
 
         tv_start_click.setOnClickListener {
-            TimePopwindow(this@OrderActivity,tv_start){hour,minute ->
+            TimePopwindow(this@OrderActivity, tv_start) { hour, minute ->
                 var h = hour.toString()
                 var m = minute.toString()
-                if(hour<10){
+                if (hour < 10) {
                     h = "0$h"
                 }
-                if(minute<10){
+                if (minute < 10) {
                     m = "0$m"
                 }
-                startStr  = "$h:$m"
-                if(validateStart()){
+                startStr = "$h:$m"
+                if (validateStart()) {
                     tv_start.text = startStr
                     setTime()
-                }else{
-                    startStr  =""
+                } else {
+                    startStr = ""
                 }
             }
         }
         tv_end_click.setOnClickListener {
-            TimePopwindow(this@OrderActivity,tv_end){hour,minute ->
+            TimePopwindow(this@OrderActivity, tv_end) { hour, minute ->
                 var h = hour.toString()
                 var m = minute.toString()
-                if(hour<10){
+                if (hour < 10) {
                     h = "0$h"
                 }
-                if(minute<10){
+                if (minute < 10) {
                     m = "0$m"
                 }
-                endStr  = "$h:$m"
-                if(validateEnd()){
+                endStr = "$h:$m"
+                if (validateEnd()) {
                     tv_end.text = endStr
                     setTime()
-                }else{
-                    endStr =""
+                } else {
+                    endStr = ""
                 }
             }
         }
@@ -96,7 +97,7 @@ class OrderActivity:AppCompatActivity(){
 
     private fun setTime(){
         if(startStr!=""&&endStr!=""){
-            range.setTimeRange(RangeBar.TimeBean(startStr,endStr,0),100,1)
+            range.setTimeRange(RangeBar.TimeBean(startStr, endStr, 0),100,1)
         }
     }
 
@@ -231,12 +232,12 @@ class OrderActivity:AppCompatActivity(){
         map["meetingUsers"] = joinUsers
         MeetAddLoader().request(token,map).subscribe({
             if(MainActivity.needAudit == 1){
-                SuccessDialog(this@OrderActivity,"该会议需要通过审核，请您耐心等待"){
-                    startActivity(Intent(this@OrderActivity,MainActivity::class.java))
+                SuccessDialog(this@OrderActivity, "该会议需要通过审核，请您耐心等待") {
+                    startActivity(Intent(this@OrderActivity, MainActivity::class.java))
                 }.show()
             }else{
-                SuccessDialog(this@OrderActivity,""){
-                    startActivity(Intent(this@OrderActivity,MainActivity::class.java))
+                SuccessDialog(this@OrderActivity, "") {
+                    startActivity(Intent(this@OrderActivity, MainActivity::class.java))
                 }.show()
             }
 
@@ -275,14 +276,14 @@ class OrderActivity:AppCompatActivity(){
 
 
         tv_user_click.setOnClickListener {
-            UsersPopwindow(this@OrderActivity,tv_user,userList, UsersPopwindow.ConfirmCallback { it ->
+            UsersPopwindow(this@OrderActivity, tv_user, userList, UsersPopwindow.ConfirmCallback { it ->
                 joinUsers.clear()
                 val buffer = StringBuffer()
                 it.forEach {
-                    joinUsers.add(JoinUser(it.userId,it.userName))
-                    if(buffer.isEmpty()){
+                    joinUsers.add(JoinUser(it.userId, it.userName))
+                    if (buffer.isEmpty()) {
                         buffer.append(it.userName)
-                    }else{
+                    } else {
                         buffer.append(",").append(it.userName)
                     }
                     tv_user.text = buffer.toString()

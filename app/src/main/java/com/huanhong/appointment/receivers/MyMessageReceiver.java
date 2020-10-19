@@ -1,4 +1,4 @@
-package com.huanhong.appointment;
+package com.huanhong.appointment.receivers;
 
 import android.content.Context;
 import android.util.Log;

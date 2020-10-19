@@ -1,11 +1,10 @@
-package com.huanhong.appointment
+package com.huanhong.appointment.receivers
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.huanhong.appointment.constant.Constant
+import com.huanhong.appointment.NetworkChangeEvent
 import com.huanhong.appointment.utils.NetWorkUtil
-import com.huanhong.appointment.utils.PreferenceUtil
 import org.greenrobot.eventbus.EventBus
 
 /**

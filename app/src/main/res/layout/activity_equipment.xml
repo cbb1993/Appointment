@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:background="@mipmap/equipmet_bg">
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/ll_lock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                     android:paddingBottom="3dp"
                     android:text="取消" />
             </LinearLayout>
-        </LinearLayout>
+        </LinearLayout>-->
 
         <TextView
             android:layout_margin="10dp"
@@ -86,18 +86,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <View
-            android:id="@+id/view_lock"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/tv_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="解绑"
+            android:textColor="@color/white" />
+
 
         <android.support.v7.widget.RecyclerView
-            android:layout_margin="10dp"
+            android:padding="10dp"
             android:id="@+id/recycler_devices"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="50dp" />
 
         <include
             layout="@layout/layout_time_qrcode"
@@ -157,7 +165,12 @@
                     android:layout_height="match_parent"/>
             </LinearLayout>
         </FrameLayout>
-
+        <View
+            android:id="@+id/view_lock"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <include
+            layout="@layout/layout_lock"/>
         <include
             android:id="@+id/rl_net"
             layout="@layout/layout_network_tip"

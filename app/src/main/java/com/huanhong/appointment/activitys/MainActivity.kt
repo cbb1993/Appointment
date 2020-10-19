@@ -1,4 +1,4 @@
-package com.huanhong.appointment
+package com.huanhong.appointment.activitys
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -16,6 +16,7 @@ import android.widget.*
 import com.alibaba.sdk.android.push.CommonCallback
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory
 import com.bumptech.glide.Glide
+import com.huanhong.appointment.*
 import com.huanhong.appointment.adapter.CommonAdapter
 import com.huanhong.appointment.adapter.ViewHolder
 import com.huanhong.appointment.bean.Meet
@@ -29,6 +30,7 @@ import com.huanhong.appointment.net.httploader.*
 import com.huanhong.appointment.utils.FileUtil
 import com.huanhong.appointment.utils.SharedPreferencesUtils
 import com.huanhong.appointment.utils.ViewUtils
+import com.huanhong.appointment.views.*
 import com.smbd.peripheral.SmbdLed
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -61,19 +63,24 @@ class MainActivity : BaseActivity() {
         var needAudit = 0 // 1 需要审核  2 不需要审核
     }
 
-    private val isDevice = true
+    // 是否是灯光设备
+    private var isDevice = true
 
     private lateinit var mSmbdLed: SmbdLed
 
+    // 是否已经初始化了右上角的设备列表
     private var initDevice = true
 
     lateinit var meetingCacheFile: File
 
-    var time  = ""
+    var time = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 获得设备类型
+        val deviceType = ConfigPopwindow.getDeviceType()
+        isDevice = deviceType == 0
         if (isDevice) {
             mSmbdLed = SmbdLed()
         }
@@ -225,7 +232,7 @@ class MainActivity : BaseActivity() {
         time = "$date:$second"
 
 //        // 每10秒刷新
-        if (second%10 == 0) {
+        if (second % 10 == 0) {
             getMeets()
         }
 
@@ -288,9 +295,19 @@ class MainActivity : BaseActivity() {
         }
 
         if (isDevice) {
-            mSmbdLed.onClose()
+            // 获得空闲时候的灯光颜色
+            setLightColor(ConfigPopwindow.getFreeLightType())
         }
         rl_root.setBackgroundResource(R.mipmap.main_bg)
+    }
+
+    private fun setLightColor(type: Int) {
+        when (type) {
+            0 -> mSmbdLed.onGreen(true)
+            1 -> mSmbdLed.onRed(true)
+            2 -> mSmbdLed.onYellow(true)
+            3 -> mSmbdLed.onClose()
+        }
     }
 
     private fun ing(meet: Meet) {
@@ -314,7 +331,8 @@ class MainActivity : BaseActivity() {
             tv_next?.text = StringConstant.next_conference_cn + StringConstant.none_cn
         }
         if (isDevice) {
-            mSmbdLed.onRed(true)
+            // 获得会议中时候的灯光颜色
+            setLightColor(ConfigPopwindow.getIngLightType())
         }
 
         meetingType("" + meet.typeId)
@@ -423,6 +441,7 @@ class MainActivity : BaseActivity() {
         map["device"] = deviceId
         UnbindMeetRoomsLoader().unbind(map).subscribe({
             //            DialogUtils.ToastShow(this@MainActivity, "解绑成功")
+            SplashActivity.clearLogin()
             unbindPush()
             removeFromWindow()
             System.exit(0)
@@ -709,6 +728,7 @@ class MainActivity : BaseActivity() {
             hideSoftKeyboard(tv_cancel)
             ll_lock.visibility = View.INVISIBLE
             et_password.setText("")
+            unBind = false
         }
         tv_confirm.setOnClickListener {
             if (et_password.length() != 0) {
@@ -716,6 +736,7 @@ class MainActivity : BaseActivity() {
                     if (unBind) {
                         unbind()
                     } else {
+                        SplashActivity.clearLogin()
                         removeFromWindow()
                         System.exit(0)
                     }

@@ -1,19 +1,18 @@
-package com.huanhong.appointment;
+package com.huanhong.appointment.views;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.TimePicker;
 
-import com.huanhong.appointment.bean.Staff;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.huanhong.appointment.R;
 
 /**
  * Created by 坎坎.
@@ -21,9 +20,9 @@ import java.util.List;
  * Time: 15:46
  * describe:
  */
-public class TimePopwindow {
-    public TimePopwindow(Context context, View view, final ConfirmCallback confirmCallback){
-        View contentView = LayoutInflater.from(context).inflate(R.layout.pop_time,null);
+public class SelectPopwindow {
+    public SelectPopwindow(Context context, View view, final ConfirmCallback confirmCallback){
+        View contentView = LayoutInflater.from(context).inflate(R.layout.pop_number,null);
         final PopupWindow  popupWindow = new PopupWindow(contentView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
 
@@ -32,11 +31,15 @@ public class TimePopwindow {
 
         View tv_cancel =contentView.findViewById(R.id.tv_cancel);
         View tv_confirm =contentView.findViewById(R.id.tv_confirm);
-        final TimePicker time_picker =contentView.findViewById(R.id.time_picker);
 
+        final NumberPicker time_picker =contentView.findViewById(R.id.number_picker);
+
+        final String [] s = {"10","20","30","40","50","60"};
+        String [] ss = {"10分钟","20分钟","30分钟","40分钟","50分钟","60分钟"};
+        time_picker.setMaxValue(5);
+        time_picker.setMinValue(0);
+        time_picker.setDisplayedValues(ss);
         time_picker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
-
-        time_picker.setIs24HourView(true);
 
         tv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,15 +51,13 @@ public class TimePopwindow {
             @Override
             public void onClick(View v) {
                 if(confirmCallback!=null){
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        confirmCallback.confirm(time_picker.getHour(),time_picker.getMinute());
-                        popupWindow.dismiss();
-                    }
+                    popupWindow.dismiss();
+                    confirmCallback.confirm(s[time_picker.getValue()]);
                 }
             }
         });
     }
     public interface ConfirmCallback{
-        void confirm(int hourOfDay, int minute);
+        void confirm(String s);
     }
 }
