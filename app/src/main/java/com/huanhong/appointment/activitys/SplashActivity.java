@@ -20,15 +20,20 @@ public class SplashActivity extends BaseActivity {
         // 判断是否已经登录
         boolean b = SharedPreferencesUtils.readBooleanData(login, false);
         if(b){
-            String s = SharedPreferencesUtils.readData(flatsTag, "");
-            if(s.equals( "7")){
-                startActivity(new Intent(this,MainActivity.class));
-            }else  if(s.equals( "8")){
-                startActivity(new Intent(this,SeatActivity.class));
-            }else  if(s.equals( "9")){
-                startActivity(new Intent(this,EquipmentActivity.class));
-            }else {
-                startActivity(new Intent(this,LoginActivity.class));
+            int  f= SharedPreferencesUtils.readIntData(flatsTag);
+            switch (f){
+                case 7:
+                    startActivity(new Intent(this,MainActivity.class));
+                    break;
+                case 8:
+                    startActivity(new Intent(this,SeatActivity.class));
+                    break;
+                case 9:
+                    startActivity(new Intent(this,EquipmentActivity.class));
+                    break;
+                default:
+                    startActivity(new Intent(this,LoginActivity.class));
+                    break;
             }
         }else {
             startActivity(new Intent(this,LoginActivity.class));
@@ -38,15 +43,14 @@ public class SplashActivity extends BaseActivity {
 
 
 
-    public static void setLogin(){
+    public static void setLogin(int f){
         // 做个缓存 已登录 和 flatsTag
         SharedPreferencesUtils.addData(login,true);
-        SharedPreferencesUtils.addData(flatsTag, ""+flatsTag);
+        SharedPreferencesUtils.addData(flatsTag, f);
     }
 
     public static void clearLogin(){
-        // 做个缓存 已登录 和 flatsTag
         SharedPreferencesUtils.addData(login,false);
-        SharedPreferencesUtils.addData(flatsTag, "");
+        SharedPreferencesUtils.addData(flatsTag, 0);
     }
 }

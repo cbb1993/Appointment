@@ -165,7 +165,7 @@ class LoginActivity : BaseActivity() {
             }
             if (b) {
                 // 做个缓存 已登录 和 flatsTag
-                SplashActivity.setLogin()
+                SplashActivity.setLogin(flatsTag)
                 when(flatsTag){
                     7-> startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     8-> startActivity(Intent(this@LoginActivity, SeatActivity::class.java))

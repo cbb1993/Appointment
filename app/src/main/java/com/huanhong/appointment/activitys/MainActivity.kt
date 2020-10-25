@@ -323,7 +323,7 @@ class MainActivity : BaseActivity() {
         ll_meet_set?.visibility = View.VISIBLE
 
         tv_time?.text = "会议时间: " + dateFormat(meet.gmtStart) + "-" + dateFormat(meet.gmtEnd)
-        tv_creator_name?.text = "创建人: " + meet.creatorName
+        tv_creator_name?.text = "创建人: " +meet.deptName+ meet.creatorName
         tv_title?.text = meet.name
         if (currentList.size > 1) {
             tv_next?.text = StringConstant.next_conference_cn + currentList[1].name

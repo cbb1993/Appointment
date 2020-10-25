@@ -19,7 +19,7 @@ public class Meet {
         },*/
    private String gmtEnd,gmtStart;
    public int state,typeId,id;
-   public String name,creatorName,peopleNum,delayTimeStr;
+   public String name,creatorName,peopleNum,delayTimeStr,deptName;
 
    public long getGmtEnd() {
       if(gmtEnd!=null){
