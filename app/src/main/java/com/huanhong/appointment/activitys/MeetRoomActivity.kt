@@ -145,7 +145,7 @@ class MeetRoomActivity : BaseActivity() {
             DialogUtils.ToastShow(this@MeetRoomActivity, "绑定成功")
             SharedPreferencesUtils.addData("roomName", room.roomName)
             SharedPreferencesUtils.addData("roomId", room.id)
-            SplashActivity.setLogin(areaType)
+            SplashActivity.setLogin(areaType + 7)
             when (areaType) {
                 0 -> startActivity(Intent(this@MeetRoomActivity, MainActivity::class.java))
                 1 -> startActivity(Intent(this@MeetRoomActivity, SeatActivity::class.java))

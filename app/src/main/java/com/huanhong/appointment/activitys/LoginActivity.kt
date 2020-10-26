@@ -52,8 +52,12 @@ class LoginActivity : BaseActivity() {
         setContentView(R.layout.activity_login)
 //        et_account.setText("scpad")
 //        et_password.setText("123456")
+        et_account.setText(SharedPreferencesUtils.readData("account"))
+        et_password.setText(SharedPreferencesUtils.readData("password"))
         btn_login.setOnClickListener {
             if (validate()) {
+                SharedPreferencesUtils.addData("account",et_account.text.toString())
+                SharedPreferencesUtils.addData("password",et_password.text.toString())
                 val map = HashMap<String, String>()
                 map["account"] = et_account.text.toString()
                 map["password"] = et_password.text.toString()
