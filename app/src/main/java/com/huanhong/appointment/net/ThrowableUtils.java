@@ -37,6 +37,25 @@ public class ThrowableUtils {
         }
     }
 
+    public static String ThrowableEn3( Throwable throwable) {
+        //出现错误
+        if (throwable instanceof HttpException) { // 网络错误
+            return "网络异常，请稍后重试";
+        } else if (throwable instanceof SocketTimeoutException) { // 其他错误
+            return "网络请求超时，请稍后重试";
+        } else if (throwable instanceof ConnectException) {
+            return "无网络，请求失败";
+        } else if (throwable instanceof Fault) {
+            return ((Fault) throwable).message;
+        } else if (throwable instanceof NullPointerException) {
+            return "请求数据为空";
+        } else if (throwable instanceof UnknownHostException) {
+            return "无网络连接，请求失败";
+        } else {
+            return throwable.getMessage();
+        }
+    }
+
     public static String ThrowableEnd2( Throwable throwable) {
         //出现错误
         if (throwable instanceof HttpException) { // 网络错误

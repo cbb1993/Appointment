@@ -344,6 +344,7 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("CheckResult")
     private fun getMeets() {
+        FileUtil.appendMethodB("$time---请求开始\n");
         val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
         var map = HashMap<String, String>()
         map["device"] = deviceId
@@ -369,7 +370,7 @@ class MainActivity : BaseActivity() {
 
 
             // 写入log
-            FileUtil.appendMethodB(time + "----->" + it.list.size + "条会议\n")
+            FileUtil.appendMethodB(time + "---请求结束-->" + it.list.size + "条会议\n")
 
             if (it.list.size > 0) {
                 it.list.forEach { info ->
@@ -392,7 +393,9 @@ class MainActivity : BaseActivity() {
             range!!.setTimeRangeList(timeList)
             setMeetData()
         }, {
-            ThrowableUtils.ThrowableEnd(it, null)
+//            ThrowableUtils.ThrowableEnd(it, null);
+            FileUtil.appendMethodB("$time---请求结束--请求出错---"+ThrowableUtils.ThrowableEn3(it)+"\n")
+
 //            DialogUtils.ToastShow(this@MainActivity, "请求出错")
         })
     }
