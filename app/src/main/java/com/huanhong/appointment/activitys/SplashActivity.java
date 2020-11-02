@@ -1,14 +1,12 @@
 package com.huanhong.appointment.activitys;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.widget.TextView;
 
-
 import com.huanhong.appointment.R;
+import com.huanhong.appointment.constant.BaseUrlInterceptor;
 import com.huanhong.appointment.utils.SharedPreferencesUtils;
 
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +19,9 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        // 读取下缓存
+        BaseUrlInterceptor.readBaseUrl();
 
         TextView tv_msg = findViewById(R.id.tv_msg);
         final boolean b = SharedPreferencesUtils.readBooleanData(login, false);

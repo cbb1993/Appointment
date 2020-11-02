@@ -1,5 +1,6 @@
 package com.huanhong.appointment.net;
 
+import com.huanhong.appointment.constant.BaseUrlInterceptor;
 import com.huanhong.appointment.constant.Constant;
 
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,7 @@ public class RetrofitServiceManager {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLogger());
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         builder.addInterceptor(interceptor);
+        builder.addInterceptor(new BaseUrlInterceptor());
         // 创建Retrofit
         mRetrofit = new Retrofit.Builder()
                 .client(builder.build())

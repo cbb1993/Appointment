@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
@@ -14,6 +15,8 @@ import android.widget.RadioGroup;
 import android.widget.TimePicker;
 
 import com.huanhong.appointment.R;
+import com.huanhong.appointment.constant.BaseUrlInterceptor;
+import com.huanhong.appointment.constant.Constant;
 import com.huanhong.appointment.utils.SharedPreferencesUtils;
 
 /**
@@ -77,6 +80,7 @@ public class ConfigPopwindow {
         tv_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BaseUrlInterceptor.setBaseUrl(et_host.getText().toString());
                 popupWindow.dismiss();
             }
         });
@@ -85,6 +89,7 @@ public class ConfigPopwindow {
     }
 
     private RadioGroup rg_device, rg_area, rg_light_free, rg_light_ing, rg_light_seat, rg_light_equipment;
+    private EditText et_host;
 
     private void initConfig(View contentView) {
         rg_device = contentView.findViewById(R.id.rg_device);
@@ -93,6 +98,9 @@ public class ConfigPopwindow {
         rg_light_ing = contentView.findViewById(R.id.rg_light_ing);
         rg_light_seat = contentView.findViewById(R.id.rg_light_seat);
         rg_light_equipment = contentView.findViewById(R.id.rg_light_equipment);
+        et_host = contentView.findViewById(R.id.et_host);
+
+        et_host.setText(BaseUrlInterceptor.readBaseUrl());
 
         rg_device.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

@@ -13,9 +13,12 @@ import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import com.google.gson.Gson
-import com.huanhong.appointment.*
+import com.huanhong.appointment.BuildConfig
+import com.huanhong.appointment.R
 import com.huanhong.appointment.bean.AppVersion
 import com.huanhong.appointment.bean.LoginReponseBean
+import com.huanhong.appointment.constant.BaseUrlInterceptor
+import com.huanhong.appointment.constant.Constant
 import com.huanhong.appointment.net.DialogUtils
 import com.huanhong.appointment.net.Fault
 import com.huanhong.appointment.net.ThrowableUtils
@@ -29,7 +32,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
 import com.yanzhenjie.permission.AndPermission
-
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
 
@@ -50,6 +52,10 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        // 读取下缓存
+        BaseUrlInterceptor.readBaseUrl()
+
 //        et_account.setText("scpad")
 //        et_password.setText("123456")
         et_account.setText(SharedPreferencesUtils.readData("account"))
