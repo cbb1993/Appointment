@@ -221,8 +221,8 @@ class MainActivity : BaseActivity() {
             range!!.setCurrentTime("$hour:$minute")
             setMeetData()
         }
-        // 是否是凌晨1点 清除 crash 日志 和 会议列表日志
-        if (calendar.get(Calendar.HOUR_OF_DAY) == 1
+        // 中午12点 清除 crash 日志 和 会议列表日志
+        if (calendar.get(Calendar.HOUR_OF_DAY) == 12
                 && calendar.get(Calendar.MINUTE) == 0
                 && second == 0) {
             for (f in meetingCacheFile.listFiles()) {
@@ -393,10 +393,8 @@ class MainActivity : BaseActivity() {
             range!!.setTimeRangeList(timeList)
             setMeetData()
         }, {
-//            ThrowableUtils.ThrowableEnd(it, null);
+            LoginActivity.refreshToken()
             FileUtil.appendMethodB("$time---请求结束--请求出错---"+ThrowableUtils.ThrowableEn3(it)+"\n")
-
-//            DialogUtils.ToastShow(this@MainActivity, "请求出错")
         })
     }
 

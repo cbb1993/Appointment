@@ -95,7 +95,7 @@ class EquipmentActivity : BaseActivity() {
         initEquipments()
 
         getQRCode()
-        handler.sendEmptyMessage(1)
+        getEquipments()
     }
 
     private fun initEquipments() {
@@ -241,7 +241,7 @@ class EquipmentActivity : BaseActivity() {
             startActivity(Intent(this@EquipmentActivity, LoginActivity::class.java))
 
         }, {
-            ThrowableUtils.ThrowableEnd(it, null)
+           LoginActivity.refreshToken()
         })
     }
     private fun setTimer() {
@@ -265,6 +265,11 @@ class EquipmentActivity : BaseActivity() {
         val date = "$hour:$minute"
         tv_date!!.text = date
         tv_date_week!!.text = "${calendar.get(Calendar.YEAR)}-$month-$day ${arr[calendar.get(Calendar.DAY_OF_WEEK) - 1]}"
+
+        val second = calendar.get(Calendar.SECOND);
+        if (second % 15 == 0) {
+            getEquipments()
+        }
     }
 
 
@@ -278,7 +283,6 @@ class EquipmentActivity : BaseActivity() {
     private fun removeFromWindow() {
         if (mLockView.parent == null) {
             timeHandler.removeCallbacksAndMessages(null)
-            handler.removeCallbacksAndMessages(null)
             windowManager.removeView(mLockView)
         }
     }
@@ -288,13 +292,4 @@ class EquipmentActivity : BaseActivity() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-
-    @SuppressLint("HandlerLeak")
-    val handler = object :Handler(){
-        override fun handleMessage(msg: Message?) {
-            super.handleMessage(msg)
-            getEquipments()
-            sendEmptyMessageDelayed(1,15_000)
-        }
-    }
 }

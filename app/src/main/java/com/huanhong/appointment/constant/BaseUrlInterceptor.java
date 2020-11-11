@@ -1,6 +1,5 @@
 package com.huanhong.appointment.constant;
 
-import android.util.Log;
 
 import com.huanhong.appointment.utils.SharedPreferencesUtils;
 
@@ -38,18 +37,19 @@ public class BaseUrlInterceptor implements Interceptor {
         //匹配获得新的BaseUrl
 
         HttpUrl newBaseUrl = null;
-        Log.e("Url", "intercept: "+oldHttpUrl.toString());
         newBaseUrl = HttpUrl.parse(readBaseUrl());
 
         //重建新的HttpUrl，修改需要修改的url部分
         HttpUrl newFullUrl = oldHttpUrl
                 .newBuilder()
+                .scheme(newBaseUrl.scheme())
                 .host(newBaseUrl.host())//更换主机名
                 .port(newBaseUrl.port())//更换端口
                 .build();
         //重建这个request，通过builder.url(newFullUrl).build()；
         // 然后返回一个response至此结束修改
-        Log.e("Url", "intercept: "+newFullUrl.toString());
         return chain.proceed(builder.url(newFullUrl).build());
+
+
     }
 }

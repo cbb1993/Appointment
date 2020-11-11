@@ -61,43 +61,43 @@ class SeatActivity : BaseActivity() {
     private val seats = ArrayList<Seat>()
 
     // 二维码
-    private lateinit var iv_qrcode :ImageView
+    private lateinit var iv_qrcode: ImageView
 
     // 解绑
     private lateinit var tv_setting: TextView
     private var unBind = false
 
     // 座位图
-    private lateinit var view_circle_1:View
-    private lateinit var view_1:View
-    private lateinit var view_circle_2:View
-    private lateinit var view_2:View
-    private lateinit var view_circle_3:View
-    private lateinit var view_3:View
-    private lateinit var view_circle_4:View
-    private lateinit var view_4:View
-    private lateinit var view_circle_5:View
-    private lateinit var view_5:View
-    private lateinit var view_circle_6:View
-    private lateinit var view_6:View
-    private lateinit var view_circle_7:View
-    private lateinit var view_7:View
-    private lateinit var view_circle_8:View
-    private lateinit var view_8:View
-    private lateinit var view_circle_9:View
-    private lateinit var view_9:View
-    private lateinit var view_circle_10:View
-    private lateinit var view_10:View
-    private lateinit var view_circle_11:View
-    private lateinit var view_11:View
-    private lateinit var view_circle_12:View
-    private lateinit var view_12:View
+    private lateinit var view_circle_1: View
+    private lateinit var view_1: View
+    private lateinit var view_circle_2: View
+    private lateinit var view_2: View
+    private lateinit var view_circle_3: View
+    private lateinit var view_3: View
+    private lateinit var view_circle_4: View
+    private lateinit var view_4: View
+    private lateinit var view_circle_5: View
+    private lateinit var view_5: View
+    private lateinit var view_circle_6: View
+    private lateinit var view_6: View
+    private lateinit var view_circle_7: View
+    private lateinit var view_7: View
+    private lateinit var view_circle_8: View
+    private lateinit var view_8: View
+    private lateinit var view_circle_9: View
+    private lateinit var view_9: View
+    private lateinit var view_circle_10: View
+    private lateinit var view_10: View
+    private lateinit var view_circle_11: View
+    private lateinit var view_11: View
+    private lateinit var view_circle_12: View
+    private lateinit var view_12: View
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
-        if(ConfigPopwindow.getDeviceType() == 0){
+        if (ConfigPopwindow.getDeviceType() == 0) {
             val mSmbdLed = SmbdLed()
             when (ConfigPopwindow.getSeatLightType()) {
                 0 -> mSmbdLed.onGreen(true)
@@ -118,7 +118,7 @@ class SeatActivity : BaseActivity() {
         initSeats()
 
         getQRCode()
-        handler.sendEmptyMessage(1)
+        getSeats()
     }
 
     private fun initSeats() {
@@ -232,7 +232,7 @@ class SeatActivity : BaseActivity() {
         // 解绑
         tv_setting = mLockView.findViewById(R.id.tv_setting)
         tv_setting.setOnClickListener {
-            unBind =true
+            unBind = true
             ll_lock.visibility = View.VISIBLE
         }
     }
@@ -258,7 +258,7 @@ class SeatActivity : BaseActivity() {
         val map = HashMap<String, Any>()
         map["roomId"] = SharedPreferencesUtils.readData("roomId")
         QRCodeLoader().request(map).subscribe({
-            iv_qrcode.setImageBitmap(QRCodeUtil.createQRCodeBitmap(it,800, 800))
+            iv_qrcode.setImageBitmap(QRCodeUtil.createQRCodeBitmap(it, 800, 800))
         }, {
         })
     }
@@ -267,40 +267,41 @@ class SeatActivity : BaseActivity() {
     private fun getSeats() {
         SeatsLoader().request(SharedPreferencesUtils.readData("roomId")).subscribe({
             seats.clear()
-            if(it.size<=12){
+            if (it.size <= 12) {
                 seats.addAll(it)
-            }else{
-                seats.addAll(it.subList(0,12))
+            } else {
+                seats.addAll(it.subList(0, 12))
             }
 //            recycler_seat.adapter?.notifyDataSetChanged()
-            for(i in 0 until seats.size){
+            for (i in 0 until seats.size) {
                 val state = seats[i].state
-                when(i){
-                    0->setViewState(view_circle_1,view_1,state)
-                    1->setViewState(view_circle_2,view_2,state)
-                    2->setViewState(view_circle_3,view_3,state)
-                    3->setViewState(view_circle_4,view_4,state)
-                    4->setViewState(view_circle_5,view_5,state)
-                    5->setViewState(view_circle_6,view_6,state)
-                    6->setViewState(view_circle_7,view_7,state)
-                    7->setViewState(view_circle_8,view_8,state)
-                    8->setViewState(view_circle_9,view_9,state)
-                    9->setViewState(view_circle_10,view_10,state)
-                    10->setViewState(view_circle_11,view_11,state)
-                    11->setViewState(view_circle_12,view_12,state)
+                when (i) {
+                    0 -> setViewState(view_circle_1, view_1, state)
+                    1 -> setViewState(view_circle_2, view_2, state)
+                    2 -> setViewState(view_circle_3, view_3, state)
+                    3 -> setViewState(view_circle_4, view_4, state)
+                    4 -> setViewState(view_circle_5, view_5, state)
+                    5 -> setViewState(view_circle_6, view_6, state)
+                    6 -> setViewState(view_circle_7, view_7, state)
+                    7 -> setViewState(view_circle_8, view_8, state)
+                    8 -> setViewState(view_circle_9, view_9, state)
+                    9 -> setViewState(view_circle_10, view_10, state)
+                    10 -> setViewState(view_circle_11, view_11, state)
+                    11 -> setViewState(view_circle_12, view_12, state)
                 }
             }
         }, {
+            LoginActivity.refreshToken()
         })
     }
 
-    private fun setViewState(v1:View, v2:View, state:Int){
-        when(state){
+    private fun setViewState(v1: View, v2: View, state: Int) {
+        when (state) {
             1 -> {
                 v1.background = getDrawable(R.drawable.shape_circle_white)
                 v2.background = getDrawable(R.color.seat_normal)
             }
-            2 ->{
+            2 -> {
                 v1.background = getDrawable(R.drawable.shape_circle_blue)
                 v2.background = getDrawable(R.color.seat_select)
             }
@@ -310,6 +311,7 @@ class SeatActivity : BaseActivity() {
             }
         }
     }
+
     @SuppressLint("CheckResult")
     private fun unbind() {
         val deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
@@ -348,6 +350,10 @@ class SeatActivity : BaseActivity() {
         val date = "$hour:$minute"
         tv_date!!.text = date
         tv_date_week!!.text = "${calendar.get(Calendar.YEAR)}-$month-$day ${arr[calendar.get(Calendar.DAY_OF_WEEK) - 1]}"
+        val second = calendar.get(Calendar.SECOND);
+        if (second % 15 == 0) {
+            getSeats()
+        }
     }
 
 
@@ -361,7 +367,6 @@ class SeatActivity : BaseActivity() {
     private fun removeFromWindow() {
         if (mLockView.parent == null) {
             timeHandler.removeCallbacksAndMessages(null)
-            handler.removeCallbacksAndMessages(null)
             windowManager.removeView(mLockView)
         }
     }
@@ -370,12 +375,5 @@ class SeatActivity : BaseActivity() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
-    @SuppressLint("HandlerLeak")
-    val handler = object :Handler(){
-        override fun handleMessage(msg: Message?) {
-            super.handleMessage(msg)
-            getSeats()
-            sendEmptyMessageDelayed(1,15_000)
-        }
-    }
+
 }

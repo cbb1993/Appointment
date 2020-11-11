@@ -1,7 +1,10 @@
 package com.huanhong.appointment.net;
 
+import android.util.Log;
+
 import com.huanhong.appointment.constant.BaseUrlInterceptor;
 import com.huanhong.appointment.constant.Constant;
+import com.huanhong.appointment.utils.FileUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,10 +34,17 @@ public class RetrofitServiceManager {
 //        HttpCommonInterceptor commonInterceptor = new HttpCommonInterceptor.Builder()
 //                .addHeaderParams("Content-Type", "application/json;charset=UTF-8")
 //                .build();
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLogger());
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        builder.addInterceptor(interceptor);
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                //打印retrofit日志
+                Log.e("RetrofitLog","retrofitBack = "+message);
+//                FileUtil.appendMessage(message);
+            }
+        });
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         builder.addInterceptor(new BaseUrlInterceptor());
+        builder.addInterceptor(loggingInterceptor);
         // 创建Retrofit
         mRetrofit = new Retrofit.Builder()
                 .client(builder.build())

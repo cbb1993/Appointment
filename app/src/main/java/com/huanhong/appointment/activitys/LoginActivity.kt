@@ -308,4 +308,22 @@ class LoginActivity : BaseActivity() {
 //        }
 //    }
 
+    companion object{
+        fun refreshToken(){
+            val account = SharedPreferencesUtils.readData("account")
+            val password = SharedPreferencesUtils.readData("password")
+            val map = HashMap<String, String>()
+            map["account"] = account
+            map["password"] = password
+            map["type"] = "account"
+            map["terminal"] = "会议室Pad"
+            map["os"] = "android"
+            map["version"] = "1.0.0"
+            LoginLoader().getLoginInFo(map).subscribe({
+                if (it != null) {
+                    LoginReponseBean.setToken(it.token)
+                }
+            }, { ThrowableUtils.ThrowableEnd(it, null) })
+        }
+    }
 }

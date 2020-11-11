@@ -30,6 +30,12 @@ public class BaseApplication extends Application {
         application = this;
         initPushService(this);
         FileDownloader.init(this);
+
+        File dir = new File(BaseApplication.path);
+        File meetingLogs = new File(dir,"request.txt");
+        if(meetingLogs.exists()){
+            meetingLogs.deleteOnExit();
+        }
     }
 
     /**

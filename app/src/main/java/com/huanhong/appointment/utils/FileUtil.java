@@ -29,4 +29,26 @@ public class FileUtil {
             e.printStackTrace();
         }
     }
+
+    public static void appendMessage(String content) {
+        File dir = new File(BaseApplication.path);
+        File meetingLogs = new File(dir,"request.txt");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        if (!meetingLogs.exists()) {
+            try {
+                meetingLogs.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            FileWriter writer = new FileWriter(meetingLogs, true);
+            writer.write(content+"\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
